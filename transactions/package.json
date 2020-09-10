@@ -1,0 +1,14 @@
+{
+  "name": "collabolancer-transactions",
+  "version": "0.1.0",
+  "description": "List of custom transaction for collabolancer, built using Lisk Transaction Module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Aldo Suhartono Putra",
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "@liskhq/lisk-transactions": "^3.0.2"
+  }
+}

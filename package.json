@@ -1,0 +1,33 @@
+{
+  "name": "collabolancer",
+  "version": "0.1.0",
+  "description": "Collabolancer is a proof-of-concept smart freelancing platform that enables seamless collaboration. Let's make a better world together, not alone",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aldhosutra/collabolancer.git"
+  },
+  "keywords": [
+    "freelancer",
+    "lisk",
+    "blockchain",
+    "DApps",
+    "collaboration"
+  ],
+  "author": "Aldo Suhartono Putra",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/aldhosutra/collabolancer/issues"
+  },
+  "homepage": "https://github.com/aldhosutra/collabolancer#readme",
+  "dependencies": {
+    "@liskhq/lisk-passphrase": "^3.0.0",
+    "lisk-sdk": "^3.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.6.0"
+  }
+}
