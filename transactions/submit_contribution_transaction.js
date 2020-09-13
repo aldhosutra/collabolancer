@@ -94,6 +94,17 @@ class SubmitContributionTransaction extends BaseTransaction {
         )
       );
     }
+    if (!this.asset.filename || typeof this.asset.filename !== "string") {
+      errors.push(
+        new TransactionError(
+          'Invalid "asset.filename" defined on transaction',
+          this.id,
+          ".asset.filename",
+          this.asset.filename,
+          "filename is required, and must be string"
+        )
+      );
+    }
     if (!this.asset.filedata) {
       errors.push(
         new TransactionError(
@@ -245,6 +256,7 @@ class SubmitContributionTransaction extends BaseTransaction {
           proposal: teamAccount.asset.proposal,
           team: teamAccount.publicKey,
           time: this.timestamp,
+          filename: this.asset.filename,
           dataTransaction: this.id,
         };
         const senderAsset = {
