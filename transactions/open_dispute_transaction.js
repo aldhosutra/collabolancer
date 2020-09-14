@@ -1,3 +1,6 @@
+// eslint-disable-next-line no-redeclare
+/* global BigInt */
+
 const { getStateCenterAccount, store_account_get } = require("./utils");
 const { ACCOUNT, MISCELLANEOUS, STATUS } = require("./constants");
 const {

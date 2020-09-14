@@ -268,12 +268,12 @@ class LeaderRequestRevisionTransaction extends BaseTransaction {
    * Undoes the changes made in applyAsset()
    */
   undoAsset(store) {
-    const proposalAccount = store_account_get(
-      contributionAccount.asset.proposal,
-      store
-    );
     const contributionAccount = store_account_get(
       this.asset.contributionPublicKey,
+      store
+    );
+    const proposalAccount = store_account_get(
+      contributionAccount.asset.proposal,
       store
     );
     const teamAccount = store_account_get(
