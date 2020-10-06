@@ -336,8 +336,8 @@ class ClaimPrizeTransaction extends BaseTransaction {
         });
         const employerAsset = {
           open: [],
-          ...employerAccount.asset,
           done: [],
+          ...employerAccount.asset,
         };
         employerAsset.spent = utils
           .BigNum(employerAsset.spent)
@@ -547,8 +547,8 @@ class ClaimPrizeTransaction extends BaseTransaction {
     });
     const employerAsset = {
       open: [],
-      ...employerAccount.asset,
       done: [],
+      ...employerAccount.asset,
     };
     employerAsset.spent = utils
       .BigNum(employerAsset.spent)

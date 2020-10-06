@@ -106,7 +106,6 @@ class PostProjectTransaction extends BaseTransaction {
       );
     }
     if (
-      !this.asset.prize ||
       typeof this.asset.prize !== "string" ||
       utils.BigNum(this.asset.prize) < 0
     ) {
@@ -116,27 +115,22 @@ class PostProjectTransaction extends BaseTransaction {
           this.id,
           ".asset.prize",
           this.asset.prize,
-          "Prize must be valid string and greater than zero"
+          "Prize must be valid string and greater or equal to zero"
         )
       );
     }
-    if (
-      !this.asset.maxTime ||
-      typeof this.asset.maxTime !== "number" ||
-      this.asset.maxTime < 0
-    ) {
+    if (typeof this.asset.maxTime !== "number" || this.asset.maxTime < 0) {
       errors.push(
         new TransactionError(
           'Invalid "asset.maxTime" defined on transaction',
           this.id,
           ".asset.maxTime",
           this.asset.maxTime,
-          "maxTime must be valid number and greater than zero"
+          "maxTime must be valid number and greater or equal to zero"
         )
       );
     }
     if (
-      !this.asset.maxRevision ||
       typeof this.asset.maxRevision !== "number" ||
       this.asset.maxRevision < 0
     ) {
@@ -146,7 +140,7 @@ class PostProjectTransaction extends BaseTransaction {
           this.id,
           ".asset.maxRevision",
           this.asset.maxRevision,
-          "maxRevision must be valid number and greater than zero"
+          "maxRevision must be valid number and greater or equal to zero"
         )
       );
     }

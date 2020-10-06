@@ -1,5 +1,5 @@
 const { Application, genesisBlockDevnet, configDevnet } = require("lisk-sdk");
-const { CONSTANTS } = require("./config");
+const { CONSTANTS, EXTENDEDAPI_CONFIG } = require("./config");
 const {
   RegisterEmployerTransaction,
   RegisterWorkerTransaction,
@@ -20,6 +20,13 @@ const {
   VoteDisputeTransaction,
   CloseDisputeTransaction,
 } = require("./transactions");
+
+const { extendedAPI } = require("./extendedAPI");
+extendedAPI.listen(EXTENDEDAPI_CONFIG.PORT, () => {
+  console.log(
+    `extendedAPI listening at http://localhost:${EXTENDEDAPI_CONFIG.PORT}`
+  );
+});
 
 configDevnet.app.label = "collabolancer-blockchain-app";
 configDevnet.modules.http_api.access.whiteList = ["127.0.0.1", "172.17.0.1"];

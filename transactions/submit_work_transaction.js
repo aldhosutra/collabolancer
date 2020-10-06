@@ -296,6 +296,7 @@ class SubmitWorkTransaction extends BaseTransaction {
           .BigNum(projectAsset.freezedFee)
           .sub(projectAsset.commitmentFee)
           .toString();
+        senderAsset.file.unshift(submissionAccount.publicKey);
         projectAsset.submission.unshift(submissionAccount.publicKey);
         store.account.set(submissionAccount.address, {
           ...submissionAccount,
@@ -365,6 +366,12 @@ class SubmitWorkTransaction extends BaseTransaction {
     );
     if (projectSubmissionIndex > -1) {
       projectAsset.submission.splice(projectSubmissionIndex, 1);
+    }
+    const workerTeamIndex = senderAsset.file.indexOf(
+      submissionAccount.publicKey
+    );
+    if (workerTeamIndex > -1) {
+      senderAsset.file.splice(workerTeamIndex, 1);
     }
     projectAsset.activity.shift();
     projectAsset.freezedFund = utils

@@ -134,8 +134,7 @@ class PostProposalTransaction extends BaseTransaction {
     }
     if (
       this.asset.term.roleList.length != 0 &&
-      (!this.asset.term.maxTime ||
-        typeof this.asset.term.maxTime !== "number" ||
+      (typeof this.asset.term.maxTime !== "number" ||
         this.asset.term.maxTime < 0)
     ) {
       errors.push(
@@ -144,14 +143,13 @@ class PostProposalTransaction extends BaseTransaction {
           this.id,
           ".asset.term.maxTime",
           this.asset.term.maxTime,
-          "term.maxTime is required in collaboration mode, must be valid number and greater than zero"
+          "term.maxTime is required in collaboration mode, must be valid number and greater or equal to zero"
         )
       );
     }
     if (
       this.asset.term.roleList.length != 0 &&
-      (!this.asset.term.maxRevision ||
-        typeof this.asset.term.maxRevision !== "number" ||
+      (typeof this.asset.term.maxRevision !== "number" ||
         this.asset.term.maxRevision < 0)
     ) {
       errors.push(
@@ -160,7 +158,7 @@ class PostProposalTransaction extends BaseTransaction {
           this.id,
           ".asset.term.maxRevision",
           this.asset.term.maxRevision,
-          "term.maxRevision is required in collaboration mode, must be valid number and greater than zero"
+          "term.maxRevision is required in collaboration mode, must be valid number and greater or equal to zero"
         )
       );
     }

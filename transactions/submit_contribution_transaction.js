@@ -289,6 +289,7 @@ class SubmitContributionTransaction extends BaseTransaction {
           .sub(teamAsset.potentialEarning)
           .toString();
         teamAsset.contribution.unshift(contributionAccount.publicKey);
+        senderAsset.file.unshift(contributionAccount.publicKey);
         store.account.set(proposalAccount.address, {
           ...proposalAccount,
           asset: proposalAsset,
@@ -360,6 +361,12 @@ class SubmitContributionTransaction extends BaseTransaction {
     );
     if (fileTeamIndex > -1) {
       teamAsset.contribution.splice(fileTeamIndex, 1);
+    }
+    const workerTeamIndex = senderAsset.file.indexOf(
+      contributionAccount.publicKey
+    );
+    if (workerTeamIndex > -1) {
+      senderAsset.file.splice(workerTeamIndex, 1);
     }
     const projectAsset = projectAccount.asset;
     projectAsset.activity.shift();
