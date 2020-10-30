@@ -120,6 +120,7 @@ class RegisterEmployerTransaction extends BaseTransaction {
           terminated: [],
           open: [],
           spent: "0",
+          log: [],
         };
         const stateAsset = {
           type: ACCOUNT.STATE,

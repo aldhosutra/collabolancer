@@ -295,6 +295,21 @@ class PostProjectTransaction extends BaseTransaction {
         };
         senderAsset.open.unshift(projectAccount.publicKey);
         stateAsset.available.projects.unshift(projectAccount.publicKey);
+        senderAsset.log.unshift({
+          timestamp: this.timestamp,
+          id: this.id,
+          type: this.type,
+          value: utils
+            .BigNum(0)
+            .sub(projectAsset.freezedFund)
+            .sub(projectAsset.freezedFee)
+            .toString(),
+        });
+        senderAsset.spent = utils
+          .BigNum(senderAsset.spent)
+          .add(projectAsset.freezedFund)
+          .add(projectAsset.freezedFee)
+          .toString();
         store.account.set(sender.address, {
           ...sender,
           balance: utils
@@ -357,6 +372,12 @@ class PostProjectTransaction extends BaseTransaction {
     if (userOpenIndex > -1) {
       senderAsset.open.splice(userOpenIndex, 1);
     }
+    senderAsset.log.shift();
+    senderAsset.spent = utils
+      .BigNum(senderAsset.spent)
+      .sub(projectAccount.asset.freezedFund)
+      .sub(projectAccount.asset.freezedFee)
+      .toString();
     store.account.set(sender.address, {
       ...sender,
       balance: utils

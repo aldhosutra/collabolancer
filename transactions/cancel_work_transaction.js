@@ -215,7 +215,11 @@ class CancelWorkTransaction extends BaseTransaction {
           oldStatus: projectAccount.asset.status,
           status: STATUS.PROJECT.CANCELLED,
         };
-        projectAsset.activity.unshift(this.id);
+        projectAsset.activity.unshift({
+          timestamp: this.timestamp,
+          id: this.id,
+          type: this.type,
+        });
         teamAccounts.forEach((team) => {
           const teamAsset = team.asset;
           if (team.asset.freezedFund >= team.asset.potentialEarning) {

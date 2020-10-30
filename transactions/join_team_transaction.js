@@ -264,11 +264,28 @@ class JoinTeamTransaction extends BaseTransaction {
         };
         senderAsset.joined.unshift(proposalAccount.asset.project);
         const projectAsset = projectAccount.asset;
-        projectAsset.activity.unshift(this.id);
+        projectAsset.activity.unshift({
+          timestamp: this.timestamp,
+          id: this.id,
+          type: this.type,
+        });
         store.account.set(projectAccount.address, {
           ...projectAccount,
           asset: projectAsset,
         });
+        senderAsset.log.unshift({
+          timestamp: this.timestamp,
+          id: this.id,
+          type: this.type,
+          value: utils
+            .BigNum(0)
+            .sub(proposalAccount.asset.term.commitmentFee)
+            .toString(),
+        });
+        senderAsset.earning = utils
+          .BigNum(senderAsset.earning)
+          .sub(proposalAccount.asset.term.commitmentFee)
+          .toString();
         store.account.set(sender.address, {
           ...sender,
           balance: utils
@@ -327,11 +344,16 @@ class JoinTeamTransaction extends BaseTransaction {
       senderAsset.joined.splice(joinedIndex, 1);
     }
     const projectAsset = projectAccount.asset;
-    projectAsset.activity.shift(this.id);
+    projectAsset.activity.shift();
     store.account.set(projectAccount.address, {
       ...projectAccount,
       asset: projectAsset,
     });
+    senderAsset.log.shift();
+    senderAsset.earning = utils
+      .BigNum(senderAsset.earning)
+      .add(proposalAccount.asset.term.commitmentFee)
+      .toString();
     store.account.set(sender.address, {
       ...sender,
       balance: utils

@@ -299,6 +299,16 @@ class StartWorkTransaction extends BaseTransaction {
           if (joinedIndex > -1) {
             releasedAsset.joined.splice(joinedIndex, 1);
           }
+          releasedAsset.log.unshift({
+            timestamp: this.timestamp,
+            id: this.id,
+            type: this.type,
+            value: utils.BigNum(0).add(element.released).toString(),
+          });
+          releasedAsset.earning = utils
+            .BigNum(releasedAsset.earning)
+            .add(element.released)
+            .toString();
           store.account.set(releasedAccount.address, {
             ...releasedAccount,
             balance: utils
@@ -334,7 +344,11 @@ class StartWorkTransaction extends BaseTransaction {
           ...stateCenter,
           asset: stateAsset,
         });
-        projectAsset.activity.unshift(this.id);
+        projectAsset.activity.unshift({
+          timestamp: this.timestamp,
+          id: this.id,
+          type: this.type,
+        });
         store.account.set(projectAccount.address, {
           ...projectAccount,
           asset: projectAsset,
@@ -519,6 +533,13 @@ class StartWorkTransaction extends BaseTransaction {
     });
     commitmentFeeReleaseList.forEach((element) => {
       const releasedAccount = store.account.get(element.address);
+      const releasedAsset = releasedAccount.asset;
+      releasedAsset.joined.unshift(projectAccount.publicKey);
+      releasedAsset.log.shift();
+      releasedAsset.earning = utils
+        .BigNum(releasedAsset.earning)
+        .sub(element.released)
+        .toString();
       store.account.set(releasedAccount.address, {
         ...releasedAccount,
         balance: utils

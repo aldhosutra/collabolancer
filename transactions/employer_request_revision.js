@@ -214,7 +214,11 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
         const proposalAsset = {
           ...proposalAccount.asset,
         };
-        projectAsset.activity.unshift(this.id);
+        projectAsset.activity.unshift({
+          timestamp: this.timestamp,
+          id: this.id,
+          type: this.type,
+        });
         projectAsset.freezedFund = utils
           .BigNum(projectAsset.freezedFund)
           .add(proposalAsset.potentialEarning)

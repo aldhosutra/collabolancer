@@ -467,7 +467,11 @@ class OpenDisputeTransaction extends BaseTransaction {
           oldStatus: projectAccount.asset.status,
           status: STATUS.PROJECT.DISPUTED,
         };
-        projectAsset.activity.unshift(this.id);
+        projectAsset.activity.unshift({
+          timestamp: this.timestamp,
+          id: this.id,
+          type: this.type,
+        });
         if (disputeType == MISCELLANEOUS.DISPUTE_TYPE.TEAM_VS_LEADER) {
           teamVsLeaderPinaltyPool =
             targetFundAccount.asset.guilty == false

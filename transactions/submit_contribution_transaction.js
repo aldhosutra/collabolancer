@@ -94,6 +94,17 @@ class SubmitContributionTransaction extends BaseTransaction {
         )
       );
     }
+    if (!this.asset.filemime || typeof this.asset.filemime !== "string") {
+      errors.push(
+        new TransactionError(
+          'Invalid "asset.filemime" defined on transaction',
+          this.id,
+          ".asset.filemime",
+          this.asset.filemime,
+          "filemime is required, and must be string"
+        )
+      );
+    }
     if (!this.asset.filename || typeof this.asset.filename !== "string") {
       errors.push(
         new TransactionError(
@@ -256,6 +267,7 @@ class SubmitContributionTransaction extends BaseTransaction {
           proposal: teamAccount.asset.proposal,
           team: teamAccount.publicKey,
           time: this.timestamp,
+          mime: this.asset.filemime,
           filename: this.asset.filename,
           dataTransaction: this.id,
         };
@@ -283,7 +295,11 @@ class SubmitContributionTransaction extends BaseTransaction {
           .add(proposalAsset.term.commitmentFee)
           .toString();
         const projectAsset = projectAccount.asset;
-        projectAsset.activity.unshift(this.id);
+        projectAsset.activity.unshift({
+          timestamp: this.timestamp,
+          id: this.id,
+          type: this.type,
+        });
         projectAsset.freezedFund = utils
           .BigNum(projectAsset.freezedFund)
           .sub(teamAsset.potentialEarning)

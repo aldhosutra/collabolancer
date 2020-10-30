@@ -60,7 +60,9 @@ class FaucetTransaction extends BaseTransaction {
       }
     } catch (err) {
       console.log(err);
-      errors.push(new TransactionError(`[Unexpected Error] - ${err.toString()}`));
+      errors.push(
+        new TransactionError(`[Unexpected Error] - ${err.toString()}`)
+      );
     }
     return errors; // array of TransactionErrors, returns empty array if no errors are thrown
   }

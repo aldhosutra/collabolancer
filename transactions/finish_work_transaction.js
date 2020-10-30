@@ -201,7 +201,11 @@ class FinishWorkTransaction extends BaseTransaction {
           oldStatus: projectAccount.asset.status,
           status: projectStatus,
         };
-        projectAsset.activity.unshift(this.id);
+        projectAsset.activity.unshift({
+          timestamp: this.timestamp,
+          id: this.id,
+          type: this.type,
+        });
         store.account.set(projectAccount.address, {
           ...projectAccount,
           asset: projectAsset,

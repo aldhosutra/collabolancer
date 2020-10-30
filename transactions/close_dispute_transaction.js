@@ -366,7 +366,8 @@ class CloseDisputeTransaction extends BaseTransaction {
             winnerAsset.status = STATUS.TEAM.DISPUTE_CLOSED;
             loserAsset.status = STATUS.PROPOSAL.DISPUTE_CLOSED;
             teamBonus = loserAsset.guilty
-              ? utils
+              ? 0
+              : utils
                   .BigNum(
                     utils
                       .BigNum(loserAsset.potentialEarning)
@@ -374,8 +375,7 @@ class CloseDisputeTransaction extends BaseTransaction {
                       .round()
                   )
                   .div(teamLegth)
-                  .round()
-              : 0;
+                  .round();
             winnerAsset.freezedFund = utils
               .BigNum(winnerAsset.freezedFund)
               .add(
@@ -398,24 +398,24 @@ class CloseDisputeTransaction extends BaseTransaction {
               .filter((el) => el != 0)
               .map((el) => getAddressFromPublicKey(el))
               .forEach((item) => {
-                if (item == relatedAccount[disputeWinner].publicKey) {
+                if (item == relatedAccount[disputeWinner].address) {
                   winnerAsset.freezedFund = utils
                     .BigNum(winnerAsset.freezedFund)
                     .add(teamBonus)
                     .toString();
-                  return;
+                } else {
+                  const team = store.account.get(item);
+                  store.account.set(team.address, {
+                    ...team,
+                    asset: {
+                      ...team.asset,
+                      freezedFund: utils
+                        .BigNum(team.asset.freezedFund)
+                        .add(teamBonus)
+                        .toString(),
+                    },
+                  });
                 }
-                const team = store.account.get(item);
-                store.account.set(team.address, {
-                  ...team,
-                  asset: {
-                    ...team.asset,
-                    freezedFund: utils
-                      .BigNum(team.asset.freezedFund)
-                      .add(teamBonus)
-                      .toString(),
-                  },
-                });
               });
           } else {
             winnerAsset.oldStatus = winnerAsset.status;
@@ -461,6 +461,7 @@ class CloseDisputeTransaction extends BaseTransaction {
         }
         loserAsset.oldGuilty = loserAsset.guilty;
         loserAsset.guilty = true;
+        disputeAsset.status = STATUS.DISPUTE.CLOSED;
         store.account.set(disputeAccount.address, {
           ...disputeAccount,
           asset: disputeAsset,
@@ -475,41 +476,39 @@ class CloseDisputeTransaction extends BaseTransaction {
         });
         disputeAccount.asset.vote[disputeWinner].forEach((el) => {
           const solverAccount = store.account.get(getAddressFromPublicKey(el));
+          const solverAsset = solverAccount.asset;
+          const earning = utils
+            .BigNum(disputeAccount.asset.castVoteFee)
+            .add(
+              utils
+                .BigNum(
+                  disputeAccount.asset.vote.litigant.length +
+                    disputeAccount.asset.vote.defendant.length
+                )
+                .mul(disputeAccount.asset.castVoteFee)
+                .div(disputeAccount.asset.vote[disputeWinner].length)
+                .round()
+            )
+            .add(solverBonus)
+            .toString();
+          solverAsset.win = solverAsset.win + 1;
+          solverAsset.log.unshift({
+            timestamp: this.timestamp,
+            id: this.id,
+            type: this.type,
+            value: utils.BigNum(0).add(earning).toString(),
+          });
+          solverAsset.earning = utils
+            .BigNum(solverAccount.asset.earning)
+            .add(earning)
+            .toString();
           store.account.set(solverAccount.address, {
             ...solverAccount,
             balance: utils
               .BigNum(solverAccount.balance)
-              .add(disputeAccount.asset.castVoteFee)
-              .add(
-                utils
-                  .BigNum(
-                    disputeAccount.asset.vote.litigant.length +
-                      disputeAccount.asset.vote.defendant.length
-                  )
-                  .mul(disputeAccount.asset.castVoteFee)
-                  .div(disputeAccount.asset.vote[disputeWinner].length)
-                  .round()
-              )
-              .add(solverBonus)
+              .add(earning)
               .toString(),
-            asset: {
-              ...solverAccount.asset,
-              win: solverAccount.asset.win + 1,
-              earning: utils
-                .BigNum(solverAccount.asset.earning)
-                .add(
-                  utils
-                    .BigNum(
-                      disputeAccount.asset.vote.litigant.length +
-                        disputeAccount.asset.vote.defendant.length
-                    )
-                    .mul(disputeAccount.asset.castVoteFee)
-                    .div(disputeAccount.asset.vote[disputeWinner].length)
-                    .round()
-                )
-                .add(solverBonus)
-                .toString(),
-            },
+            asset: solverAsset,
           });
         });
         disputeAccount.asset.vote[disputeLoser].forEach((el) => {
@@ -524,7 +523,11 @@ class CloseDisputeTransaction extends BaseTransaction {
         });
 
         const projectAsset = projectAccount.asset;
-        projectAsset.activity.unshift(this.id);
+        projectAsset.activity.unshift({
+          timestamp: this.timestamp,
+          id: this.id,
+          type: this.type,
+        });
         projectAsset.oldStatus = projectAsset.status;
         projectAsset.status =
           projectAsset.openedDisputes.length == 1
@@ -707,7 +710,8 @@ class CloseDisputeTransaction extends BaseTransaction {
         loserAsset.status = loserAsset.oldStatus;
         delete loserAsset.oldStatus;
         teamBonus = loserAsset.oldGuilty
-          ? utils
+          ? 0
+          : utils
               .BigNum(
                 utils
                   .BigNum(loserAsset.potentialEarning)
@@ -715,8 +719,7 @@ class CloseDisputeTransaction extends BaseTransaction {
                   .round()
               )
               .div(teamLegth)
-              .round()
-          : 0;
+              .round();
         winnerAsset.freezedFund = utils
           .BigNum(winnerAsset.freezedFund)
           .sub(
@@ -739,24 +742,24 @@ class CloseDisputeTransaction extends BaseTransaction {
           .filter((el) => el != 0)
           .map((el) => getAddressFromPublicKey(el))
           .forEach((item) => {
-            if (item == relatedAccount[disputeWinner].publicKey) {
+            if (item == relatedAccount[disputeWinner].address) {
               winnerAsset.freezedFund = utils
                 .BigNum(winnerAsset.freezedFund)
                 .sub(teamBonus)
                 .toString();
-              return;
+            } else {
+              const team = store.account.get(item);
+              store.account.set(team.address, {
+                ...team,
+                asset: {
+                  ...team.asset,
+                  freezedFund: utils
+                    .BigNum(team.asset.freezedFund)
+                    .sub(teamBonus)
+                    .toString(),
+                },
+              });
             }
-            const team = store.account.get(item);
-            store.account.set(team.address, {
-              ...team,
-              asset: {
-                ...team.asset,
-                freezedFund: utils
-                  .BigNum(team.asset.freezedFund)
-                  .sub(teamBonus)
-                  .toString(),
-              },
-            });
           });
       } else {
         winnerAsset.status = winnerAsset.oldStatus;
@@ -802,6 +805,7 @@ class CloseDisputeTransaction extends BaseTransaction {
     }
     loserAsset.guilty = loserAsset.oldGuilty;
     delete loserAsset.oldGuilty;
+    disputeAsset.status = STATUS.DISPUTE.OPEN;
     store.account.set(disputeAccount.address, {
       ...disputeAccount,
       asset: disputeAsset,
@@ -816,41 +820,31 @@ class CloseDisputeTransaction extends BaseTransaction {
     });
     disputeAccount.asset.vote[disputeWinner].forEach((el) => {
       const solverAccount = store.account.get(getAddressFromPublicKey(el));
+      const solverAsset = solverAccount.asset;
+      const earning = utils
+        .BigNum(disputeAccount.asset.castVoteFee)
+        .sub(
+          utils
+            .BigNum(
+              disputeAccount.asset.vote.litigant.length +
+                disputeAccount.asset.vote.defendant.length
+            )
+            .mul(disputeAccount.asset.castVoteFee)
+            .div(disputeAccount.asset.vote[disputeWinner].length)
+            .round()
+        )
+        .sub(solverBonus)
+        .toString();
+      solverAsset.win = solverAsset.win - 1;
+      solverAsset.log.shift();
+      solverAsset.earning = utils
+        .BigNum(solverAccount.asset.earning)
+        .sub(earning)
+        .toString();
       store.account.set(solverAccount.address, {
         ...solverAccount,
-        balance: utils
-          .BigNum(solverAccount.balance)
-          .sub(disputeAccount.asset.castVoteFee)
-          .sub(
-            utils
-              .BigNum(
-                disputeAccount.asset.vote.litigant.length +
-                  disputeAccount.asset.vote.defendant.length
-              )
-              .mul(disputeAccount.asset.castVoteFee)
-              .div(disputeAccount.asset.vote[disputeWinner].length)
-              .round()
-          )
-          .sub(solverBonus)
-          .toString(),
-        asset: {
-          ...solverAccount.asset,
-          win: solverAccount.asset.win - 1,
-          earning: utils
-            .BigNum(solverAccount.asset.earning)
-            .sub(
-              utils
-                .BigNum(
-                  disputeAccount.asset.vote.litigant.length +
-                    disputeAccount.asset.vote.defendant.length
-                )
-                .mul(disputeAccount.asset.castVoteFee)
-                .div(disputeAccount.asset.vote[disputeWinner].length)
-                .round()
-            )
-            .sub(solverBonus)
-            .toString(),
-        },
+        balance: utils.BigNum(solverAccount.balance).sub(earning).toString(),
+        asset: solverAsset,
       });
     });
     disputeAccount.asset.vote[disputeLoser].forEach((el) => {

@@ -1,4 +1,4 @@
-const { store_account_get } = require("./utils");
+const { store_account_get, deflationaryMultiplier } = require("./utils");
 const { STATUS, ACCOUNT, MISCELLANEOUS } = require("./constants");
 const {
   BaseTransaction,
@@ -238,24 +238,29 @@ class ClaimPrizeTransaction extends BaseTransaction {
         );
       }
       if (errors.length == 0) {
+        let deflation = 1;
+        deflationaryMultiplier().then((rate) => {
+          deflation = rate;
+        });
         const teamPaymentList = [];
         let notRejectedTeamLength = 0;
         teamAccounts.forEach((item) => {
           const workerAccount = store.account.get(item.asset.worker);
-          notRejectedTeamLength +=
+          notRejectedTeamLength =
             item.asset.status == STATUS.TEAM.REJECTED ||
             item.asset.guilty == true
-              ? 0
-              : 1;
+              ? notRejectedTeamLength
+              : notRejectedTeamLength + 1;
           teamPaymentList.push({
             address: workerAccount.address,
             amount: utils.BigNum(item.asset.freezedFund),
             releasedFee: utils.BigNum(item.asset.freezedFee),
             cashback: utils
               .BigNum(item.asset.freezedFund)
-              .mul(MISCELLANEOUS.TEAM_CASHBACK_PERCENTAGE)
+              .mul(MISCELLANEOUS.TEAM_CASHBACK_PERCENTAGE * deflation)
               .round(),
             status: item.asset.status,
+            guilty: item.asset.guilty,
           });
         });
         teamPaymentList.forEach((element) => {
@@ -268,15 +273,31 @@ class ClaimPrizeTransaction extends BaseTransaction {
           workerAsset.earning = utils
             .BigNum(workerAsset.earning)
             .add(element.amount)
+            .add(element.releasedFee)
             .add(element.cashback)
             .toString();
+          workerAsset.log.unshift({
+            timestamp: this.timestamp,
+            id: this.id,
+            type: this.type,
+            value: utils
+              .BigNum(0)
+              .add(element.amount)
+              .add(element.releasedFee)
+              .add(element.cashback)
+              .toString(),
+          });
           const joinedIndex = workerAsset.joined.indexOf(
             projectAccount.publicKey
           );
           if (joinedIndex > -1) {
             workerAsset.joined.splice(joinedIndex, 1);
           }
-          if (element.status == STATUS.TEAM.SUBMITTED) {
+          if (
+            element.status == STATUS.TEAM.SUBMITTED ||
+            (element.status == STATUS.TEAM.DISPUTE_CLOSED &&
+              element.guilty == false)
+          ) {
             workerAsset.contributorOf.unshift(projectAccount.publicKey);
           }
           store.account.set(workerAccount.address, {
@@ -295,42 +316,48 @@ class ClaimPrizeTransaction extends BaseTransaction {
           leaderOf: [],
           ...leaderAccount.asset,
         };
-        leaderAsset.earning = utils
-          .BigNum(leaderAsset.earning)
-          .add(proposalAccount.asset.freezedFund)
+        const leaderEarning = utils
+          .BigNum(proposalAccount.asset.freezedFund)
+          .add(proposalAccount.asset.freezedFee)
           .add(
             utils
               .BigNum(proposalAccount.asset.freezedFund)
               .mul(
-                MISCELLANEOUS.LEADER_CASHBACK_PERCENTAGE * notRejectedTeamLength
+                MISCELLANEOUS.LEADER_CASHBACK_PERCENTAGE *
+                  notRejectedTeamLength *
+                  deflation
               )
               .round()
           )
           .toString();
+        leaderAsset.earning = utils
+          .BigNum(leaderAsset.earning)
+          .add(leaderEarning)
+          .toString();
+        leaderAsset.log.unshift({
+          timestamp: this.timestamp,
+          id: this.id,
+          type: this.type,
+          value: utils.BigNum(0).add(leaderEarning).toString(),
+        });
         const leaderIndex = leaderAsset.joined.indexOf(
           projectAccount.publicKey
         );
         if (leaderIndex > -1) {
           leaderAsset.joined.splice(leaderIndex, 1);
         }
-        if (proposalAccount.asset.status == STATUS.PROPOSAL.SUBMITTED) {
+        if (
+          proposalAccount.asset.status == STATUS.PROPOSAL.SUBMITTED ||
+          (proposalAccount.asset.status == STATUS.PROPOSAL.DISPUTE_CLOSED &&
+            proposalAccount.asset.guilty == false)
+        ) {
           leaderAsset.leaderOf.unshift(projectAccount.publicKey);
         }
         store.account.set(leaderAccount.address, {
           ...leaderAccount,
           balance: utils
             .BigNum(leaderAccount.balance)
-            .add(proposalAccount.asset.freezedFund)
-            .add(proposalAccount.asset.freezedFee)
-            .add(
-              utils
-                .BigNum(proposalAccount.asset.freezedFund)
-                .mul(
-                  MISCELLANEOUS.LEADER_CASHBACK_PERCENTAGE *
-                    notRejectedTeamLength
-                )
-                .round()
-            )
+            .add(leaderEarning)
             .toString(),
           asset: leaderAsset,
         });
@@ -341,12 +368,25 @@ class ClaimPrizeTransaction extends BaseTransaction {
         };
         employerAsset.spent = utils
           .BigNum(employerAsset.spent)
-          .add(
-            utils
-              .BigNum(projectAccount.asset.prize)
-              .sub(projectAccount.asset.freezedFund)
-          )
+          .sub(projectAccount.asset.freezedFund)
+          .sub(projectAccount.asset.freezedFee)
           .toString();
+        employerAsset.log.unshift({
+          timestamp: this.timestamp,
+          id: this.id,
+          type: this.type,
+          value: utils
+            .BigNum(0)
+            .add(projectAccount.asset.freezedFund)
+            .add(projectAccount.asset.freezedFee)
+            .add(
+              utils
+                .BigNum(projectAccount.asset.freezedFund)
+                .mul(MISCELLANEOUS.EMPLOYER_CASHBACK_PERCENTAGE * deflation)
+                .round()
+            )
+            .toString(),
+        });
         if (projectAccount.asset.status == STATUS.PROJECT.SUBMITTED) {
           employerAsset.done.unshift(projectAccount.publicKey);
         }
@@ -365,7 +405,7 @@ class ClaimPrizeTransaction extends BaseTransaction {
             .add(
               utils
                 .BigNum(projectAccount.asset.freezedFund)
-                .mul(MISCELLANEOUS.EMPLOYER_CASHBACK_PERCENTAGE)
+                .mul(MISCELLANEOUS.EMPLOYER_CASHBACK_PERCENTAGE * deflation)
                 .round()
             )
             .toString(),
@@ -378,10 +418,14 @@ class ClaimPrizeTransaction extends BaseTransaction {
         };
         projectAsset.cashback = utils
           .BigNum(projectAccount.asset.freezedFund)
-          .mul(MISCELLANEOUS.EMPLOYER_CASHBACK_PERCENTAGE)
+          .mul(MISCELLANEOUS.EMPLOYER_CASHBACK_PERCENTAGE * deflation)
           .round()
           .toString();
-        projectAsset.activity.unshift(this.id);
+        projectAsset.activity.unshift({
+          timestamp: this.timestamp,
+          id: this.id,
+          type: this.type,
+        });
         store.account.set(projectAccount.address, {
           ...projectAccount,
           asset: projectAsset,
@@ -395,7 +439,9 @@ class ClaimPrizeTransaction extends BaseTransaction {
             cashback: utils
               .BigNum(proposalAccount.asset.freezedFund)
               .mul(
-                MISCELLANEOUS.LEADER_CASHBACK_PERCENTAGE * notRejectedTeamLength
+                MISCELLANEOUS.LEADER_CASHBACK_PERCENTAGE *
+                  notRejectedTeamLength *
+                  deflation
               )
               .round()
               .toString(),
@@ -450,22 +496,15 @@ class ClaimPrizeTransaction extends BaseTransaction {
         teamAccounts.push(store_account_get(item));
       });
     const teamPaymentList = [];
-    let notRejectedTeamLength = 0;
     teamAccounts.forEach((item) => {
       const workerAccount = store.account.get(item.asset.worker);
-      notRejectedTeamLength +=
-        item.asset.status == STATUS.TEAM.REJECTED || item.asset.guilty == true
-          ? 0
-          : 1;
       teamPaymentList.push({
         address: workerAccount.address,
         amount: utils.BigNum(item.asset.freezedFund),
         releasedFee: utils.BigNum(item.asset.freezedFee),
-        cashback: utils
-          .BigNum(item.asset.freezedFund)
-          .mul(MISCELLANEOUS.TEAM_CASHBACK_PERCENTAGE)
-          .round(),
+        cashback: item.asset.cashback,
         status: item.asset.oldStatus,
+        guilty: item.asset.guilty,
       });
     });
     teamPaymentList.forEach((element) => {
@@ -478,12 +517,18 @@ class ClaimPrizeTransaction extends BaseTransaction {
       workerAsset.earning = utils
         .BigNum(workerAsset.earning)
         .sub(element.amount)
+        .sub(element.releasedFee)
         .sub(element.cashback)
         .toString();
+      workerAsset.log.shift();
       if (!workerAsset.joined.includes(projectAccount.publicKey)) {
         workerAsset.joined.unshift(projectAccount.publicKey);
       }
-      if (element.status == STATUS.TEAM.SUBMITTED) {
+      if (
+        element.status == STATUS.TEAM.SUBMITTED ||
+        (element.status == STATUS.TEAM.DISPUTE_CLOSED &&
+          element.guilty == false)
+      ) {
         const contributorOfIndex = workerAsset.contributorOf.indexOf(
           projectAccount.publicKey
         );
@@ -510,17 +555,18 @@ class ClaimPrizeTransaction extends BaseTransaction {
     leaderAsset.earning = utils
       .BigNum(leaderAsset.earning)
       .sub(proposalAccount.asset.freezedFund)
-      .sub(
-        utils
-          .BigNum(proposalAccount.asset.freezedFund)
-          .mul(MISCELLANEOUS.LEADER_CASHBACK_PERCENTAGE * notRejectedTeamLength)
-          .round()
-      )
+      .sub(proposalAccount.asset.freezedFee)
+      .sub(proposalAccount.asset.cashback)
       .toString();
+    leaderAsset.log.shift();
     if (!leaderAsset.joined.includes(projectAccount.publicKey)) {
       leaderAsset.joined.unshift(projectAccount.publicKey);
     }
-    if (proposalAccount.asset.oldStatus == STATUS.PROPOSAL.SUBMITTED) {
+    if (
+      proposalAccount.asset.oldStatus == STATUS.PROPOSAL.SUBMITTED ||
+      (proposalAccount.asset.oldStatus == STATUS.PROPOSAL.DISPUTE_CLOSED &&
+        proposalAccount.asset.guilty == false)
+    ) {
       const leaderOfIndex = leaderAsset.leaderOf.indexOf(
         projectAccount.publicKey
       );
@@ -534,14 +580,7 @@ class ClaimPrizeTransaction extends BaseTransaction {
         .BigNum(leaderAccount.balance)
         .sub(proposalAccount.asset.freezedFund)
         .sub(proposalAccount.asset.freezedFee)
-        .sub(
-          utils
-            .BigNum(proposalAccount.asset.freezedFund)
-            .mul(
-              MISCELLANEOUS.LEADER_CASHBACK_PERCENTAGE * notRejectedTeamLength
-            )
-            .round()
-        )
+        .sub(proposalAccount.asset.cashback)
         .toString(),
       asset: leaderAsset,
     });
@@ -552,12 +591,10 @@ class ClaimPrizeTransaction extends BaseTransaction {
     };
     employerAsset.spent = utils
       .BigNum(employerAsset.spent)
-      .sub(
-        utils
-          .BigNum(projectAccount.asset.prize)
-          .sub(projectAccount.asset.freezedFund)
-      )
+      .add(projectAccount.asset.freezedFund)
+      .add(projectAccount.asset.freezedFee)
       .toString();
+    employerAsset.log.shift();
     if (projectAccount.asset.oldStatus == STATUS.PROJECT.SUBMITTED) {
       if (employerAsset.done.includes(projectAccount.publicKey)) {
         employerAsset.done.splice(
@@ -575,12 +612,7 @@ class ClaimPrizeTransaction extends BaseTransaction {
         .BigNum(employerAccount.balance)
         .sub(projectAccount.asset.freezedFund)
         .sub(projectAccount.asset.freezedFee)
-        .sub(
-          utils
-            .BigNum(projectAccount.asset.freezedFund)
-            .mul(MISCELLANEOUS.EMPLOYER_CASHBACK_PERCENTAGE)
-            .round()
-        )
+        .sub(projectAccount.asset.cashback)
         .toString(),
       asset: employerAsset,
     });

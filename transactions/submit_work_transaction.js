@@ -92,6 +92,17 @@ class SubmitWorkTransaction extends BaseTransaction {
         )
       );
     }
+    if (!this.asset.filemime || typeof this.asset.filemime !== "string") {
+      errors.push(
+        new TransactionError(
+          'Invalid "asset.filemime" defined on transaction',
+          this.id,
+          ".asset.filemime",
+          this.asset.filemime,
+          "filemime is required, and must be string"
+        )
+      );
+    }
     if (!this.asset.filename || typeof this.asset.filename !== "string") {
       errors.push(
         new TransactionError(
@@ -262,6 +273,7 @@ class SubmitWorkTransaction extends BaseTransaction {
           project: projectAccount.publicKey,
           proposal: proposalAccount.publicKey,
           time: this.timestamp,
+          mime: this.asset.filemime,
           filename: this.asset.filename,
           dataTransaction: this.id,
         };
@@ -287,7 +299,11 @@ class SubmitWorkTransaction extends BaseTransaction {
           ...projectAccount.asset,
           status: STATUS.PROJECT.SUBMITTED,
         };
-        projectAsset.activity.unshift(this.id);
+        projectAsset.activity.unshift({
+          timestamp: this.timestamp,
+          id: this.id,
+          type: this.type,
+        });
         projectAsset.freezedFund = utils
           .BigNum(projectAsset.freezedFund)
           .sub(proposalAsset.potentialEarning)

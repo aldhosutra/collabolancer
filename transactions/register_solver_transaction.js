@@ -120,6 +120,7 @@ class RegisterSolverTransaction extends BaseTransaction {
           lose: 0,
           vote: [],
           earning: "0",
+          log: [],
         };
         const stateAsset = {
           type: ACCOUNT.STATE,

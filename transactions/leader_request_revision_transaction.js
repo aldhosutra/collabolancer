@@ -190,7 +190,11 @@ class LeaderRequestRevisionTransaction extends BaseTransaction {
       if (errors.length == 0) {
         let reason;
         const projectAsset = projectAccount.asset;
-        projectAsset.activity.unshift(this.id);
+        projectAsset.activity.unshift({
+          timestamp: this.timestamp,
+          id: this.id,
+          type: this.type,
+        });
         const teamAsset = {
           statusNote: [],
           ...teamAccount.asset,

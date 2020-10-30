@@ -167,6 +167,16 @@ class VoteDisputeTransaction extends BaseTransaction {
           asset: disputeAsset,
         });
         const senderAsset = sender.asset;
+        senderAsset.log.unshift({
+          timestamp: this.timestamp,
+          id: this.id,
+          type: this.type,
+          value: utils.BigNum(0).sub(disputeAsset.castVoteFee).toString(),
+        });
+        senderAsset.earning = utils
+          .BigNum(senderAsset.earning)
+          .sub(disputeAsset.castVoteFee)
+          .toString();
         senderAsset.vote.unshift(disputeAccount.publicKey);
         store.account.set(sender.address, {
           ...sender,
@@ -208,6 +218,11 @@ class VoteDisputeTransaction extends BaseTransaction {
       asset: disputeAsset,
     });
     const senderAsset = sender.asset;
+    senderAsset.log.shift();
+    senderAsset.earning = utils
+      .BigNum(senderAsset.earning)
+      .add(disputeAsset.castVoteFee)
+      .toString();
     const senderVoteIndex = senderAsset.vote.indexOf(disputeAccount.publicKey);
     if (senderVoteIndex > -1) {
       senderAsset.vote.splice(senderVoteIndex, 1);
