@@ -14,6 +14,8 @@ const { getAddressFromPublicKey } = require("@liskhq/lisk-cryptography");
  * Required:
  * this.asset.submissionPublicKey [@fresh]
  * this.asset.proposalPublicKey
+ * this.asset.fileextension
+ * this.asset.filemime
  * this.asset.filename
  * this.asset.filedata
  */
@@ -89,6 +91,20 @@ class SubmitWorkTransaction extends BaseTransaction {
           ".asset.submissionPublicKey",
           this.asset.submissionPublicKey,
           "submissionPublicKey is required, and must be string"
+        )
+      );
+    }
+    if (
+      !this.asset.fileextension ||
+      typeof this.asset.fileextension !== "string"
+    ) {
+      errors.push(
+        new TransactionError(
+          'Invalid "asset.fileextension" defined on transaction',
+          this.id,
+          ".asset.filemime",
+          this.asset.fileextension,
+          "fileextension is required, and must be string"
         )
       );
     }
@@ -273,6 +289,7 @@ class SubmitWorkTransaction extends BaseTransaction {
           project: projectAccount.publicKey,
           proposal: proposalAccount.publicKey,
           time: this.timestamp,
+          extension: this.asset.fileextension,
           mime: this.asset.filemime,
           filename: this.asset.filename,
           dataTransaction: this.id,
