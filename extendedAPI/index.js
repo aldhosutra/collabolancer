@@ -592,6 +592,8 @@ extendedAPI.get("/api/packed", (req, res) => {
                             parsedTeamData.asset.contribution = parsedContributionData;
                             parsedTeam.push(parsedTeamData);
                           });
+                      } else {
+                        parsedTeam.push(0);
                       }
                     }
                   );
