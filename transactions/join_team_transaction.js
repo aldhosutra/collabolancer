@@ -59,6 +59,14 @@ class JoinTeamTransaction extends BaseTransaction {
         address: getAddressFromPublicKey(proposalAccount.asset.project),
       },
     ]);
+
+    if (proposalAccount.asset.team.filter((el) => el != 0).length > 0) {
+      await store.account.cache({
+        address_in: proposalAccount.asset.team
+          .filter((el) => el != 0)
+          .map((item) => getAddressFromPublicKey(item)),
+      });
+    }
   }
 
   /**
@@ -126,6 +134,12 @@ class JoinTeamTransaction extends BaseTransaction {
         proposalAccount.asset.project,
         store
       );
+      const appliedTeams = [];
+      proposalAccount.asset.team
+        .filter((el) => el != 0)
+        .forEach((item) => {
+          appliedTeams.push(store_account_get(item, store));
+        });
       if (Object.keys(teamAccount.asset).length != 0) {
         errors.push(
           new TransactionError(
@@ -162,6 +176,19 @@ class JoinTeamTransaction extends BaseTransaction {
             "sender.asset.type",
             sender.asset.type,
             `Type needs to be ${ACCOUNT.WORKER}`
+          )
+        );
+      }
+      if (
+        appliedTeams.map((item) => item.asset.worker).includes(sender.address)
+      ) {
+        errors.push(
+          new TransactionError(
+            "Sender must not have joined any team for this proposal",
+            this.id,
+            "sender.address",
+            sender.address,
+            `Sender address can't be exist in one of proposal joined team`
           )
         );
       }

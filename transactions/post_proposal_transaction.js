@@ -61,6 +61,17 @@ class PostProposalTransaction extends BaseTransaction {
         address: getAddressFromPublicKey(this.asset.proposalPublicKey),
       },
     ]);
+
+    const projectAccount = store.account.get(
+      getAddressFromPublicKey(this.asset.projectPublicKey)
+    );
+    if (projectAccount.asset.proposal.length > 0) {
+      await store.account.cache({
+        address_in: projectAccount.asset.proposal.map((item) =>
+          getAddressFromPublicKey(item)
+        ),
+      });
+    }
   }
 
   /**
@@ -220,6 +231,10 @@ class PostProposalTransaction extends BaseTransaction {
         this.asset.proposalPublicKey,
         store
       );
+      const appliedProposalList = [];
+      projectAccount.asset.proposal.forEach((item) => {
+        appliedProposalList.push(store_account_get(item, store));
+      });
       if (Object.keys(proposalAccount.asset).length != 0) {
         errors.push(
           new TransactionError(
@@ -284,6 +299,21 @@ class PostProposalTransaction extends BaseTransaction {
             "sender.asset.type",
             sender.asset.type,
             `Type needs to be ${ACCOUNT.WORKER}`
+          )
+        );
+      }
+      if (
+        appliedProposalList
+          .map((item) => item.asset.leader)
+          .includes(sender.address)
+      ) {
+        errors.push(
+          new TransactionError(
+            "Sender must not have applied any proposal for this project",
+            this.id,
+            "sender.address",
+            sender.address,
+            `Sender address can't be exist in one of project applied proposal`
           )
         );
       }
