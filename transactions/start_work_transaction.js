@@ -266,24 +266,40 @@ class StartWorkTransaction extends BaseTransaction {
       }
       if (errors.length == 0) {
         nonSelectedProposalAccount.forEach((element) => {
+          const commitmentFeeReleaseListIndex = commitmentFeeReleaseList
+            .map((el) => el.address)
+            .indexOf(element.asset.leader);
           store.account.set(element.address, {
             ...element,
             asset: {
               ...element.asset,
               status: STATUS.PROPOSAL.NOT_SELECTED,
-              freezedFund: "0",
-              freezedFee: "0",
+              freezedFee: utils
+                .BigNum(0)
+                .add(
+                  commitmentFeeReleaseList[commitmentFeeReleaseListIndex]
+                    .released
+                )
+                .toString(),
             },
           });
         });
         teamAccount.forEach((element) => {
+          const commitmentFeeReleaseListIndex = commitmentFeeReleaseList
+            .map((el) => el.address)
+            .indexOf(element.asset.worker);
           store.account.set(element.address, {
             ...element,
             asset: {
               ...element.asset,
               status: STATUS.TEAM.NOT_SELECTED,
-              freezedFund: "0",
-              freezedFee: "0",
+              freezedFee: utils
+                .BigNum(0)
+                .add(
+                  commitmentFeeReleaseList[commitmentFeeReleaseListIndex]
+                    .released
+                )
+                .toString(),
             },
           });
         });
@@ -513,21 +529,17 @@ class StartWorkTransaction extends BaseTransaction {
         asset: {
           ...element.asset,
           status: STATUS.PROPOSAL.APPLIED,
-          freezedFee: projectAccount.asset.commitmentFee,
+          freezedFee: "0",
         },
       });
     });
     teamAccount.forEach((element) => {
-      const proposalIndex = nonSelectedProposalAccount
-        .map((el) => el.publicKey)
-        .indexOf(element.asset.proposal);
       store.account.set(element.address, {
         ...element,
         asset: {
           ...element.asset,
           status: STATUS.TEAM.APPLIED,
-          freezedFee:
-            nonSelectedProposalAccount[proposalIndex].asset.term.commitmentFee,
+          freezedFee: "0",
         },
       });
     });
