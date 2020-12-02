@@ -377,16 +377,6 @@ class StartWorkTransaction extends BaseTransaction {
         const teamLength = selectedProposalAccount.asset.team.filter(
           (el) => el != 0
         ).length;
-        const teamFreeSlotBonus = utils
-          .BigNum(teamFreeSlotLength)
-          .mul(
-            utils
-              .BigNum(selectedProposalAccount.asset.term.commitmentFee)
-              .div(MISCELLANEOUS.TEAM_COMMITMENT_PERCENTAGE)
-              .round()
-          )
-          .div(teamLength)
-          .round();
         let noTeamAppliedBonus = 0;
         if (teamLength == 0) {
           noTeamAppliedBonus = utils
@@ -397,6 +387,39 @@ class StartWorkTransaction extends BaseTransaction {
                 .div(MISCELLANEOUS.TEAM_COMMITMENT_PERCENTAGE)
                 .round()
             );
+        }
+        let teamFreeSlotBonus = 0;
+        if (
+          selectedProposalAccount.asset.term.distribution.mode ==
+          MISCELLANEOUS.DISTRIBUTION.LEADER_FIRST
+        ) {
+          teamFreeSlotBonus = utils
+            .BigNum(teamFreeSlotLength)
+            .mul(
+              utils
+                .BigNum(selectedProposalAccount.asset.term.commitmentFee)
+                .div(MISCELLANEOUS.TEAM_COMMITMENT_PERCENTAGE)
+                .round()
+            )
+            .div(teamLength)
+            .round();
+        } else if (
+          selectedProposalAccount.asset.term.distribution.mode ==
+          MISCELLANEOUS.DISTRIBUTION.ALL_EQUAL
+        ) {
+          teamFreeSlotBonus = utils
+            .BigNum(teamFreeSlotLength)
+            .mul(
+              utils
+                .BigNum(selectedProposalAccount.asset.term.commitmentFee)
+                .div(MISCELLANEOUS.TEAM_COMMITMENT_PERCENTAGE)
+                .round()
+            )
+            .div(teamLength + 1)
+            .round();
+          noTeamAppliedBonus = utils
+            .BigNum(noTeamAppliedBonus)
+            .add(teamFreeSlotBonus);
         }
         store.account.set(selectedProposalAccount.address, {
           ...selectedProposalAccount,
@@ -593,16 +616,6 @@ class StartWorkTransaction extends BaseTransaction {
     const teamLength = selectedProposalAccount.asset.team.filter(
       (el) => el != 0
     ).length;
-    const teamFreeSlotBonus = utils
-      .BigNum(teamFreeSlotLength)
-      .mul(
-        utils
-          .BigNum(selectedProposalAccount.asset.term.commitmentFee)
-          .div(MISCELLANEOUS.TEAM_COMMITMENT_PERCENTAGE)
-          .round()
-      )
-      .div(teamLength)
-      .round();
     let noTeamAppliedBonus = 0;
     if (teamLength == 0) {
       noTeamAppliedBonus = utils
@@ -613,6 +626,39 @@ class StartWorkTransaction extends BaseTransaction {
             .div(MISCELLANEOUS.TEAM_COMMITMENT_PERCENTAGE)
             .round()
         );
+    }
+    let teamFreeSlotBonus = 0;
+    if (
+      selectedProposalAccount.asset.term.distribution.mode ==
+      MISCELLANEOUS.DISTRIBUTION.LEADER_FIRST
+    ) {
+      teamFreeSlotBonus = utils
+        .BigNum(teamFreeSlotLength)
+        .mul(
+          utils
+            .BigNum(selectedProposalAccount.asset.term.commitmentFee)
+            .div(MISCELLANEOUS.TEAM_COMMITMENT_PERCENTAGE)
+            .round()
+        )
+        .div(teamLength)
+        .round();
+    } else if (
+      selectedProposalAccount.asset.term.distribution.mode ==
+      MISCELLANEOUS.DISTRIBUTION.ALL_EQUAL
+    ) {
+      teamFreeSlotBonus = utils
+        .BigNum(teamFreeSlotLength)
+        .mul(
+          utils
+            .BigNum(selectedProposalAccount.asset.term.commitmentFee)
+            .div(MISCELLANEOUS.TEAM_COMMITMENT_PERCENTAGE)
+            .round()
+        )
+        .div(teamLength + 1)
+        .round();
+      noTeamAppliedBonus = utils
+        .BigNum(noTeamAppliedBonus)
+        .add(teamFreeSlotBonus);
     }
     store.account.set(selectedProposalAccount.address, {
       ...selectedProposalAccount,
