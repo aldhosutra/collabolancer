@@ -276,6 +276,20 @@ class SubmitContributionTransaction extends BaseTransaction {
           )
         );
       }
+      if (
+        this.timestamp >
+        projectAccount.asset.workStarted + projectAccount.asset.maxTime * 86400
+      ) {
+        errors.push(
+          new TransactionError(
+            "maxTime is passed, you can't do this anymore",
+            this.id,
+            "this.timestamp",
+            this.timestamp,
+            `This transaction must be executed before time limit`
+          )
+        );
+      }
       if (errors.length == 0) {
         const contributionAsset = {
           type: ACCOUNT.CONTRIBUTION,

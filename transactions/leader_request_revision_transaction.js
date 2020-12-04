@@ -200,14 +200,24 @@ class LeaderRequestRevisionTransaction extends BaseTransaction {
           ...teamAccount.asset,
         };
         if (
-          proposalAccount.asset.term.roleList.length > 0 &&
-          proposalAccount.asset.term.maxRevision != null &&
-          teamAccount.asset.contribution.length >=
-            proposalAccount.asset.term.maxRevision
+          (proposalAccount.asset.term.roleList.length > 0 &&
+            proposalAccount.asset.term.maxRevision != null &&
+            teamAccount.asset.contribution.length >=
+              proposalAccount.asset.term.maxRevision) ||
+          this.timestamp >
+            projectAccount.asset.workStarted +
+              projectAccount.asset.maxTime * 86400
         ) {
           teamAsset.status = STATUS.TEAM.REJECTED;
+          let reasonPrefix =
+            this.timestamp >
+            projectAccount.asset.workStarted +
+              projectAccount.asset.maxTime * 86400
+              ? "TIMEOUT REJECTION"
+              : "MAX REVISION EXCEEDED";
           reason =
-            "MAX REVISION EXCEEDED, your are out of this collaboration, your prize will be given to leader. Leader note: " +
+            reasonPrefix +
+            ", your are out of this collaboration, your prize will be given to leader. Leader note: " +
             this.asset.reason;
           const proposalAsset = proposalAccount.asset;
           proposalAsset.freezedFund = utils

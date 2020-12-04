@@ -296,11 +296,15 @@ class CloseDisputeTransaction extends BaseTransaction {
                 const teamAccount = store.account.get(
                   getAddressFromPublicKey(item)
                 );
-                if (teamAccount.asset.status == STATUS.TEAM.SUBMITTED) {
+                const status = teamAccount.asset.oldStatus;
+                if (teamAccount.asset.oldStatus == STATUS.TEAM.SUBMITTED) {
                   store.account.set(teamAccount.address, {
                     ...teamAccount,
                     asset: {
                       ...teamAccount.asset,
+                      oldStatus: teamAccount.asset.status,
+                      status: status,
+                      forceReject: false,
                       freezedFund: utils
                         .BigNum(teamAccount.asset.freezedFund)
                         .add(
@@ -312,7 +316,18 @@ class CloseDisputeTransaction extends BaseTransaction {
                         .toString(),
                     },
                   });
-                } else if (teamAccount.asset.status == STATUS.TEAM.REJECTED) {
+                } else if (
+                  teamAccount.asset.oldStatus == STATUS.TEAM.REJECTED
+                ) {
+                  store.account.set(teamAccount.address, {
+                    ...teamAccount,
+                    asset: {
+                      ...teamAccount.asset,
+                      oldStatus: teamAccount.asset.status,
+                      status: status,
+                      forceReject: false,
+                    },
+                  });
                   winnerAsset.freezedFund = utils
                     .BigNum(winnerAsset.freezedFund)
                     .add(
@@ -323,9 +338,18 @@ class CloseDisputeTransaction extends BaseTransaction {
                     );
                 } else if (
                   [STATUS.TEAM.SELECTED, STATUS.TEAM.REQUEST_REVISION].includes(
-                    teamAccount.asset.status
+                    teamAccount.asset.oldStatus
                   )
                 ) {
+                  store.account.set(teamAccount.address, {
+                    ...teamAccount,
+                    asset: {
+                      ...teamAccount.asset,
+                      oldStatus: teamAccount.asset.status,
+                      status: status,
+                      forceReject: false,
+                    },
+                  });
                   loserAsset.freezedFund = utils
                     .BigNum(loserAsset.freezedFund)
                     .add(
@@ -641,11 +665,15 @@ class CloseDisputeTransaction extends BaseTransaction {
             const teamAccount = store.account.get(
               getAddressFromPublicKey(item)
             );
+            const status = teamAccount.asset.status;
             if (teamAccount.asset.status == STATUS.TEAM.SUBMITTED) {
               store.account.set(teamAccount.address, {
                 ...teamAccount,
                 asset: {
                   ...teamAccount.asset,
+                  status: teamAccount.asset.oldStatus,
+                  oldStatus: status,
+                  forceReject: true,
                   freezedFund: utils
                     .BigNum(teamAccount.asset.freezedFund)
                     .sub(
@@ -658,6 +686,15 @@ class CloseDisputeTransaction extends BaseTransaction {
                 },
               });
             } else if (teamAccount.asset.status == STATUS.TEAM.REJECTED) {
+              store.account.set(teamAccount.address, {
+                ...teamAccount,
+                asset: {
+                  ...teamAccount.asset,
+                  status: teamAccount.asset.oldStatus,
+                  oldStatus: status,
+                  forceReject: true,
+                },
+              });
               winnerAsset.freezedFund = utils
                 .BigNum(winnerAsset.freezedFund)
                 .sub(
@@ -671,6 +708,15 @@ class CloseDisputeTransaction extends BaseTransaction {
                 teamAccount.asset.status
               )
             ) {
+              store.account.set(teamAccount.address, {
+                ...teamAccount,
+                asset: {
+                  ...teamAccount.asset,
+                  status: teamAccount.asset.oldStatus,
+                  oldStatus: status,
+                  forceReject: true,
+                },
+              });
               loserAsset.freezedFund = utils
                 .BigNum(loserAsset.freezedFund)
                 .sub(

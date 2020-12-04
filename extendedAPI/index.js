@@ -8,6 +8,7 @@ const {
   ACCOUNT,
   MISCELLANEOUS,
 } = require("../transactions/constants");
+const base91 = require("node-base91");
 
 const express = require("express");
 const extendedAPI = express();
@@ -657,6 +658,41 @@ extendedAPI.get("/api/packed", (req, res) => {
         data: [],
       });
     }
+  } catch (err) {
+    res.status(500).send({
+      meta: { err: err.toString() },
+      data: [],
+    });
+  }
+});
+
+extendedAPI.get("/api/file/:id", async (req, res) => {
+  try {
+    let fileData = null;
+    let type = "";
+    let title = "";
+    const filePublicKey = req.params.id;
+
+    await api.accounts
+      .get({ address: getAddressFromPublicKey(filePublicKey) })
+      .then(async (data) => {
+        title = data.data[0].asset.filename;
+        type = data.data[0].asset.mime;
+        await api.transactions
+          .get({ id: data.data[0].asset.dataTransaction })
+          .then((file) => {
+            fileData = file.data[0].asset.filedata;
+          });
+      });
+
+    const arrayBuffer = base91.decode(fileData);
+    var data = Buffer.from(arrayBuffer);
+    res.writeHead(200, {
+      "Content-Type": type,
+      "Content-Length": data.length,
+      "Content-Disposition": `inline; filename=${title}`,
+    });
+    res.end(data);
   } catch (err) {
     res.status(500).send({
       meta: { err: err.toString() },

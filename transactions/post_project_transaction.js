@@ -222,7 +222,7 @@ class PostProjectTransaction extends BaseTransaction {
           .add(
             utils
               .BigNum(this.asset.prize)
-              .mul(MISCELLANEOUS.EMPLOYER_REJECTION_PINALTY_PERCENTAGE)
+              .mul(MISCELLANEOUS.EMPLOYER_COMMITMENT_PERCENTAGE)
               .round()
           )
           .sub(this.fee)

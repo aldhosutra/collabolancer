@@ -209,6 +209,8 @@ class CancelWorkTransaction extends BaseTransaction {
         );
       }
       if (errors.length == 0) {
+        const proposalAsset = proposalAccount.asset;
+        proposalAsset.oldFreezedFee = proposalAsset.freezedFee;
         const projectAsset = {
           ...projectAccount.asset,
           workFinished: this.timestamp,
@@ -222,7 +224,8 @@ class CancelWorkTransaction extends BaseTransaction {
         });
         teamAccounts.forEach((team) => {
           const teamAsset = team.asset;
-          if (team.asset.freezedFund >= team.asset.potentialEarning) {
+          teamAsset.oldFreezedFee = teamAsset.freezedFee;
+          if ([STATUS.TEAM.SUBMITTED].includes(team.asset.status)) {
             teamAsset.forceCancel = true;
             projectAsset.freezedFund = utils
               .BigNum(projectAsset.freezedFund)
@@ -232,13 +235,24 @@ class CancelWorkTransaction extends BaseTransaction {
               .BigNum(teamAsset.freezedFund)
               .sub(teamAsset.potentialEarning)
               .toString();
+          } else {
+            proposalAsset.freezedFee = utils
+              .BigNum(proposalAsset.freezedFee)
+              .sub(proposalAccount.asset.term.commitmentFee)
+              .toString();
+            teamAsset.freezedFee = utils
+              .BigNum(teamAsset.freezedFee)
+              .add(proposalAccount.asset.term.commitmentFee)
+              .toString();
           }
-          teamAsset.oldFreezedFee = teamAsset.freezedFee;
-          teamAsset.freezedFee = proposalAccount.asset.term.commitmentFee;
           store.account.set(team.address, {
             ...team,
             asset: teamAsset,
           });
+        });
+        store.account.set(proposalAccount.address, {
+          ...proposalAccount,
+          asset: proposalAsset,
         });
         store.account.set(projectAccount.address, {
           ...projectAccount,
@@ -270,6 +284,9 @@ class CancelWorkTransaction extends BaseTransaction {
       .forEach((item) => {
         teamAccounts.push(store_account_get(item, store));
       });
+    const proposalAsset = proposalAccount.asset;
+    proposalAsset.freezedFee = proposalAsset.oldFreezedFee;
+    delete proposalAsset.oldFreezedFee;
     const projectAsset = {
       ...projectAccount.asset,
       workFinished: null,
@@ -296,6 +313,10 @@ class CancelWorkTransaction extends BaseTransaction {
         ...team,
         asset: teamAsset,
       });
+    });
+    store.account.set(proposalAccount.address, {
+      ...proposalAccount,
+      asset: proposalAsset,
     });
     store.account.set(projectAccount.address, {
       ...projectAccount,

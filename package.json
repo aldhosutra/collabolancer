@@ -27,7 +27,8 @@
     "@liskhq/lisk-passphrase": "^3.0.0",
     "express": "^4.17.1",
     "lisk-elements": "^3.0.2",
-    "lisk-sdk": "^3.0.2"
+    "lisk-sdk": "^3.0.2",
+    "node-base91": "^0.3.4"
   },
   "devDependencies": {
     "eslint": "^7.6.0"

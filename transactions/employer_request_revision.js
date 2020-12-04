@@ -239,31 +239,46 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
           .toString();
         proposalAsset.term.maxRevision += 1;
         if (
-          projectAccount.asset.maxRevision != null &&
-          projectAccount.asset.submission.length >=
-            projectAccount.asset.maxRevision
+          (projectAccount.asset.maxRevision != null &&
+            projectAccount.asset.submission.length >=
+              projectAccount.asset.maxRevision) ||
+          this.timestamp >
+            projectAccount.asset.workStarted +
+              projectAccount.asset.maxTime * 86400
         ) {
           projectAsset.status = STATUS.PROJECT.REJECTED;
           proposalAsset.status = STATUS.PROPOSAL.REJECTED;
           teamStatus = STATUS.TEAM.REJECTED;
-          forceReject = false;
+          forceReject = true;
+          let reasonPrefix =
+            this.timestamp >
+            projectAccount.asset.workStarted +
+              projectAccount.asset.maxTime * 86400
+              ? "TIMEOUT REJECTION"
+              : "MAX REVISION EXCEEDED";
           reason =
-            "MAX REVISION EXCEEDED, your work are rejected, employer note: " +
+            reasonPrefix +
+            ", your work are rejected, employer note: " +
             this.asset.reason;
           teamReason = `Employer Reject Submission, so your contribution also rejected. Employer note: ${this.asset.reason}`;
           employerRejectionPinalty = utils
-            .BigNum(projectAsset.freezedFund)
+            .BigNum(
+              utils
+                .BigNum(projectAsset.prize)
+                .mul(MISCELLANEOUS.EMPLOYER_COMMITMENT_PERCENTAGE)
+                .round()
+            )
             .mul(MISCELLANEOUS.EMPLOYER_REJECTION_PINALTY_PERCENTAGE)
             .round();
-          projectAsset.freezedFund = utils
-            .BigNum(projectAsset.freezedFund)
+          projectAsset.freezedFee = utils
+            .BigNum(projectAsset.freezedFee)
             .sub(employerRejectionPinalty)
             .toString();
         } else {
           projectAsset.status = STATUS.PROJECT.REQUEST_REVISION;
           proposalAsset.status = STATUS.PROPOSAL.REQUEST_REVISION;
           teamStatus = STATUS.TEAM.REQUEST_REVISION;
-          forceReject = true;
+          forceReject = false;
           reason = this.asset.reason;
           teamReason = `Employer Request Revision for your leader's work, so your contribution also been requested for revision, maxRevision has been increased for your opportunity to resubmit revised version. Employer note: ${this.asset.reason}`;
         }
@@ -282,6 +297,16 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
               .add(teamAsset.potentialEarning)
               .toString();
           } else if (team.asset.status == STATUS.TEAM.SUBMITTED) {
+            if (teamStatus == STATUS.TEAM.REQUEST_REVISION) {
+              proposalAsset.freezedFee = utils
+                .BigNum(proposalAsset.freezedFee)
+                .add(proposalAsset.term.commitmentFee)
+                .toString();
+              teamAsset.freezedFee = utils
+                .BigNum(teamAsset.freezedFee)
+                .sub(proposalAsset.term.commitmentFee)
+                .toString();
+            }
             teamAsset.status = teamStatus;
             teamAsset.forceReject = forceReject;
             teamAsset.freezedFund = utils
@@ -292,18 +317,12 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
               .BigNum(projectAsset.freezedFund)
               .add(teamAsset.potentialEarning)
               .toString();
-            proposalAsset.freezedFee = utils
-              .BigNum(proposalAsset.freezedFee)
-              .add(proposalAsset.term.commitmentFee)
-              .toString();
-            teamAsset.freezedFee = utils
-              .BigNum(teamAsset.freezedFee)
-              .sub(proposalAsset.term.commitmentFee)
-              .toString();
             teamAsset.statusNote.unshift({
               time: this.timestamp,
               status: teamStatus,
-              contribution: null,
+              contribution: forceReject
+                ? "forceReject"
+                : teamAsset.contribution[0],
               reason: teamReason,
             });
           } else if (
@@ -317,7 +336,9 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
             teamAsset.statusNote.unshift({
               time: this.timestamp,
               status: teamStatus,
-              contribution: submissionAccount.publicKey,
+              contribution: forceReject
+                ? "forceReject"
+                : teamAsset.contribution[0],
               reason: teamReason,
             });
           }
@@ -397,11 +418,16 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
       proposalAsset.team.filter((el) => el != 0).length + 1;
     if (projectAccount.asset.status == STATUS.PROJECT.REJECTED) {
       employerRejectionPinalty = utils
-        .BigNum(projectAsset.freezedFund)
+        .BigNum(
+          utils
+            .BigNum(projectAsset.prize)
+            .mul(MISCELLANEOUS.EMPLOYER_COMMITMENT_PERCENTAGE)
+            .round()
+        )
         .mul(MISCELLANEOUS.EMPLOYER_REJECTION_PINALTY_PERCENTAGE)
         .round();
-      projectAsset.freezedFund = utils
-        .BigNum(projectAsset.freezedFund)
+      projectAsset.freezedFee = utils
+        .BigNum(projectAsset.freezedFee)
         .add(employerRejectionPinalty)
         .toString();
     }
@@ -435,6 +461,16 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
           .sub(teamAsset.potentialEarning)
           .toString();
       } else if (team.asset.oldStatus == STATUS.TEAM.SUBMITTED) {
+        if (teamAsset.forceReject == false) {
+          proposalAsset.freezedFee = utils
+            .BigNum(proposalAsset.freezedFee)
+            .sub(proposalAsset.term.commitmentFee)
+            .toString();
+          teamAsset.freezedFee = utils
+            .BigNum(teamAsset.freezedFee)
+            .add(proposalAsset.term.commitmentFee)
+            .toString();
+        }
         teamAsset.status = teamAsset.oldStatus;
         teamAsset.forceReject = false;
         delete teamAsset.oldStatus;
@@ -446,22 +482,7 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
           .BigNum(projectAsset.freezedFund)
           .sub(teamAsset.potentialEarning)
           .toString();
-        proposalAsset.freezedFee = utils
-          .BigNum(proposalAsset.freezedFee)
-          .sub(proposalAsset.term.commitmentFee)
-          .toString();
-        teamAsset.freezedFee = utils
-          .BigNum(teamAsset.freezedFee)
-          .add(proposalAsset.term.commitmentFee)
-          .toString();
-        const statusNoteIndex = teamAsset.statusNote
-          .map(function (e) {
-            return e.contribution;
-          })
-          .indexOf(submissionAccount.publicKey);
-        if (statusNoteIndex > -1) {
-          teamAsset.statusNote.splice(statusNoteIndex, 1);
-        }
+        teamAsset.statusNote.shift();
       } else if (
         [STATUS.TEAM.REQUEST_REVISION, STATUS.TEAM.SELECTED].includes(
           team.asset.status
@@ -471,14 +492,7 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
         teamAsset.status = teamAsset.oldStatus;
         delete teamAsset.oldStatus;
         teamAsset.forceReject = false;
-        const statusNoteIndex = teamAsset.statusNote
-          .map(function (e) {
-            return e.contribution;
-          })
-          .indexOf(submissionAccount.publicKey);
-        if (statusNoteIndex > -1) {
-          teamAsset.statusNote.splice(statusNoteIndex, 1);
-        }
+        teamAsset.statusNote.shift();
       }
       teamAsset.freezedFund = utils
         .BigNum(teamAsset.freezedFund)
