@@ -189,18 +189,22 @@ class FinishWorkTransaction extends BaseTransaction {
         );
       }
       if (errors.length == 0) {
-        let projectStatus;
-        if (projectAccount.asset.status == STATUS.PROJECT.SUBMITTED) {
-          projectStatus = STATUS.PROJECT.FINISHED;
-        } else if (projectAccount.asset.status == STATUS.PROJECT.REJECTED) {
-          projectStatus = STATUS.PROJECT.REFUSED;
-        }
         const projectAsset = {
           ...projectAccount.asset,
           workFinished: this.timestamp,
           oldStatus: projectAccount.asset.status,
-          status: projectStatus,
         };
+        if (projectAccount.asset.status == STATUS.PROJECT.SUBMITTED) {
+          projectAsset.status = STATUS.PROJECT.FINISHED;
+          projectAsset.statusNote.unshift({
+            time: this.timestamp,
+            status: projectAsset.status,
+            submission: projectAsset.submission[0].publicKey,
+            reason: "accepted",
+          });
+        } else if (projectAccount.asset.status == STATUS.PROJECT.REJECTED) {
+          projectAsset.status = STATUS.PROJECT.REFUSED;
+        }
         projectAsset.activity.unshift({
           timestamp: this.timestamp,
           id: this.id,
@@ -231,6 +235,9 @@ class FinishWorkTransaction extends BaseTransaction {
       workFinished: null,
       status: projectAccount.asset.oldStatus,
     };
+    if (projectAsset.oldStatus === STATUS.PROJECT.FINISHED) {
+      projectAsset.statusNote.shift();
+    }
     delete projectAsset.oldStatus;
     projectAsset.activity.shift();
     store.account.set(projectAccount.address, {
