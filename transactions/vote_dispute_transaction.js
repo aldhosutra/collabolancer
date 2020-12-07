@@ -159,6 +159,24 @@ class VoteDisputeTransaction extends BaseTransaction {
           )
         );
       }
+      if (
+        this.timestamp >
+        disputeAccount.asset.timestamp + disputeAccount.asset.maxDays * 86400
+      ) {
+        errors.push(
+          new TransactionError(
+            "maxDays is passed, can't cast vote again",
+            this.id,
+            "this.timestamp",
+            this.timestamp,
+            `maxDays is passed ${
+              disputeAccount.asset.timestamp +
+              disputeAccount.asset.maxDays * 86400 -
+              this.timestamp
+            } seconds ago`
+          )
+        );
+      }
       if (errors.length == 0) {
         const disputeAsset = disputeAccount.asset;
         disputeAsset.vote[this.asset.voteFor].unshift(sender.publicKey);

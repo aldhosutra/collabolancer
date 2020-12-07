@@ -15,14 +15,14 @@ const { getAddressFromPublicKey } = require("@liskhq/lisk-cryptography");
  * So leader and member are the one who can execute this transaction.
  * Dispute mechanism are provided to be a way for solving issue regarding their work.
  * Dispute can be opened during freezed period (MISCELLANEOUS.FUND_FREEZED_PERIOD).
- * and will be available to vote for minDays period, then can be closed
+ * and will be available to vote for maxDays period, then can be closed
  *
  * Required:
  * this.asset.disputePublicKey [@fresh]
  * this.asset.casePublicKey
  * this.asset.projectPublicKey
  * this.asset.suit
- * this.asset.minDays
+ * this.asset.maxDays
  */
 class OpenDisputeTransaction extends BaseTransaction {
   static get TYPE() {
@@ -145,17 +145,17 @@ class OpenDisputeTransaction extends BaseTransaction {
       );
     }
     if (
-      !this.asset.minDays ||
-      typeof this.asset.minDays !== "number" ||
-      this.asset.minDays < MISCELLANEOUS.DISPUTE_MINIMAL_OPEN_PERIOD
+      !this.asset.maxDays ||
+      typeof this.asset.maxDays !== "number" ||
+      this.asset.maxDays < MISCELLANEOUS.DISPUTE_MINIMAL_OPEN_PERIOD
     ) {
       errors.push(
         new TransactionError(
-          'Invalid "asset.minDays" defined on transaction',
+          'Invalid "asset.maxDays" defined on transaction',
           this.id,
-          ".asset.minDays",
-          this.asset.minDays,
-          "minDays must be valid number and greater than " +
+          ".asset.maxDays",
+          this.asset.maxDays,
+          "maxDays must be valid number and greater than " +
             MISCELLANEOUS.DISPUTE_MINIMAL_OPEN_PERIOD
         )
       );
@@ -413,7 +413,7 @@ class OpenDisputeTransaction extends BaseTransaction {
           type: ACCOUNT.DISPUTE,
           disputeType: disputeType,
           timestamp: this.timestamp,
-          minDays: this.asset.minDays,
+          maxDays: this.asset.maxDays,
           litigant: sender.address,
           defendant: defendant,
           project: projectAccount.publicKey,

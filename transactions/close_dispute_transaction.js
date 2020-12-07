@@ -223,19 +223,19 @@ class CloseDisputeTransaction extends BaseTransaction {
       }
       if (
         this.timestamp <
-        disputeAccount.asset.timestamp + disputeAccount.asset.minDays * 86400
+        disputeAccount.asset.timestamp + disputeAccount.asset.maxDays * 86400
       ) {
         errors.push(
           new TransactionError(
-            "minDays is not yet passed, can't close dispute yet",
+            "maxDays is not yet passed, can't close dispute yet",
             this.id,
             "this.timestamp",
             this.timestamp,
             `Its still ${
               disputeAccount.asset.timestamp +
-              disputeAccount.asset.minDays * 86400 -
+              disputeAccount.asset.maxDays * 86400 -
               this.timestamp
-            } more seconds from minDays limit`
+            } more seconds from maxDays limit`
           )
         );
       }
