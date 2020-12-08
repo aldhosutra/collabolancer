@@ -51,18 +51,20 @@ class FinishWorkTransaction extends BaseTransaction {
       },
     ]);
 
-    await store.account.cache({
-      address_in: store.account
-        .get(
-          getAddressFromPublicKey(
-            store.account.get(
-              getAddressFromPublicKey(this.asset.projectPublicKey)
-            ).asset.winner
-          )
+    const teamAccounts = store.account
+      .get(
+        getAddressFromPublicKey(
+          store.account.get(
+            getAddressFromPublicKey(this.asset.projectPublicKey)
+          ).asset.winner
         )
-        .asset.team.filter((el) => el != 0)
-        .map((el) => getAddressFromPublicKey(el)),
-    });
+      )
+      .asset.team.filter((el) => el != 0);
+    if (teamAccounts.length > 0) {
+      await store.account.cache({
+        address_in: teamAccounts.map((el) => getAddressFromPublicKey(el)),
+      });
+    }
   }
 
   /**
@@ -199,7 +201,7 @@ class FinishWorkTransaction extends BaseTransaction {
           projectAsset.statusNote.unshift({
             time: this.timestamp,
             status: projectAsset.status,
-            submission: projectAsset.submission[0].publicKey,
+            submission: projectAsset.submission[0],
             reason: "accepted",
           });
         } else if (projectAccount.asset.status == STATUS.PROJECT.REJECTED) {
