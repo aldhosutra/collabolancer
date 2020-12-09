@@ -181,7 +181,7 @@ class SubmitContributionTransaction extends BaseTransaction {
         teamAccount.asset.project,
         store
       );
-      if (Object.keys(contributionAccount.asset).length != 0) {
+      if (Object.keys(contributionAccount.asset).length !== 0) {
         errors.push(
           new TransactionError(
             "Specified File Account needs to be a fresh account, to be used as file stored on blockchain",
@@ -194,7 +194,7 @@ class SubmitContributionTransaction extends BaseTransaction {
       }
       if (
         Object.prototype.hasOwnProperty.call(teamAccount.asset, "type") &&
-        teamAccount.asset.type != ACCOUNT.TEAM
+        teamAccount.asset.type !== ACCOUNT.TEAM
       ) {
         errors.push(
           new TransactionError(
@@ -223,7 +223,7 @@ class SubmitContributionTransaction extends BaseTransaction {
       }
       if (
         Object.prototype.hasOwnProperty.call(proposalAccount.asset, "type") &&
-        proposalAccount.asset.type != ACCOUNT.PROPOSAL
+        proposalAccount.asset.type !== ACCOUNT.PROPOSAL
       ) {
         errors.push(
           new TransactionError(
@@ -237,7 +237,7 @@ class SubmitContributionTransaction extends BaseTransaction {
       }
       if (
         proposalAccount.asset.term.roleList.length > 0 &&
-        proposalAccount.asset.term.maxRevision != null &&
+        proposalAccount.asset.term.maxRevision !== null &&
         teamAccount.asset.contribution.length >=
           proposalAccount.asset.term.maxRevision
       ) {
@@ -253,7 +253,7 @@ class SubmitContributionTransaction extends BaseTransaction {
       }
       if (
         Object.prototype.hasOwnProperty.call(sender.asset, "type") &&
-        sender.asset.type != ACCOUNT.WORKER
+        sender.asset.type !== ACCOUNT.WORKER
       ) {
         errors.push(
           new TransactionError(
@@ -265,7 +265,7 @@ class SubmitContributionTransaction extends BaseTransaction {
           )
         );
       }
-      if (teamAccount.asset.worker != sender.address) {
+      if (teamAccount.asset.worker !== sender.address) {
         errors.push(
           new TransactionError(
             "You are not the owner of this team account, you are not allowed to submit contribution",
@@ -290,7 +290,7 @@ class SubmitContributionTransaction extends BaseTransaction {
           )
         );
       }
-      if (errors.length == 0) {
+      if (errors.length === 0) {
         const contributionAsset = {
           type: ACCOUNT.CONTRIBUTION,
           owner: sender.address,

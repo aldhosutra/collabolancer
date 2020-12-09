@@ -130,7 +130,7 @@ class PostProposalTransaction extends BaseTransaction {
       );
     }
     if (
-      this.asset.term.roleList.length != 0 &&
+      this.asset.term.roleList.length !== 0 &&
       (!this.asset.term.brief || typeof this.asset.term.brief !== "string")
     ) {
       errors.push(
@@ -144,7 +144,7 @@ class PostProposalTransaction extends BaseTransaction {
       );
     }
     if (
-      this.asset.term.roleList.length != 0 &&
+      this.asset.term.roleList.length !== 0 &&
       (typeof this.asset.term.maxTime !== "number" ||
         this.asset.term.maxTime < 0)
     ) {
@@ -159,7 +159,7 @@ class PostProposalTransaction extends BaseTransaction {
       );
     }
     if (
-      this.asset.term.roleList.length != 0 &&
+      this.asset.term.roleList.length !== 0 &&
       (typeof this.asset.term.maxRevision !== "number" ||
         this.asset.term.maxRevision < 0)
     ) {
@@ -174,7 +174,7 @@ class PostProposalTransaction extends BaseTransaction {
       );
     }
     if (
-      this.asset.term.roleList.length != 0 &&
+      this.asset.term.roleList.length !== 0 &&
       (!this.asset.term.distribution.mode ||
         typeof this.asset.term.distribution.mode !== "string" ||
         !Object.values(MISCELLANEOUS.DISTRIBUTION).includes(
@@ -194,8 +194,8 @@ class PostProposalTransaction extends BaseTransaction {
       );
     }
     if (
-      this.asset.term.roleList.length != 0 &&
-      this.asset.term.distribution.mode ==
+      this.asset.term.roleList.length !== 0 &&
+      this.asset.term.distribution.mode ===
         MISCELLANEOUS.DISTRIBUTION.LEADER_FIRST &&
       (!this.asset.term.distribution.value ||
         typeof this.asset.term.distribution.value !== "number" ||
@@ -235,7 +235,7 @@ class PostProposalTransaction extends BaseTransaction {
       projectAccount.asset.proposal.forEach((item) => {
         appliedProposalList.push(store_account_get(item, store));
       });
-      if (Object.keys(proposalAccount.asset).length != 0) {
+      if (Object.keys(proposalAccount.asset).length !== 0) {
         errors.push(
           new TransactionError(
             "Specified Proposal Account needs to be a fresh account, to be used as proposal data account",
@@ -248,7 +248,7 @@ class PostProposalTransaction extends BaseTransaction {
       }
       if (
         Object.prototype.hasOwnProperty.call(projectAccount.asset, "type") &&
-        projectAccount.asset.type != ACCOUNT.PROJECT
+        projectAccount.asset.type !== ACCOUNT.PROJECT
       ) {
         errors.push(
           new TransactionError(
@@ -260,7 +260,7 @@ class PostProposalTransaction extends BaseTransaction {
           )
         );
       }
-      if (projectAccount.asset.status != STATUS.PROJECT.OPEN) {
+      if (projectAccount.asset.status !== STATUS.PROJECT.OPEN) {
         errors.push(
           new TransactionError(
             "Project status is not open, therefore can't post any proposal",
@@ -272,7 +272,7 @@ class PostProposalTransaction extends BaseTransaction {
         );
       }
       if (
-        this.asset.term.roleList.length != 0 &&
+        this.asset.term.roleList.length !== 0 &&
         (!this.asset.term.maxTime ||
           typeof this.asset.term.maxTime !== "number") &&
         projectAccount.asset.maxTime - this.asset.term.maxTime <
@@ -290,7 +290,7 @@ class PostProposalTransaction extends BaseTransaction {
       }
       if (
         Object.prototype.hasOwnProperty.call(sender.asset, "type") &&
-        sender.asset.type != ACCOUNT.WORKER
+        sender.asset.type !== ACCOUNT.WORKER
       ) {
         errors.push(
           new TransactionError(
@@ -334,7 +334,7 @@ class PostProposalTransaction extends BaseTransaction {
           )
         );
       }
-      if (errors.length == 0) {
+      if (errors.length === 0) {
         const proposalAsset = {
           type: ACCOUNT.PROPOSAL,
           project: projectAccount.publicKey,
@@ -345,28 +345,28 @@ class PostProposalTransaction extends BaseTransaction {
             roleList: this.asset.term.roleList,
             brief:
               typeof this.asset.term.brief !== "undefined" &&
-              this.asset.term.roleList.length != 0
+              this.asset.term.roleList.length !== 0
                 ? this.asset.term.brief
                 : null,
             maxTime:
               typeof this.asset.term.maxTime !== "undefined" &&
-              this.asset.term.roleList.length != 0
+              this.asset.term.roleList.length !== 0
                 ? this.asset.term.maxTime
                 : null,
             maxRevision:
               typeof this.asset.term.maxRevision !== "undefined" &&
-              this.asset.term.roleList.length != 0
+              this.asset.term.roleList.length !== 0
                 ? this.asset.term.maxRevision
                 : null,
             distribution: {
               mode:
                 typeof this.asset.term.distribution.mode !== "undefined" &&
-                this.asset.term.roleList.length != 0
+                this.asset.term.roleList.length !== 0
                   ? this.asset.term.distribution.mode
                   : MISCELLANEOUS.DISTRIBUTION.ALL_EQUAL,
               value:
                 typeof this.asset.term.distribution.value !== "undefined" &&
-                this.asset.term.roleList.length != 0
+                this.asset.term.roleList.length !== 0
                   ? this.asset.term.distribution.value
                   : 100,
             },
@@ -382,8 +382,8 @@ class PostProposalTransaction extends BaseTransaction {
           team: this.asset.term.roleList.map(() => 0),
         };
         if (
-          proposalAsset.term.roleList.length != 0 &&
-          proposalAsset.term.distribution.mode ==
+          proposalAsset.term.roleList.length !== 0 &&
+          proposalAsset.term.distribution.mode ===
             MISCELLANEOUS.DISTRIBUTION.ALL_EQUAL
         ) {
           proposalAsset.term.distribution.value =
@@ -400,8 +400,8 @@ class PostProposalTransaction extends BaseTransaction {
           .round()
           .toString();
         if (
-          proposalAsset.term.roleList.length != 0 &&
-          proposalAsset.term.distribution.mode ==
+          proposalAsset.term.roleList.length !== 0 &&
+          proposalAsset.term.distribution.mode ===
             MISCELLANEOUS.DISTRIBUTION.ALL_EQUAL
         ) {
           proposalAsset.term.commitmentFee = utils
@@ -410,8 +410,8 @@ class PostProposalTransaction extends BaseTransaction {
             .round()
             .toString();
         } else if (
-          proposalAsset.term.roleList.length != 0 &&
-          proposalAsset.term.distribution.mode ==
+          proposalAsset.term.roleList.length !== 0 &&
+          proposalAsset.term.distribution.mode ===
             MISCELLANEOUS.DISTRIBUTION.LEADER_FIRST
         ) {
           proposalAsset.term.commitmentFee = utils

@@ -163,7 +163,7 @@ class PostProjectTransaction extends BaseTransaction {
         getStateCenterAccount().publicKey,
         store
       );
-      if (Object.keys(projectAccount.asset).length != 0) {
+      if (Object.keys(projectAccount.asset).length !== 0) {
         errors.push(
           new TransactionError(
             "Specified Project Account needs to be a fresh account, to be used as project data account",
@@ -190,7 +190,7 @@ class PostProjectTransaction extends BaseTransaction {
       }
       if (
         Object.prototype.hasOwnProperty.call(sender.asset, "type") &&
-        sender.asset.type != ACCOUNT.EMPLOYER
+        sender.asset.type !== ACCOUNT.EMPLOYER
       ) {
         errors.push(
           new TransactionError(
@@ -204,7 +204,7 @@ class PostProjectTransaction extends BaseTransaction {
       }
       if (
         Object.prototype.hasOwnProperty.call(stateCenter.asset, "type") &&
-        stateCenter.asset.type != ACCOUNT.STATE
+        stateCenter.asset.type !== ACCOUNT.STATE
       ) {
         errors.push(
           new TransactionError(
@@ -248,7 +248,7 @@ class PostProjectTransaction extends BaseTransaction {
           )
         );
       }
-      if (errors.length == 0) {
+      if (errors.length === 0) {
         const projectAsset = {
           type: ACCOUNT.PROJECT,
           employer: sender.address,

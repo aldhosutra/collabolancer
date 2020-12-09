@@ -49,7 +49,7 @@ class FaucetTransaction extends BaseTransaction {
           )
         );
       }
-      if (errors.length == 0) {
+      if (errors.length === 0) {
         store.account.set(account.address, {
           ...account,
           balance: utils

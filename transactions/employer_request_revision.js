@@ -62,7 +62,7 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
       getAddressFromPublicKey(submissionAccount.asset.proposal)
     );
     const teamAddressList = proposalAccount.asset.team
-      .filter((el) => el != 0)
+      .filter((el) => el !== 0)
       .map((data) => getAddressFromPublicKey(data));
     await store.account.cache({
       address_in: teamAddressList,
@@ -124,13 +124,13 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
       );
       let teamAccounts = [];
       proposalAccount.asset.team
-        .filter((el) => el != 0)
+        .filter((el) => el !== 0)
         .forEach((item) => {
           teamAccounts.push(store_account_get(item, store));
         });
       if (
         Object.prototype.hasOwnProperty.call(submissionAccount.asset, "type") &&
-        submissionAccount.asset.type != ACCOUNT.SUBMISSION
+        submissionAccount.asset.type !== ACCOUNT.SUBMISSION
       ) {
         errors.push(
           new TransactionError(
@@ -144,7 +144,7 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
       }
       if (
         Object.prototype.hasOwnProperty.call(sender.asset, "type") &&
-        sender.asset.type != ACCOUNT.EMPLOYER
+        sender.asset.type !== ACCOUNT.EMPLOYER
       ) {
         errors.push(
           new TransactionError(
@@ -156,7 +156,7 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
           )
         );
       }
-      if (projectAccount.asset.employer != sender.address) {
+      if (projectAccount.asset.employer !== sender.address) {
         errors.push(
           new TransactionError(
             "Sender is not a employer of current project associated with submission",
@@ -167,7 +167,7 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
           )
         );
       }
-      if (proposalAccount.asset.status != STATUS.PROPOSAL.SUBMITTED) {
+      if (proposalAccount.asset.status !== STATUS.PROPOSAL.SUBMITTED) {
         errors.push(
           new TransactionError(
             "proposal status is not yet submitted, doesnt make a sense to request revision",
@@ -178,7 +178,7 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
           )
         );
       }
-      if (projectAccount.asset.status != STATUS.PROJECT.SUBMITTED) {
+      if (projectAccount.asset.status !== STATUS.PROJECT.SUBMITTED) {
         errors.push(
           new TransactionError(
             "project status is not yet submitted, doesnt make a sense to request revision",
@@ -190,7 +190,7 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
         );
       }
       if (
-        projectAccount.asset.statusNote.length !=
+        projectAccount.asset.statusNote.length !==
         projectAccount.asset.submission.length - 1
       ) {
         errors.push(
@@ -204,7 +204,7 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
           )
         );
       }
-      if (errors.length == 0) {
+      if (errors.length === 0) {
         let teamReason, reason, forceReject, teamStatus;
         let employerRejectionPinalty = 0;
         const projectAsset = {
@@ -228,7 +228,7 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
           .add(projectAsset.commitmentFee)
           .toString();
         const pinaltyDivider =
-          proposalAsset.team.filter((el) => el != 0).length + 1;
+          proposalAsset.team.filter((el) => el !== 0).length + 1;
         proposalAsset.freezedFund = utils
           .BigNum(proposalAsset.freezedFund)
           .sub(proposalAsset.potentialEarning)
@@ -239,7 +239,7 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
           .toString();
         proposalAsset.term.maxRevision += 1;
         if (
-          (projectAccount.asset.maxRevision != null &&
+          (projectAccount.asset.maxRevision !== null &&
             projectAccount.asset.submission.length >=
               projectAccount.asset.maxRevision) ||
           this.timestamp >
@@ -287,7 +287,7 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
             ...team.asset,
             oldStatus: team.asset.status,
           };
-          if (team.asset.status == STATUS.TEAM.REJECTED) {
+          if (team.asset.status === STATUS.TEAM.REJECTED) {
             proposalAsset.freezedFund = utils
               .BigNum(proposalAsset.freezedFund)
               .sub(teamAsset.potentialEarning)
@@ -296,8 +296,8 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
               .BigNum(projectAsset.freezedFund)
               .add(teamAsset.potentialEarning)
               .toString();
-          } else if (team.asset.status == STATUS.TEAM.SUBMITTED) {
-            if (teamStatus == STATUS.TEAM.REQUEST_REVISION) {
+          } else if (team.asset.status === STATUS.TEAM.SUBMITTED) {
+            if (teamStatus === STATUS.TEAM.REQUEST_REVISION) {
               proposalAsset.freezedFee = utils
                 .BigNum(proposalAsset.freezedFee)
                 .add(proposalAsset.term.commitmentFee)
@@ -329,7 +329,7 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
             [STATUS.TEAM.REQUEST_REVISION, STATUS.TEAM.SELECTED].includes(
               team.asset.status
             ) &&
-            teamStatus == STATUS.TEAM.REJECTED
+            teamStatus === STATUS.TEAM.REJECTED
           ) {
             teamAsset.status = teamStatus;
             teamAsset.forceReject = forceReject;
@@ -401,7 +401,7 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
     );
     let teamAccounts = [];
     proposalAccount.asset.team
-      .filter((el) => el != 0)
+      .filter((el) => el !== 0)
       .forEach((item) => {
         teamAccounts.push(store_account_get(item, store));
       });
@@ -415,8 +415,8 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
       status: STATUS.PROPOSAL.SUBMITTED,
     };
     const pinaltyDivider =
-      proposalAsset.team.filter((el) => el != 0).length + 1;
-    if (projectAccount.asset.status == STATUS.PROJECT.REJECTED) {
+      proposalAsset.team.filter((el) => el !== 0).length + 1;
+    if (projectAccount.asset.status === STATUS.PROJECT.REJECTED) {
       employerRejectionPinalty = utils
         .BigNum(
           utils
@@ -451,7 +451,7 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
     proposalAsset.term.maxRevision -= 1;
     teamAccounts.forEach((team) => {
       const teamAsset = team.asset;
-      if (team.asset.oldStatus == STATUS.TEAM.REJECTED) {
+      if (team.asset.oldStatus === STATUS.TEAM.REJECTED) {
         proposalAsset.freezedFund = utils
           .BigNum(proposalAsset.freezedFund)
           .add(teamAsset.potentialEarning)
@@ -460,8 +460,8 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
           .BigNum(projectAsset.freezedFund)
           .sub(teamAsset.potentialEarning)
           .toString();
-      } else if (team.asset.oldStatus == STATUS.TEAM.SUBMITTED) {
-        if (teamAsset.forceReject == false) {
+      } else if (team.asset.oldStatus === STATUS.TEAM.SUBMITTED) {
+        if (teamAsset.forceReject === false) {
           proposalAsset.freezedFee = utils
             .BigNum(proposalAsset.freezedFee)
             .sub(proposalAsset.term.commitmentFee)
@@ -487,7 +487,7 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
         [STATUS.TEAM.REQUEST_REVISION, STATUS.TEAM.SELECTED].includes(
           team.asset.status
         ) &&
-        team.asset.status == STATUS.TEAM.REJECTED
+        team.asset.status === STATUS.TEAM.REJECTED
       ) {
         teamAsset.status = teamAsset.oldStatus;
         delete teamAsset.oldStatus;

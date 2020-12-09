@@ -48,7 +48,7 @@ class RegisterSolverTransaction extends BaseTransaction {
    */
   validateAsset() {
     const errors = [];
-    if (Object.keys(this.asset).length != 0) {
+    if (Object.keys(this.asset).length !== 0) {
       errors.push(
         new TransactionError(
           'Invalid "asset" length must be zero',
@@ -74,7 +74,7 @@ class RegisterSolverTransaction extends BaseTransaction {
         getStateCenterAccount().publicKey,
         store
       );
-      if (Object.keys(sender.asset).length != 0) {
+      if (Object.keys(sender.asset).length !== 0) {
         errors.push(
           new TransactionError(
             "Sender Account needs to be a fresh account",
@@ -101,7 +101,7 @@ class RegisterSolverTransaction extends BaseTransaction {
       }
       if (
         Object.prototype.hasOwnProperty.call(stateCenter.asset, "type") &&
-        stateCenter.asset.type != ACCOUNT.STATE
+        stateCenter.asset.type !== ACCOUNT.STATE
       ) {
         errors.push(
           new TransactionError(
@@ -113,7 +113,7 @@ class RegisterSolverTransaction extends BaseTransaction {
           )
         );
       }
-      if (errors.length == 0) {
+      if (errors.length === 0) {
         const newAsset = {
           type: ACCOUNT.SOLVER,
           win: 0,

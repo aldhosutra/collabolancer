@@ -60,10 +60,10 @@ class JoinTeamTransaction extends BaseTransaction {
       },
     ]);
 
-    if (proposalAccount.asset.team.filter((el) => el != 0).length > 0) {
+    if (proposalAccount.asset.team.filter((el) => el !== 0).length > 0) {
       await store.account.cache({
         address_in: proposalAccount.asset.team
-          .filter((el) => el != 0)
+          .filter((el) => el !== 0)
           .map((item) => getAddressFromPublicKey(item)),
       });
     }
@@ -136,11 +136,11 @@ class JoinTeamTransaction extends BaseTransaction {
       );
       const appliedTeams = [];
       proposalAccount.asset.team
-        .filter((el) => el != 0)
+        .filter((el) => el !== 0)
         .forEach((item) => {
           appliedTeams.push(store_account_get(item, store));
         });
-      if (Object.keys(teamAccount.asset).length != 0) {
+      if (Object.keys(teamAccount.asset).length !== 0) {
         errors.push(
           new TransactionError(
             "Specified Team Account needs to be a fresh account, to be used as team application data account",
@@ -153,7 +153,7 @@ class JoinTeamTransaction extends BaseTransaction {
       }
       if (
         Object.prototype.hasOwnProperty.call(proposalAccount.asset, "type") &&
-        proposalAccount.asset.type != ACCOUNT.PROPOSAL
+        proposalAccount.asset.type !== ACCOUNT.PROPOSAL
       ) {
         errors.push(
           new TransactionError(
@@ -167,7 +167,7 @@ class JoinTeamTransaction extends BaseTransaction {
       }
       if (
         Object.prototype.hasOwnProperty.call(sender.asset, "type") &&
-        sender.asset.type != ACCOUNT.WORKER
+        sender.asset.type !== ACCOUNT.WORKER
       ) {
         errors.push(
           new TransactionError(
@@ -192,7 +192,7 @@ class JoinTeamTransaction extends BaseTransaction {
           )
         );
       }
-      if (proposalAccount.asset.leader == sender.address) {
+      if (proposalAccount.asset.leader === sender.address) {
         errors.push(
           new TransactionError(
             "Leader can't apply as team member",
@@ -204,7 +204,7 @@ class JoinTeamTransaction extends BaseTransaction {
           )
         );
       }
-      if (proposalAccount.asset.status != STATUS.PROPOSAL.APPLIED) {
+      if (proposalAccount.asset.status !== STATUS.PROPOSAL.APPLIED) {
         errors.push(
           new TransactionError(
             `Proposal Status is not ${STATUS.PROPOSAL.APPLIED}, cant join as team anymore`,
@@ -227,8 +227,8 @@ class JoinTeamTransaction extends BaseTransaction {
         );
       }
       if (
-        typeof proposalAccount.asset.team[this.asset.role] != "undefined" &&
-        proposalAccount.asset.team[this.asset.role] != 0
+        typeof proposalAccount.asset.team[this.asset.role] !== "undefined" &&
+        proposalAccount.asset.team[this.asset.role] !== 0
       ) {
         errors.push(
           new TransactionError(
@@ -255,7 +255,7 @@ class JoinTeamTransaction extends BaseTransaction {
           )
         );
       }
-      if (errors.length == 0) {
+      if (errors.length === 0) {
         const teamAsset = {
           type: ACCOUNT.TEAM,
           role: proposalAccount.asset.term.roleList[this.asset.role],

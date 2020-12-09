@@ -50,7 +50,7 @@ class RegisterWorkerTransaction extends BaseTransaction {
    */
   validateAsset() {
     const errors = [];
-    if (Object.keys(this.asset).length != 0) {
+    if (Object.keys(this.asset).length !== 0) {
       errors.push(
         new TransactionError(
           'Invalid "asset" length must be zero',
@@ -76,7 +76,7 @@ class RegisterWorkerTransaction extends BaseTransaction {
         getStateCenterAccount().publicKey,
         store
       );
-      if (Object.keys(sender.asset).length != 0) {
+      if (Object.keys(sender.asset).length !== 0) {
         errors.push(
           new TransactionError(
             "Sender Account needs to be a fresh account",
@@ -103,7 +103,7 @@ class RegisterWorkerTransaction extends BaseTransaction {
       }
       if (
         Object.prototype.hasOwnProperty.call(stateCenter.asset, "type") &&
-        stateCenter.asset.type != ACCOUNT.STATE
+        stateCenter.asset.type !== ACCOUNT.STATE
       ) {
         errors.push(
           new TransactionError(
@@ -115,7 +115,7 @@ class RegisterWorkerTransaction extends BaseTransaction {
           )
         );
       }
-      if (errors.length == 0) {
+      if (errors.length === 0) {
         const newAsset = {
           type: ACCOUNT.WORKER,
           leaderOf: [],

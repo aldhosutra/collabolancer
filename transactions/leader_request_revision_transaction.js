@@ -124,7 +124,7 @@ class LeaderRequestRevisionTransaction extends BaseTransaction {
           contributionAccount.asset,
           "type"
         ) &&
-        contributionAccount.asset.type != ACCOUNT.CONTRIBUTION
+        contributionAccount.asset.type !== ACCOUNT.CONTRIBUTION
       ) {
         errors.push(
           new TransactionError(
@@ -138,7 +138,7 @@ class LeaderRequestRevisionTransaction extends BaseTransaction {
       }
       if (
         Object.prototype.hasOwnProperty.call(sender.asset, "type") &&
-        sender.asset.type != ACCOUNT.WORKER
+        sender.asset.type !== ACCOUNT.WORKER
       ) {
         errors.push(
           new TransactionError(
@@ -150,7 +150,7 @@ class LeaderRequestRevisionTransaction extends BaseTransaction {
           )
         );
       }
-      if (proposalAccount.asset.leader != sender.address) {
+      if (proposalAccount.asset.leader !== sender.address) {
         errors.push(
           new TransactionError(
             "Sender is not a leader of current team associated with contribution",
@@ -161,7 +161,7 @@ class LeaderRequestRevisionTransaction extends BaseTransaction {
           )
         );
       }
-      if (teamAccount.asset.status != STATUS.TEAM.SUBMITTED) {
+      if (teamAccount.asset.status !== STATUS.TEAM.SUBMITTED) {
         errors.push(
           new TransactionError(
             "contribution status is not yet submitted, doesnt make a sense to request revision",
@@ -173,7 +173,7 @@ class LeaderRequestRevisionTransaction extends BaseTransaction {
         );
       }
       if (
-        teamAccount.asset.statusNote.length !=
+        teamAccount.asset.statusNote.length !==
         teamAccount.asset.contribution.length - 1
       ) {
         errors.push(
@@ -187,7 +187,7 @@ class LeaderRequestRevisionTransaction extends BaseTransaction {
           )
         );
       }
-      if (errors.length == 0) {
+      if (errors.length === 0) {
         let reason;
         const projectAsset = projectAccount.asset;
         projectAsset.activity.unshift({
@@ -201,7 +201,7 @@ class LeaderRequestRevisionTransaction extends BaseTransaction {
         };
         if (
           (proposalAccount.asset.term.roleList.length > 0 &&
-            proposalAccount.asset.term.maxRevision != null &&
+            proposalAccount.asset.term.maxRevision !== null &&
             teamAccount.asset.contribution.length >=
               proposalAccount.asset.term.maxRevision) ||
           this.timestamp >
@@ -305,7 +305,7 @@ class LeaderRequestRevisionTransaction extends BaseTransaction {
     };
     const projectAsset = projectAccount.asset;
     projectAsset.activity.shift();
-    if (teamAccount.asset.status == STATUS.TEAM.REJECTED) {
+    if (teamAccount.asset.status === STATUS.TEAM.REJECTED) {
       const proposalAsset = proposalAccount.asset;
       proposalAsset.freezedFund = utils
         .BigNum(proposalAsset.freezedFund)
@@ -315,7 +315,7 @@ class LeaderRequestRevisionTransaction extends BaseTransaction {
         ...proposalAccount,
         asset: proposalAsset,
       });
-    } else if (teamAccount.asset.status == STATUS.TEAM.REQUEST_REVISION) {
+    } else if (teamAccount.asset.status === STATUS.TEAM.REQUEST_REVISION) {
       projectAsset.freezedFund = utils
         .BigNum(projectAsset.freezedFund)
         .sub(teamAsset.potentialEarning)

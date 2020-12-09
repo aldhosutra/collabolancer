@@ -92,7 +92,7 @@ class TerminateWorkTransaction extends BaseTransaction {
       );
       if (
         Object.prototype.hasOwnProperty.call(sender.asset, "type") &&
-        sender.asset.type != ACCOUNT.WORKER
+        sender.asset.type !== ACCOUNT.WORKER
       ) {
         errors.push(
           new TransactionError(
@@ -106,7 +106,7 @@ class TerminateWorkTransaction extends BaseTransaction {
       }
       if (
         Object.prototype.hasOwnProperty.call(projectAccount.asset, "type") &&
-        projectAccount.asset.type != ACCOUNT.PROJECT
+        projectAccount.asset.type !== ACCOUNT.PROJECT
       ) {
         errors.push(
           new TransactionError(
@@ -118,7 +118,7 @@ class TerminateWorkTransaction extends BaseTransaction {
           )
         );
       }
-      if (projectAccount.asset.status != STATUS.PROJECT.SUBMITTED) {
+      if (projectAccount.asset.status !== STATUS.PROJECT.SUBMITTED) {
         errors.push(
           new TransactionError(
             `Project account status is not ${STATUS.PROJECT.SUBMITTED}, therefore you can't terminate this work`,
@@ -129,7 +129,7 @@ class TerminateWorkTransaction extends BaseTransaction {
           )
         );
       }
-      if (proposalAccount.asset.leader != sender.address) {
+      if (proposalAccount.asset.leader !== sender.address) {
         errors.push(
           new TransactionError(
             "sender is not leader of project",
@@ -140,7 +140,7 @@ class TerminateWorkTransaction extends BaseTransaction {
           )
         );
       }
-      if (proposalAccount.asset.status != STATUS.PROPOSAL.SUBMITTED) {
+      if (proposalAccount.asset.status !== STATUS.PROPOSAL.SUBMITTED) {
         errors.push(
           new TransactionError(
             `proposal status is not ${STATUS.PROJECT.SUBMITTED}, therefore cant terminate project`,
@@ -152,7 +152,7 @@ class TerminateWorkTransaction extends BaseTransaction {
         );
       }
       if (
-        proposalAccount.asset.lastSubmitted != null &&
+        proposalAccount.asset.lastSubmitted !== null &&
         this.timestamp <
           proposalAccount.asset.lastSubmitted +
             MISCELLANEOUS.SUBMIT_TO_TERMINATE_MIN_PERIOD
@@ -189,7 +189,7 @@ class TerminateWorkTransaction extends BaseTransaction {
           )
         );
       }
-      if (errors.length == 0) {
+      if (errors.length === 0) {
         const projectAsset = {
           ...projectAccount.asset,
           workFinished: this.timestamp,

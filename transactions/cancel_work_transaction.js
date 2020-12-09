@@ -56,10 +56,10 @@ class CancelWorkTransaction extends BaseTransaction {
     const proposalAccount = store.account.get(
       getAddressFromPublicKey(projectAccount.asset.winner)
     );
-    if (proposalAccount.asset.team.filter((el) => el != 0).length > 0) {
+    if (proposalAccount.asset.team.filter((el) => el !== 0).length > 0) {
       await store.account.cache({
         address_in: proposalAccount.asset.team
-          .filter((el) => el != 0)
+          .filter((el) => el !== 0)
           .map((item) => getAddressFromPublicKey(item)),
       });
     }
@@ -105,13 +105,13 @@ class CancelWorkTransaction extends BaseTransaction {
       );
       const teamAccounts = [];
       proposalAccount.asset.team
-        .filter((el) => el != 0)
+        .filter((el) => el !== 0)
         .forEach((item) => {
           teamAccounts.push(store_account_get(item, store));
         });
       if (
         Object.prototype.hasOwnProperty.call(sender.asset, "type") &&
-        sender.asset.type != ACCOUNT.EMPLOYER
+        sender.asset.type !== ACCOUNT.EMPLOYER
       ) {
         errors.push(
           new TransactionError(
@@ -125,7 +125,7 @@ class CancelWorkTransaction extends BaseTransaction {
       }
       if (
         Object.prototype.hasOwnProperty.call(projectAccount.asset, "type") &&
-        projectAccount.asset.type != ACCOUNT.PROJECT
+        projectAccount.asset.type !== ACCOUNT.PROJECT
       ) {
         errors.push(
           new TransactionError(
@@ -158,7 +158,7 @@ class CancelWorkTransaction extends BaseTransaction {
           )
         );
       }
-      if (projectAccount.asset.employer != sender.address) {
+      if (projectAccount.asset.employer !== sender.address) {
         errors.push(
           new TransactionError(
             "sender is not employer of project",
@@ -208,7 +208,7 @@ class CancelWorkTransaction extends BaseTransaction {
           )
         );
       }
-      if (errors.length == 0) {
+      if (errors.length === 0) {
         const proposalAsset = proposalAccount.asset;
         proposalAsset.oldFreezedFee = proposalAsset.freezedFee;
         const projectAsset = {
@@ -280,7 +280,7 @@ class CancelWorkTransaction extends BaseTransaction {
     );
     const teamAccounts = [];
     proposalAccount.asset.team
-      .filter((el) => el != 0)
+      .filter((el) => el !== 0)
       .forEach((item) => {
         teamAccounts.push(store_account_get(item, store));
       });
@@ -296,7 +296,7 @@ class CancelWorkTransaction extends BaseTransaction {
     delete projectAsset.oldStatus;
     teamAccounts.forEach((team) => {
       const teamAsset = team.asset;
-      if (team.asset.forceCancel == true) {
+      if (team.asset.forceCancel === true) {
         teamAsset.forceCancel = false;
         projectAsset.freezedFund = utils
           .BigNum(projectAsset.freezedFund)

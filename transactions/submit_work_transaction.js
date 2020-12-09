@@ -177,7 +177,7 @@ class SubmitWorkTransaction extends BaseTransaction {
         this.asset.submissionPublicKey,
         store
       );
-      if (Object.keys(submissionAccount.asset).length != 0) {
+      if (Object.keys(submissionAccount.asset).length !== 0) {
         errors.push(
           new TransactionError(
             "Specified File Account needs to be a fresh account, to be used as file stored on blockchain",
@@ -190,7 +190,7 @@ class SubmitWorkTransaction extends BaseTransaction {
       }
       if (
         Object.prototype.hasOwnProperty.call(proposalAccount.asset, "type") &&
-        proposalAccount.asset.type != ACCOUNT.PROPOSAL
+        proposalAccount.asset.type !== ACCOUNT.PROPOSAL
       ) {
         errors.push(
           new TransactionError(
@@ -204,7 +204,7 @@ class SubmitWorkTransaction extends BaseTransaction {
       }
       if (
         Object.prototype.hasOwnProperty.call(projectAccount.asset, "type") &&
-        projectAccount.asset.type != ACCOUNT.PROJECT
+        projectAccount.asset.type !== ACCOUNT.PROJECT
       ) {
         errors.push(
           new TransactionError(
@@ -232,7 +232,7 @@ class SubmitWorkTransaction extends BaseTransaction {
         );
       }
       if (
-        projectAccount.asset.maxRevision != null &&
+        projectAccount.asset.maxRevision !== null &&
         projectAccount.asset.submission.length >=
           projectAccount.asset.maxRevision
       ) {
@@ -248,7 +248,7 @@ class SubmitWorkTransaction extends BaseTransaction {
       }
       if (
         Object.prototype.hasOwnProperty.call(sender.asset, "type") &&
-        sender.asset.type != ACCOUNT.WORKER
+        sender.asset.type !== ACCOUNT.WORKER
       ) {
         errors.push(
           new TransactionError(
@@ -260,7 +260,7 @@ class SubmitWorkTransaction extends BaseTransaction {
           )
         );
       }
-      if (proposalAccount.asset.leader != sender.address) {
+      if (proposalAccount.asset.leader !== sender.address) {
         errors.push(
           new TransactionError(
             "You are not the leadear of this proposal account, you are not allowed to submit work",
@@ -271,7 +271,7 @@ class SubmitWorkTransaction extends BaseTransaction {
           )
         );
       }
-      if (proposalAccount.publicKey != projectAccount.asset.winner) {
+      if (proposalAccount.publicKey !== projectAccount.asset.winner) {
         errors.push(
           new TransactionError(
             "This proposal account is not the winner of the project, therefore work submission is not allowed",
@@ -296,7 +296,7 @@ class SubmitWorkTransaction extends BaseTransaction {
           )
         );
       }
-      if (errors.length == 0) {
+      if (errors.length === 0) {
         const submissionAsset = {
           type: ACCOUNT.SUBMISSION,
           owner: sender.address,

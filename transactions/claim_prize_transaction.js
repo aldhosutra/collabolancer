@@ -69,7 +69,7 @@ class ClaimPrizeTransaction extends BaseTransaction {
 
     // retrieve team member
     const teamAddressList = proposalAccount.asset.team
-      .filter((el) => el != 0)
+      .filter((el) => el !== 0)
       .map((data) => getAddressFromPublicKey(data));
     await store.account.cache({
       address_in: teamAddressList,
@@ -130,15 +130,15 @@ class ClaimPrizeTransaction extends BaseTransaction {
       );
       const leaderAccount = store.account.get(proposalAccount.asset.leader);
       proposalAccount.asset.team
-        .filter((el) => el != 0)
+        .filter((el) => el !== 0)
         .forEach((item) => {
           teamAccounts.push(store_account_get(item, store));
         });
       if (
         Object.prototype.hasOwnProperty.call(sender.asset, "type") &&
-        sender.asset.type == ACCOUNT.EMPLOYER
+        sender.asset.type === ACCOUNT.EMPLOYER
       ) {
-        if (projectAccount.asset.employer != sender.address) {
+        if (projectAccount.asset.employer !== sender.address) {
           errors.push(
             new TransactionError(
               "Sender is employer, but not owner of this project",
@@ -151,11 +151,11 @@ class ClaimPrizeTransaction extends BaseTransaction {
         }
       } else if (
         Object.prototype.hasOwnProperty.call(sender.asset, "type") &&
-        sender.asset.type == ACCOUNT.WORKER
+        sender.asset.type === ACCOUNT.WORKER
       ) {
         if (
           !teamAccounts.map((el) => el.asset.worker).includes(sender.address) ||
-          proposalAccount.asset.leader != sender.address
+          proposalAccount.asset.leader !== sender.address
         ) {
           errors.push(
             new TransactionError(
@@ -173,7 +173,7 @@ class ClaimPrizeTransaction extends BaseTransaction {
       }
       if (
         Object.prototype.hasOwnProperty.call(projectAccount.asset, "type") &&
-        projectAccount.asset.type != ACCOUNT.PROJECT
+        projectAccount.asset.type !== ACCOUNT.PROJECT
       ) {
         errors.push(
           new TransactionError(
@@ -217,7 +217,7 @@ class ClaimPrizeTransaction extends BaseTransaction {
         );
       }
       if (
-        projectAccount.asset.workFinished != null &&
+        projectAccount.asset.workFinished !== null &&
         this.timestamp <
           projectAccount.asset.workFinished + MISCELLANEOUS.FUND_FREEZED_PERIOD
       ) {
@@ -237,7 +237,7 @@ class ClaimPrizeTransaction extends BaseTransaction {
           )
         );
       }
-      if (errors.length == 0) {
+      if (errors.length === 0) {
         let deflation = 1;
         deflationaryMultiplier().then((rate) => {
           deflation = rate;
@@ -247,8 +247,8 @@ class ClaimPrizeTransaction extends BaseTransaction {
         teamAccounts.forEach((item) => {
           const workerAccount = store.account.get(item.asset.worker);
           notRejectedTeamLength =
-            item.asset.status == STATUS.TEAM.REJECTED ||
-            item.asset.guilty == true
+            item.asset.status === STATUS.TEAM.REJECTED ||
+            item.asset.guilty === true
               ? notRejectedTeamLength
               : notRejectedTeamLength + 1;
           teamPaymentList.push({
@@ -294,9 +294,9 @@ class ClaimPrizeTransaction extends BaseTransaction {
             workerAsset.joined.splice(joinedIndex, 1);
           }
           if (
-            element.status == STATUS.TEAM.SUBMITTED ||
-            (element.status == STATUS.TEAM.DISPUTE_CLOSED &&
-              element.guilty == false)
+            element.status === STATUS.TEAM.SUBMITTED ||
+            (element.status === STATUS.TEAM.DISPUTE_CLOSED &&
+              element.guilty === false)
           ) {
             workerAsset.contributorOf.unshift(projectAccount.publicKey);
           }
@@ -347,9 +347,9 @@ class ClaimPrizeTransaction extends BaseTransaction {
           leaderAsset.joined.splice(leaderIndex, 1);
         }
         if (
-          proposalAccount.asset.status == STATUS.PROPOSAL.SUBMITTED ||
-          (proposalAccount.asset.status == STATUS.PROPOSAL.DISPUTE_CLOSED &&
-            proposalAccount.asset.guilty == false)
+          proposalAccount.asset.status === STATUS.PROPOSAL.SUBMITTED ||
+          (proposalAccount.asset.status === STATUS.PROPOSAL.DISPUTE_CLOSED &&
+            proposalAccount.asset.guilty === false)
         ) {
           leaderAsset.leaderOf.unshift(projectAccount.publicKey);
         }
@@ -387,7 +387,7 @@ class ClaimPrizeTransaction extends BaseTransaction {
             )
             .toString(),
         });
-        if (projectAccount.asset.status == STATUS.PROJECT.SUBMITTED) {
+        if (projectAccount.asset.status === STATUS.PROJECT.SUBMITTED) {
           employerAsset.done.unshift(projectAccount.publicKey);
         }
         const employerOpenIndex = employerAsset.open.indexOf(
@@ -457,7 +457,7 @@ class ClaimPrizeTransaction extends BaseTransaction {
               cashback: utils
                 .BigNum(
                   teamPaymentList.filter(
-                    (el) => el.address == team.asset.worker
+                    (el) => el.address === team.asset.worker
                   )[0].cashback
                 )
                 .toString(),
@@ -491,7 +491,7 @@ class ClaimPrizeTransaction extends BaseTransaction {
     );
     const leaderAccount = store.account.get(proposalAccount.asset.leader);
     proposalAccount.asset.team
-      .filter((el) => el != 0)
+      .filter((el) => el !== 0)
       .forEach((item) => {
         teamAccounts.push(store_account_get(item));
       });
@@ -525,9 +525,9 @@ class ClaimPrizeTransaction extends BaseTransaction {
         workerAsset.joined.unshift(projectAccount.publicKey);
       }
       if (
-        element.status == STATUS.TEAM.SUBMITTED ||
-        (element.status == STATUS.TEAM.DISPUTE_CLOSED &&
-          element.guilty == false)
+        element.status === STATUS.TEAM.SUBMITTED ||
+        (element.status === STATUS.TEAM.DISPUTE_CLOSED &&
+          element.guilty === false)
       ) {
         const contributorOfIndex = workerAsset.contributorOf.indexOf(
           projectAccount.publicKey
@@ -563,9 +563,9 @@ class ClaimPrizeTransaction extends BaseTransaction {
       leaderAsset.joined.unshift(projectAccount.publicKey);
     }
     if (
-      proposalAccount.asset.oldStatus == STATUS.PROPOSAL.SUBMITTED ||
-      (proposalAccount.asset.oldStatus == STATUS.PROPOSAL.DISPUTE_CLOSED &&
-        proposalAccount.asset.guilty == false)
+      proposalAccount.asset.oldStatus === STATUS.PROPOSAL.SUBMITTED ||
+      (proposalAccount.asset.oldStatus === STATUS.PROPOSAL.DISPUTE_CLOSED &&
+        proposalAccount.asset.guilty === false)
     ) {
       const leaderOfIndex = leaderAsset.leaderOf.indexOf(
         projectAccount.publicKey
@@ -595,7 +595,7 @@ class ClaimPrizeTransaction extends BaseTransaction {
       .add(projectAccount.asset.freezedFee)
       .toString();
     employerAsset.log.shift();
-    if (projectAccount.asset.oldStatus == STATUS.PROJECT.SUBMITTED) {
+    if (projectAccount.asset.oldStatus === STATUS.PROJECT.SUBMITTED) {
       if (employerAsset.done.includes(projectAccount.publicKey)) {
         employerAsset.done.splice(
           employerAsset.done.indexOf(projectAccount.publicKey),

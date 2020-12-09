@@ -57,10 +57,12 @@ class StartWorkTransaction extends BaseTransaction {
     const selectedProposalAccount = store.account.get(
       getAddressFromPublicKey(this.asset.selectedProposalPublicKey)
     );
-    if (selectedProposalAccount.asset.team.filter((el) => el != 0).length > 0) {
+    if (
+      selectedProposalAccount.asset.team.filter((el) => el !== 0).length > 0
+    ) {
       await store.account.cache({
         address_in: selectedProposalAccount.asset.team
-          .filter((el) => el != 0)
+          .filter((el) => el !== 0)
           .map((data) => getAddressFromPublicKey(data)),
       });
     }
@@ -71,7 +73,7 @@ class StartWorkTransaction extends BaseTransaction {
       getAddressFromPublicKey(this.asset.projectPublicKey)
     );
     projectAccount.asset.proposal.forEach((element) => {
-      if (element != this.asset.selectedProposalPublicKey) {
+      if (element !== this.asset.selectedProposalPublicKey) {
         proposalList.push(getAddressFromPublicKey(element));
       }
     });
@@ -89,7 +91,7 @@ class StartWorkTransaction extends BaseTransaction {
       leaderAddress.push(proposalAcc.asset.leader);
       teamAddress = teamAddress.concat(
         proposalAcc.asset.team
-          .filter((el) => el != 0)
+          .filter((el) => el !== 0)
           .map((data) => getAddressFromPublicKey(data))
       );
     });
@@ -170,7 +172,7 @@ class StartWorkTransaction extends BaseTransaction {
       let pinaltyPool = "0";
       let totalFeeReleased = "0";
       projectAccount.asset.proposal.forEach((element) => {
-        if (element != this.asset.selectedProposalPublicKey) {
+        if (element !== this.asset.selectedProposalPublicKey) {
           nonSelectedProposalAccount.push(
             store.account.get(getAddressFromPublicKey(element))
           );
@@ -178,7 +180,7 @@ class StartWorkTransaction extends BaseTransaction {
       });
       nonSelectedProposalAccount.forEach((element) => {
         element.asset.team
-          .filter((el) => el != 0)
+          .filter((el) => el !== 0)
           .forEach((el) => {
             teamAccount.push(store.account.get(getAddressFromPublicKey(el)));
           });
@@ -210,7 +212,7 @@ class StartWorkTransaction extends BaseTransaction {
             .toString(),
         });
         element.asset.team
-          .filter((el) => el != 0)
+          .filter((el) => el !== 0)
           .forEach((item) => {
             const workerAccount = store.account.get(
               getAddressFromPublicKey(item)
@@ -225,7 +227,7 @@ class StartWorkTransaction extends BaseTransaction {
       });
       if (
         Object.prototype.hasOwnProperty.call(sender.asset, "type") &&
-        sender.asset.type != ACCOUNT.EMPLOYER
+        sender.asset.type !== ACCOUNT.EMPLOYER
       ) {
         errors.push(
           new TransactionError(
@@ -237,7 +239,7 @@ class StartWorkTransaction extends BaseTransaction {
           )
         );
       }
-      if (projectAccount.asset.employer != sender.address) {
+      if (projectAccount.asset.employer !== sender.address) {
         errors.push(
           new TransactionError(
             "sender is not owner of project",
@@ -264,7 +266,7 @@ class StartWorkTransaction extends BaseTransaction {
           )
         );
       }
-      if (errors.length == 0) {
+      if (errors.length === 0) {
         nonSelectedProposalAccount.forEach((element) => {
           const commitmentFeeReleaseListIndex = commitmentFeeReleaseList
             .map((el) => el.address)
@@ -370,15 +372,16 @@ class StartWorkTransaction extends BaseTransaction {
           asset: projectAsset,
         });
         const pinaltyPoolDivider =
-          selectedProposalAccount.asset.team.filter((el) => el != 0).length + 1;
+          selectedProposalAccount.asset.team.filter((el) => el !== 0).length +
+          1;
         const teamFreeSlotLength = selectedProposalAccount.asset.team.filter(
-          (el) => el == 0
+          (el) => el === 0
         ).length;
         const teamLength = selectedProposalAccount.asset.team.filter(
-          (el) => el != 0
+          (el) => el !== 0
         ).length;
         let noTeamAppliedBonus = 0;
-        if (teamLength == 0) {
+        if (teamLength === 0) {
           noTeamAppliedBonus = utils
             .BigNum(teamFreeSlotLength)
             .mul(
@@ -390,7 +393,7 @@ class StartWorkTransaction extends BaseTransaction {
         }
         let teamFreeSlotBonus = 0;
         if (
-          selectedProposalAccount.asset.term.distribution.mode ==
+          selectedProposalAccount.asset.term.distribution.mode ===
           MISCELLANEOUS.DISTRIBUTION.LEADER_FIRST
         ) {
           teamFreeSlotBonus = utils
@@ -404,7 +407,7 @@ class StartWorkTransaction extends BaseTransaction {
             .div(teamLength)
             .round();
         } else if (
-          selectedProposalAccount.asset.term.distribution.mode ==
+          selectedProposalAccount.asset.term.distribution.mode ===
           MISCELLANEOUS.DISTRIBUTION.ALL_EQUAL
         ) {
           teamFreeSlotBonus = utils
@@ -438,7 +441,7 @@ class StartWorkTransaction extends BaseTransaction {
           },
         });
         selectedProposalAccount.asset.team
-          .filter((el) => el != 0)
+          .filter((el) => el !== 0)
           .forEach((element) => {
             const selectedTeamAccount = store.account.get(
               getAddressFromPublicKey(element)
@@ -494,7 +497,7 @@ class StartWorkTransaction extends BaseTransaction {
       store
     );
     projectAccount.asset.proposal.forEach((element) => {
-      if (element != this.asset.selectedProposalPublicKey) {
+      if (element !== this.asset.selectedProposalPublicKey) {
         nonSelectedProposalAccount.push(
           store.account.get(getAddressFromPublicKey(element))
         );
@@ -502,7 +505,7 @@ class StartWorkTransaction extends BaseTransaction {
     });
     nonSelectedProposalAccount.forEach((element) => {
       element.asset.team
-        .filter((el) => el != 0)
+        .filter((el) => el !== 0)
         .forEach((el) => {
           teamAccount.push(store.account.get(getAddressFromPublicKey(el)));
         });
@@ -534,7 +537,7 @@ class StartWorkTransaction extends BaseTransaction {
           .toString(),
       });
       element.asset.team
-        .filter((el) => el != 0)
+        .filter((el) => el !== 0)
         .forEach((item) => {
           const workerAccount = store.account.get(
             getAddressFromPublicKey(item)
@@ -609,15 +612,15 @@ class StartWorkTransaction extends BaseTransaction {
       asset: projectAsset,
     });
     const pinaltyPoolDivider =
-      selectedProposalAccount.asset.team.filter((el) => el != 0).length + 1;
+      selectedProposalAccount.asset.team.filter((el) => el !== 0).length + 1;
     const teamFreeSlotLength = selectedProposalAccount.asset.team.filter(
-      (el) => el == 0
+      (el) => el === 0
     ).length;
     const teamLength = selectedProposalAccount.asset.team.filter(
-      (el) => el != 0
+      (el) => el !== 0
     ).length;
     let noTeamAppliedBonus = 0;
-    if (teamLength == 0) {
+    if (teamLength === 0) {
       noTeamAppliedBonus = utils
         .BigNum(teamFreeSlotLength)
         .mul(
@@ -629,7 +632,7 @@ class StartWorkTransaction extends BaseTransaction {
     }
     let teamFreeSlotBonus = 0;
     if (
-      selectedProposalAccount.asset.term.distribution.mode ==
+      selectedProposalAccount.asset.term.distribution.mode ===
       MISCELLANEOUS.DISTRIBUTION.LEADER_FIRST
     ) {
       teamFreeSlotBonus = utils
@@ -643,7 +646,7 @@ class StartWorkTransaction extends BaseTransaction {
         .div(teamLength)
         .round();
     } else if (
-      selectedProposalAccount.asset.term.distribution.mode ==
+      selectedProposalAccount.asset.term.distribution.mode ===
       MISCELLANEOUS.DISTRIBUTION.ALL_EQUAL
     ) {
       teamFreeSlotBonus = utils
@@ -677,7 +680,7 @@ class StartWorkTransaction extends BaseTransaction {
       },
     });
     selectedProposalAccount.asset.team
-      .filter((el) => el != 0)
+      .filter((el) => el !== 0)
       .forEach((element) => {
         const selectedTeamAccount = store.account.get(
           getAddressFromPublicKey(element)

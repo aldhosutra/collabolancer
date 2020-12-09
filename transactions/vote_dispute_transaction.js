@@ -96,7 +96,7 @@ class VoteDisputeTransaction extends BaseTransaction {
       );
       if (
         Object.prototype.hasOwnProperty.call(sender.asset, "type") &&
-        sender.asset.type != ACCOUNT.SOLVER
+        sender.asset.type !== ACCOUNT.SOLVER
       ) {
         errors.push(
           new TransactionError(
@@ -110,7 +110,7 @@ class VoteDisputeTransaction extends BaseTransaction {
       }
       if (
         Object.prototype.hasOwnProperty.call(disputeAccount.asset, "type") &&
-        disputeAccount.asset.type != ACCOUNT.DISPUTE
+        disputeAccount.asset.type !== ACCOUNT.DISPUTE
       ) {
         errors.push(
           new TransactionError(
@@ -122,7 +122,7 @@ class VoteDisputeTransaction extends BaseTransaction {
           )
         );
       }
-      if (disputeAccount.asset.status != STATUS.DISPUTE.OPEN) {
+      if (disputeAccount.asset.status !== STATUS.DISPUTE.OPEN) {
         errors.push(
           new TransactionError(
             `Dispute status is not ${STATUS.DISPUTE.OPEN}, therefore you can't cast a vote`,
@@ -177,7 +177,7 @@ class VoteDisputeTransaction extends BaseTransaction {
           )
         );
       }
-      if (errors.length == 0) {
+      if (errors.length === 0) {
         const disputeAsset = disputeAccount.asset;
         disputeAsset.vote[this.asset.voteFor].unshift(sender.publicKey);
         store.account.set(disputeAccount.address, {

@@ -71,13 +71,13 @@ class OpenDisputeTransaction extends BaseTransaction {
     const caseAccount = store.account.get(
       getAddressFromPublicKey(this.asset.casePublicKey)
     );
-    if (caseAccount.asset.type == ACCOUNT.PROPOSAL) {
+    if (caseAccount.asset.type === ACCOUNT.PROPOSAL) {
       await store.account.cache([
         {
           address: getAddressFromPublicKey(caseAccount.asset.project),
         },
       ]);
-    } else if (caseAccount.asset.type == ACCOUNT.TEAM) {
+    } else if (caseAccount.asset.type === ACCOUNT.TEAM) {
       await store.account.cache([
         {
           address: getAddressFromPublicKey(caseAccount.asset.proposal),
@@ -198,9 +198,9 @@ class OpenDisputeTransaction extends BaseTransaction {
       let caseAmount = 0;
       if (
         // Leader vs Employer type dispute
-        caseAccount.asset.type == ACCOUNT.PROPOSAL &&
+        caseAccount.asset.type === ACCOUNT.PROPOSAL &&
         // Scenario where leader already submitting their work, but employer always rejecting
-        caseAccount.asset.status == STATUS.PROPOSAL.REJECTED &&
+        caseAccount.asset.status === STATUS.PROPOSAL.REJECTED &&
         [
           STATUS.PROJECT.REFUSED,
           STATUS.PROJECT.DISPUTED,
@@ -218,7 +218,7 @@ class OpenDisputeTransaction extends BaseTransaction {
           .BigNum(targetFundAccount.asset.prize)
           .mul(MISCELLANEOUS.EMPLOYER_COMMITMENT_PERCENTAGE)
           .round();
-        if (caseAccount.asset.leader != sender.address) {
+        if (caseAccount.asset.leader !== sender.address) {
           errors.push(
             new TransactionError(
               "You are not the leadear of this proposal account, you are not allowed to open disputes",
@@ -229,7 +229,7 @@ class OpenDisputeTransaction extends BaseTransaction {
             )
           );
         }
-        if (projectAccount.asset.winner != caseAccount.publicKey) {
+        if (projectAccount.asset.winner !== caseAccount.publicKey) {
           errors.push(
             new TransactionError(
               "this proposal case account is not associated with project account",
@@ -242,10 +242,10 @@ class OpenDisputeTransaction extends BaseTransaction {
         }
       } else if (
         // Team vs Leader type dispute
-        caseAccount.asset.type == ACCOUNT.TEAM &&
+        caseAccount.asset.type === ACCOUNT.TEAM &&
         // Scenario where team already submitting their work, but leader always rejecting, or employer is rejecting work while leader also reject team work
-        caseAccount.asset.status == STATUS.TEAM.REJECTED &&
-        caseAccount.asset.forceReject == false &&
+        caseAccount.asset.status === STATUS.TEAM.REJECTED &&
+        caseAccount.asset.forceReject === false &&
         [STATUS.PROPOSAL.SUBMITTED, STATUS.PROPOSAL.DISPUTE_CLOSED].includes(
           proposalAccount.asset.status
         ) &&
@@ -269,7 +269,7 @@ class OpenDisputeTransaction extends BaseTransaction {
         caseAmount = caseAccount.asset.potentialEarning;
         litigantFreezedFee = targetFundAccount.asset.term.commitmentFee;
         defendantFreezedFee = projectAccount.asset.commitmentFee;
-        if (caseAccount.asset.worker != sender.address) {
+        if (caseAccount.asset.worker !== sender.address) {
           errors.push(
             new TransactionError(
               "You are not the worker of this team account, you are not allowed to open disputes",
@@ -280,7 +280,7 @@ class OpenDisputeTransaction extends BaseTransaction {
             )
           );
         }
-        if (caseAccount.asset.project != projectAccount.publicKey) {
+        if (caseAccount.asset.project !== projectAccount.publicKey) {
           errors.push(
             new TransactionError(
               "this team case account is not associated with project account",
@@ -302,7 +302,7 @@ class OpenDisputeTransaction extends BaseTransaction {
           )
         );
       }
-      if (Object.keys(disputeAccount.asset).length != 0) {
+      if (Object.keys(disputeAccount.asset).length !== 0) {
         errors.push(
           new TransactionError(
             "disputePublicKey Account needs to be a fresh account",
@@ -315,7 +315,7 @@ class OpenDisputeTransaction extends BaseTransaction {
       }
       if (
         Object.prototype.hasOwnProperty.call(projectAccount.asset, "type") &&
-        projectAccount.asset.type != ACCOUNT.PROJECT
+        projectAccount.asset.type !== ACCOUNT.PROJECT
       ) {
         errors.push(
           new TransactionError(
@@ -375,7 +375,7 @@ class OpenDisputeTransaction extends BaseTransaction {
       }
       if (
         Object.prototype.hasOwnProperty.call(stateCenter.asset, "type") &&
-        stateCenter.asset.type != ACCOUNT.STATE
+        stateCenter.asset.type !== ACCOUNT.STATE
       ) {
         errors.push(
           new TransactionError(
@@ -407,7 +407,7 @@ class OpenDisputeTransaction extends BaseTransaction {
           )
         );
       }
-      if (errors.length == 0) {
+      if (errors.length === 0) {
         let teamVsLeaderPinaltyPool = 0;
         const disputeAsset = {
           type: ACCOUNT.DISPUTE,
@@ -472,9 +472,9 @@ class OpenDisputeTransaction extends BaseTransaction {
           id: this.id,
           type: this.type,
         });
-        if (disputeType == MISCELLANEOUS.DISPUTE_TYPE.TEAM_VS_LEADER) {
+        if (disputeType === MISCELLANEOUS.DISPUTE_TYPE.TEAM_VS_LEADER) {
           teamVsLeaderPinaltyPool =
-            targetFundAccount.asset.guilty == false
+            targetFundAccount.asset.guilty === false
               ? targetFundAccount.asset.potentialEarning
               : 0;
           const targetFundAsset = {
@@ -526,7 +526,7 @@ class OpenDisputeTransaction extends BaseTransaction {
             asset: targetFundAsset,
           });
         } else if (
-          disputeType == MISCELLANEOUS.DISPUTE_TYPE.LEADER_VS_EMPLOYER
+          disputeType === MISCELLANEOUS.DISPUTE_TYPE.LEADER_VS_EMPLOYER
         ) {
           // if disputeType is Leader vs Employer, then the targetFundAccount is a projectAccount
           // we don't want store.account.set to be executed twice for targetFundAccount and projectAccount
@@ -632,7 +632,7 @@ class OpenDisputeTransaction extends BaseTransaction {
     projectAsset.activity.shift();
     delete projectAsset.oldStatus;
     if (
-      oldDisputeAsset.disputeType == MISCELLANEOUS.DISPUTE_TYPE.TEAM_VS_LEADER
+      oldDisputeAsset.disputeType === MISCELLANEOUS.DISPUTE_TYPE.TEAM_VS_LEADER
     ) {
       const targetFundAccount = store_account_get(
         caseAccount.asset.proposal,
@@ -642,7 +642,7 @@ class OpenDisputeTransaction extends BaseTransaction {
       litigantFreezedFee = targetFundAccount.asset.term.commitmentFee;
       defendantFreezedFee = projectAccount.asset.commitmentFee;
       teamVsLeaderPinaltyPool =
-        targetFundAccount.asset.guilty == false
+        targetFundAccount.asset.guilty === false
           ? targetFundAccount.asset.potentialEarning
           : 0;
       const targetFundAsset = {
@@ -685,7 +685,7 @@ class OpenDisputeTransaction extends BaseTransaction {
         asset: targetFundAsset,
       });
     } else if (
-      oldDisputeAsset.disputeType ==
+      oldDisputeAsset.disputeType ===
       MISCELLANEOUS.DISPUTE_TYPE.LEADER_VS_EMPLOYER
     ) {
       // if disputeType is Leader vs Employer, then the targetFundAccount is a projectAccount

@@ -379,7 +379,7 @@ extendedAPI.get("/api/submission", (req, res) => {
     const offset = req.query.offset ? parseInt(req.query.offset) : 0;
     const limit = req.query.limit ? parseInt(req.query.limit) : 10;
     const full =
-      req.query.full && req.query.full.toLowerCase() == "true" ? true : false;
+      req.query.full && req.query.full.toLowerCase() === "true" ? true : false;
     const projectPublicKey = req.query.project ? req.query.project : null;
     if (projectPublicKey) {
       api.accounts
@@ -448,7 +448,7 @@ extendedAPI.get("/api/file", (req, res) => {
     const offset = req.query.offset ? parseInt(req.query.offset) : 0;
     const limit = req.query.limit ? parseInt(req.query.limit) : 10;
     const full =
-      req.query.full && req.query.full.toLowerCase() == "true" ? true : false;
+      req.query.full && req.query.full.toLowerCase() === "true" ? true : false;
     const ownerPublicKey = req.query.owner ? req.query.owner : null;
     if (ownerPublicKey) {
       api.accounts
@@ -515,10 +515,10 @@ extendedAPI.get("/api/file", (req, res) => {
 extendedAPI.get("/api/packed", (req, res) => {
   try {
     const full =
-      req.query.full && req.query.full.toLowerCase() == "true" ? true : false;
+      req.query.full && req.query.full.toLowerCase() === "true" ? true : false;
     const projectPublicKey = req.query.project ? req.query.project : null;
     const parsed =
-      req.query.parsed && req.query.parsed == "false" ? false : true;
+      req.query.parsed && req.query.parsed === "false" ? false : true;
     if (projectPublicKey) {
       api.accounts
         .get({ address: getAddressFromPublicKey(projectPublicKey) })
@@ -554,7 +554,7 @@ extendedAPI.get("/api/packed", (req, res) => {
                   await asyncForEach(
                     parsedData.asset.team,
                     async (teamItem) => {
-                      if (teamItem != 0) {
+                      if (teamItem !== 0) {
                         await api.accounts
                           .get({ address: getAddressFromPublicKey(teamItem) })
                           .then(async (teamData) => {

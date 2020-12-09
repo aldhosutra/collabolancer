@@ -89,10 +89,10 @@ class CloseDisputeTransaction extends BaseTransaction {
     const proposalAccount = store.account.get(
       getAddressFromPublicKey(projectAccount.asset.winner)
     );
-    if (proposalAccount.asset.team.filter((el) => el != 0).length > 0) {
+    if (proposalAccount.asset.team.filter((el) => el !== 0).length > 0) {
       await store.account.cache({
         address_in: proposalAccount.asset.team
-          .filter((el) => el != 0)
+          .filter((el) => el !== 0)
           .map((el) => getAddressFromPublicKey(el)),
       });
     }
@@ -160,7 +160,7 @@ class CloseDisputeTransaction extends BaseTransaction {
       );
       if (
         Object.prototype.hasOwnProperty.call(disputeAccount.asset, "type") &&
-        disputeAccount.asset.type != ACCOUNT.DISPUTE
+        disputeAccount.asset.type !== ACCOUNT.DISPUTE
       ) {
         errors.push(
           new TransactionError(
@@ -189,7 +189,7 @@ class CloseDisputeTransaction extends BaseTransaction {
       }
       if (
         Object.prototype.hasOwnProperty.call(stateCenter.asset, "type") &&
-        stateCenter.asset.type != ACCOUNT.STATE
+        stateCenter.asset.type !== ACCOUNT.STATE
       ) {
         errors.push(
           new TransactionError(
@@ -239,7 +239,7 @@ class CloseDisputeTransaction extends BaseTransaction {
           )
         );
       }
-      if (errors.length == 0) {
+      if (errors.length === 0) {
         let litigantScore = 0;
         let defendantScore = 0;
         litigantVoters.forEach((item) => {
@@ -253,12 +253,12 @@ class CloseDisputeTransaction extends BaseTransaction {
         const disputeWinner =
           litigantScore > defendantScore ? "litigant" : "defendant";
         const disputeLoser =
-          disputeWinner == "litigant" ? "defendant" : "litigant";
+          disputeWinner === "litigant" ? "defendant" : "litigant";
         const winnerAsset = relatedAccount[disputeWinner].asset;
         const loserAsset = relatedAccount[disputeLoser].asset;
         const disputeAsset = disputeAccount.asset;
         disputeAsset.winner = disputeWinner;
-        const teamLegth = proposalAccount.asset.team.filter((el) => el != 0)
+        const teamLegth = proposalAccount.asset.team.filter((el) => el !== 0)
           .length;
         let teamBonus = 0;
         let solverBonus = "0";
@@ -275,11 +275,11 @@ class CloseDisputeTransaction extends BaseTransaction {
           )
           .toString();
         if (
-          disputeAccount.asset.disputeType ==
+          disputeAccount.asset.disputeType ===
           MISCELLANEOUS.DISPUTE_TYPE.LEADER_VS_EMPLOYER
         ) {
           winnerAsset.oldStatus = winnerAsset.status;
-          if (disputeWinner == "litigant") {
+          if (disputeWinner === "litigant") {
             winnerAsset.status = STATUS.PROPOSAL.DISPUTE_CLOSED;
             winnerAsset.freezedFund = utils
               .BigNum(winnerAsset.freezedFund)
@@ -291,13 +291,13 @@ class CloseDisputeTransaction extends BaseTransaction {
               )
               .toString();
             winnerAsset.team
-              .filter((el) => el != 0)
+              .filter((el) => el !== 0)
               .forEach((item) => {
                 const teamAccount = store.account.get(
                   getAddressFromPublicKey(item)
                 );
                 const status = teamAccount.asset.oldStatus;
-                if (teamAccount.asset.oldStatus == STATUS.TEAM.SUBMITTED) {
+                if (teamAccount.asset.oldStatus === STATUS.TEAM.SUBMITTED) {
                   store.account.set(teamAccount.address, {
                     ...teamAccount,
                     asset: {
@@ -317,7 +317,7 @@ class CloseDisputeTransaction extends BaseTransaction {
                     },
                   });
                 } else if (
-                  teamAccount.asset.oldStatus == STATUS.TEAM.REJECTED
+                  teamAccount.asset.oldStatus === STATUS.TEAM.REJECTED
                 ) {
                   store.account.set(teamAccount.address, {
                     ...teamAccount,
@@ -381,12 +381,12 @@ class CloseDisputeTransaction extends BaseTransaction {
             );
           }
         } else if (
-          disputeAccount.asset.disputeType ==
+          disputeAccount.asset.disputeType ===
           MISCELLANEOUS.DISPUTE_TYPE.TEAM_VS_LEADER
         ) {
           winnerAsset.oldStatus = winnerAsset.status;
           loserAsset.oldStatus = loserAsset.status;
-          if (disputeWinner == "litigant") {
+          if (disputeWinner === "litigant") {
             winnerAsset.status = STATUS.TEAM.DISPUTE_CLOSED;
             loserAsset.status = STATUS.PROPOSAL.DISPUTE_CLOSED;
             teamBonus = loserAsset.guilty
@@ -419,10 +419,10 @@ class CloseDisputeTransaction extends BaseTransaction {
               )
               .toString();
             loserAsset.team
-              .filter((el) => el != 0)
+              .filter((el) => el !== 0)
               .map((el) => getAddressFromPublicKey(el))
               .forEach((item) => {
-                if (item == relatedAccount[disputeWinner].address) {
+                if (item === relatedAccount[disputeWinner].address) {
                   winnerAsset.freezedFund = utils
                     .BigNum(winnerAsset.freezedFund)
                     .add(teamBonus)
@@ -554,7 +554,7 @@ class CloseDisputeTransaction extends BaseTransaction {
         });
         projectAsset.oldStatus = projectAsset.status;
         projectAsset.status =
-          projectAsset.openedDisputes.length == 1
+          projectAsset.openedDisputes.length === 1
             ? STATUS.PROJECT.DISPUTE_CLOSED
             : STATUS.PROJECT.DISPUTED;
         projectAsset.openedDisputes.splice(
@@ -624,11 +624,13 @@ class CloseDisputeTransaction extends BaseTransaction {
       defendant: targetFundAccount,
     };
     const disputeWinner = disputeAccount.asset.winner;
-    const disputeLoser = disputeWinner == "litigant" ? "defendant" : "litigant";
+    const disputeLoser =
+      disputeWinner === "litigant" ? "defendant" : "litigant";
     const winnerAsset = relatedAccount[disputeWinner].asset;
     const loserAsset = relatedAccount[disputeLoser].asset;
     const disputeAsset = disputeAccount.asset;
-    const teamLegth = proposalAccount.asset.team.filter((el) => el != 0).length;
+    const teamLegth = proposalAccount.asset.team.filter((el) => el !== 0)
+      .length;
     let teamBonus = 0;
     let solverBonus = "0";
     winnerAsset.freezedFee = utils
@@ -644,10 +646,10 @@ class CloseDisputeTransaction extends BaseTransaction {
       )
       .toString();
     if (
-      disputeAccount.asset.disputeType ==
+      disputeAccount.asset.disputeType ===
       MISCELLANEOUS.DISPUTE_TYPE.LEADER_VS_EMPLOYER
     ) {
-      if (disputeWinner == "litigant") {
+      if (disputeWinner === "litigant") {
         winnerAsset.status = winnerAsset.oldStatus;
         delete winnerAsset.oldStatus;
         winnerAsset.freezedFund = utils
@@ -660,13 +662,13 @@ class CloseDisputeTransaction extends BaseTransaction {
           )
           .toString();
         winnerAsset.team
-          .filter((el) => el != 0)
+          .filter((el) => el !== 0)
           .forEach((item) => {
             const teamAccount = store.account.get(
               getAddressFromPublicKey(item)
             );
             const status = teamAccount.asset.status;
-            if (teamAccount.asset.status == STATUS.TEAM.SUBMITTED) {
+            if (teamAccount.asset.status === STATUS.TEAM.SUBMITTED) {
               store.account.set(teamAccount.address, {
                 ...teamAccount,
                 asset: {
@@ -685,7 +687,7 @@ class CloseDisputeTransaction extends BaseTransaction {
                     .toString(),
                 },
               });
-            } else if (teamAccount.asset.status == STATUS.TEAM.REJECTED) {
+            } else if (teamAccount.asset.status === STATUS.TEAM.REJECTED) {
               store.account.set(teamAccount.address, {
                 ...teamAccount,
                 asset: {
@@ -747,10 +749,10 @@ class CloseDisputeTransaction extends BaseTransaction {
         );
       }
     } else if (
-      disputeAccount.asset.disputeType ==
+      disputeAccount.asset.disputeType ===
       MISCELLANEOUS.DISPUTE_TYPE.TEAM_VS_LEADER
     ) {
-      if (disputeWinner == "litigant") {
+      if (disputeWinner === "litigant") {
         winnerAsset.status = winnerAsset.oldStatus;
         delete winnerAsset.oldStatus;
         loserAsset.status = loserAsset.oldStatus;
@@ -785,10 +787,10 @@ class CloseDisputeTransaction extends BaseTransaction {
           )
           .toString();
         loserAsset.team
-          .filter((el) => el != 0)
+          .filter((el) => el !== 0)
           .map((el) => getAddressFromPublicKey(el))
           .forEach((item) => {
-            if (item == relatedAccount[disputeWinner].address) {
+            if (item === relatedAccount[disputeWinner].address) {
               winnerAsset.freezedFund = utils
                 .BigNum(winnerAsset.freezedFund)
                 .sub(teamBonus)
