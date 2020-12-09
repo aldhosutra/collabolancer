@@ -144,22 +144,6 @@ class OpenDisputeTransaction extends BaseTransaction {
         )
       );
     }
-    if (
-      !this.asset.maxDays ||
-      typeof this.asset.maxDays !== "number" ||
-      this.asset.maxDays < MISCELLANEOUS.DISPUTE_MINIMAL_OPEN_PERIOD
-    ) {
-      errors.push(
-        new TransactionError(
-          'Invalid "asset.maxDays" defined on transaction',
-          this.id,
-          ".asset.maxDays",
-          this.asset.maxDays,
-          "maxDays must be valid number and greater than " +
-            MISCELLANEOUS.DISPUTE_MINIMAL_OPEN_PERIOD
-        )
-      );
-    }
     return errors;
   }
 
@@ -415,6 +399,29 @@ class OpenDisputeTransaction extends BaseTransaction {
             "this.timestamp",
             this.timestamp,
             `Limit to open dispute is, on: ${projectAccount.asset.canBeClaimedOn}`
+          )
+        );
+      }
+      if (
+        !this.asset.maxDays ||
+        typeof this.asset.maxDays !== "number" ||
+        this.asset.maxDays >
+          Math.max(
+            MISCELLANEOUS.DISPUTE_MAXIMAL_OPEN_PERIOD,
+            projectAccount.asset.maxTime
+          )
+      ) {
+        errors.push(
+          new TransactionError(
+            'Invalid "asset.maxDays" defined on transaction',
+            this.id,
+            ".asset.maxDays",
+            this.asset.maxDays,
+            "maxDays must be valid number and not greater than " +
+              Math.max(
+                MISCELLANEOUS.DISPUTE_MAXIMAL_OPEN_PERIOD,
+                projectAccount.asset.maxTime
+              )
           )
         );
       }
