@@ -64,9 +64,11 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
     const teamAddressList = proposalAccount.asset.team
       .filter((el) => el !== 0)
       .map((data) => getAddressFromPublicKey(data));
-    await store.account.cache({
-      address_in: teamAddressList,
-    });
+    if (teamAddressList.length > 0) {
+      await store.account.cache({
+        address_in: teamAddressList,
+      });
+    }
   }
 
   /**
