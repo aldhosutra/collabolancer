@@ -562,6 +562,10 @@ class CloseDisputeTransaction extends BaseTransaction {
           1
         );
         projectAsset.closedDisputes.unshift(disputeAccount.publicKey);
+        projectAsset.canBeClaimedOn =
+          this.timestamp +
+          MISCELLANEOUS.FUND_FREEZED_PERIOD *
+            MISCELLANEOUS.DISPUTE_CLOSED_CANBECLOSEDON_MULTIPLIER;
         store.account.set(projectAccount.address, {
           ...projectAccount,
           asset: projectAsset,
@@ -915,6 +919,10 @@ class CloseDisputeTransaction extends BaseTransaction {
       projectAsset.closedDisputes.indexOf(disputeAccount.publicKey),
       1
     );
+    projectAsset.canBeClaimedOn =
+      projectAsset.canBeClaimedOn -
+      MISCELLANEOUS.FUND_FREEZED_PERIOD *
+        MISCELLANEOUS.DISPUTE_CLOSED_CANBECLOSEDON_MULTIPLIER;
     store.account.set(projectAccount.address, {
       ...projectAccount,
       asset: projectAsset,

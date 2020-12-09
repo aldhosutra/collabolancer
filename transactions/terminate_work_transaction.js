@@ -195,6 +195,8 @@ class TerminateWorkTransaction extends BaseTransaction {
           workFinished: this.timestamp,
           status: STATUS.PROJECT.TERMINATED,
         };
+        projectAsset.canBeClaimedOn =
+          this.timestamp + MISCELLANEOUS.FUND_FREEZED_PERIOD;
         projectAsset.activity.unshift({
           timestamp: this.timestamp,
           id: this.id,
@@ -225,6 +227,7 @@ class TerminateWorkTransaction extends BaseTransaction {
       workFinished: null,
       status: STATUS.PROJECT.SUBMITTED,
     };
+    projectAsset.canBeClaimedOn = null;
     projectAsset.activity.shift();
     store.account.set(projectAccount.address, {
       ...projectAccount,

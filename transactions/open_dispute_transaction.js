@@ -407,6 +407,17 @@ class OpenDisputeTransaction extends BaseTransaction {
           )
         );
       }
+      if (this.timestamp > projectAccount.asset.canBeClaimedOn) {
+        errors.push(
+          new TransactionError(
+            "Fund Freezed Period is over, can't open dispute anymore",
+            this.id,
+            "this.timestamp",
+            this.timestamp,
+            `Limit to open dispute is, on: ${projectAccount.asset.canBeClaimedOn}`
+          )
+        );
+      }
       if (errors.length === 0) {
         let teamVsLeaderPinaltyPool = 0;
         const disputeAsset = {

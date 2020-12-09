@@ -217,21 +217,18 @@ class ClaimPrizeTransaction extends BaseTransaction {
         );
       }
       if (
-        projectAccount.asset.workFinished !== null &&
-        this.timestamp <
-          projectAccount.asset.workFinished + MISCELLANEOUS.FUND_FREEZED_PERIOD
+        projectAccount.asset.canBeClaimedOn !== null &&
+        this.timestamp < projectAccount.asset.canBeClaimedOn
       ) {
         errors.push(
           new TransactionError(
-            "fund is still in freezed period",
+            "Cant claim prize yet",
             this.id,
             ".timestamp",
             this.timestamp,
             "It's still: " +
               (
-                projectAccount.asset.workFinished +
-                MISCELLANEOUS.FUND_FREEZED_PERIOD -
-                this.timestamp
+                projectAccount.asset.canBeClaimedOn - this.timestamp
               ).toString() +
               " seconds more"
           )

@@ -1,5 +1,5 @@
 const { store_account_get } = require("./utils");
-const { STATUS, ACCOUNT } = require("./constants");
+const { STATUS, ACCOUNT, MISCELLANEOUS } = require("./constants");
 const {
   BaseTransaction,
   TransactionError,
@@ -207,6 +207,8 @@ class FinishWorkTransaction extends BaseTransaction {
         } else if (projectAccount.asset.status === STATUS.PROJECT.REJECTED) {
           projectAsset.status = STATUS.PROJECT.REFUSED;
         }
+        projectAsset.canBeClaimedOn =
+          this.timestamp + MISCELLANEOUS.FUND_FREEZED_PERIOD;
         projectAsset.activity.unshift({
           timestamp: this.timestamp,
           id: this.id,
@@ -241,6 +243,7 @@ class FinishWorkTransaction extends BaseTransaction {
       projectAsset.statusNote.shift();
     }
     delete projectAsset.oldStatus;
+    projectAsset.canBeClaimedOn = null;
     projectAsset.activity.shift();
     store.account.set(projectAccount.address, {
       ...projectAccount,

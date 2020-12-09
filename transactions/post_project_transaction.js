@@ -272,6 +272,7 @@ class PostProjectTransaction extends BaseTransaction {
           postedOn: this.timestamp,
           workStarted: null,
           workFinished: null,
+          canBeClaimedOn: null,
           proposal: [],
           openedDisputes: [],
           closedDisputes: [],

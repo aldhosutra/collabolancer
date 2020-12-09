@@ -217,6 +217,7 @@ class CancelWorkTransaction extends BaseTransaction {
           oldStatus: projectAccount.asset.status,
           status: STATUS.PROJECT.CANCELLED,
         };
+        projectAsset.canBeClaimedOn = this.timestamp;
         projectAsset.activity.unshift({
           timestamp: this.timestamp,
           id: this.id,
@@ -292,6 +293,7 @@ class CancelWorkTransaction extends BaseTransaction {
       workFinished: null,
       status: projectAccount.asset.oldStatus,
     };
+    projectAsset.canBeClaimedOn = null;
     projectAsset.activity.shift();
     delete projectAsset.oldStatus;
     teamAccounts.forEach((team) => {
