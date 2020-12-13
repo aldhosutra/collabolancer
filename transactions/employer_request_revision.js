@@ -258,11 +258,8 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
               projectAccount.asset.maxTime * 86400
               ? "TIMEOUT REJECTION"
               : "MAX REVISION EXCEEDED";
-          reason =
-            reasonPrefix +
-            ", your work are rejected, employer note: " +
-            this.asset.reason;
-          teamReason = `Employer Reject Submission, so your contribution also rejected. Employer note: ${this.asset.reason}`;
+          reason = `<p>${reasonPrefix}, your work are rejected, employer note: ${this.asset.reason}</p>`;
+          teamReason = `<p>Employer Reject Submission, so your contribution also rejected. Employer note: ${this.asset.reason}</p>`;
           employerRejectionPinalty = utils
             .BigNum(
               utils
@@ -281,8 +278,8 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
           proposalAsset.status = STATUS.PROPOSAL.REQUEST_REVISION;
           teamStatus = STATUS.TEAM.REQUEST_REVISION;
           forceReject = false;
-          reason = this.asset.reason;
-          teamReason = `Employer Request Revision for your leader's work, so your contribution also been requested for revision, maxRevision has been increased for your opportunity to resubmit revised version. Employer note: ${this.asset.reason}`;
+          reason = `<p>${this.asset.reason}</p>`;
+          teamReason = `<p>Employer Request Revision for your leader's work, so your contribution also been requested for revision, maxRevision has been increased for your opportunity to resubmit revised version. Employer note: ${this.asset.reason}</p>`;
         }
         teamAccounts.forEach((team) => {
           const teamAsset = {

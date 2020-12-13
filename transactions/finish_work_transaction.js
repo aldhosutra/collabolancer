@@ -172,6 +172,7 @@ class FinishWorkTransaction extends BaseTransaction {
         this.timestamp <
           projectAccount.asset.workStarted +
             proposalAccount.asset.term.maxTime * 86400 &&
+        projectAccount.asset.status === STATUS.PROJECT.SUBMITTED &&
         teamAccounts
           .map((el) => el.asset.status)
           .includes(STATUS.TEAM.REQUEST_REVISION)
