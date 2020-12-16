@@ -109,20 +109,6 @@ class FinishWorkTransaction extends BaseTransaction {
         .filter((el) => el !== 0)
         .map((el) => store.account.get(getAddressFromPublicKey(el)));
       if (
-        Object.prototype.hasOwnProperty.call(sender.asset, "type") &&
-        sender.asset.type !== ACCOUNT.EMPLOYER
-      ) {
-        errors.push(
-          new TransactionError(
-            "Sender is not employer",
-            this.id,
-            "sender.asset.type",
-            sender.asset.type,
-            `Type mush be ${ACCOUNT.EMPLOYER}`
-          )
-        );
-      }
-      if (
         Object.prototype.hasOwnProperty.call(projectAccount.asset, "type") &&
         projectAccount.asset.type !== ACCOUNT.PROJECT
       ) {
@@ -157,14 +143,36 @@ class FinishWorkTransaction extends BaseTransaction {
           )
         );
       }
-      if (projectAccount.asset.employer !== sender.address) {
+      if (
+        projectAccount.asset.status === STATUS.PROJECT.SUBMITTED &&
+        projectAccount.asset.employer !== sender.address
+      ) {
         errors.push(
           new TransactionError(
-            "sender is not owner of project",
+            "only project employer can finish submitted project",
             this.id,
             "sender.address",
             sender.address,
             "Owner is: " + projectAccount.asset.employer
+          )
+        );
+      }
+      if (
+        projectAccount.asset.status === STATUS.PROJECT.REJECTED &&
+        ![projectAccount.asset.employer, proposalAccount.asset.leader]
+          .concat(teamAccounts.map((item) => item.asset.worker))
+          .includes(sender.address)
+      ) {
+        errors.push(
+          new TransactionError(
+            "either project owner, selected proposal leader, or its team member can finish rejected project",
+            this.id,
+            "sender.address",
+            sender.address,
+            "Project members is: " +
+              [projectAccount.asset.employer, proposalAccount.asset.leader]
+                .concat(teamAccounts.map((item) => item.asset.worker))
+                .toString()
           )
         );
       }
