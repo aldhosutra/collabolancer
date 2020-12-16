@@ -273,6 +273,10 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
             .BigNum(projectAsset.freezedFee)
             .sub(employerRejectionPinalty)
             .toString();
+          projectAsset.commitmentFee = utils
+            .BigNum(projectAsset.commitmentFee)
+            .sub(employerRejectionPinalty)
+            .toString();
         } else {
           projectAsset.status = STATUS.PROJECT.REQUEST_REVISION;
           proposalAsset.status = STATUS.PROPOSAL.REQUEST_REVISION;
@@ -427,6 +431,10 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
         .round();
       projectAsset.freezedFee = utils
         .BigNum(projectAsset.freezedFee)
+        .add(employerRejectionPinalty)
+        .toString();
+      projectAsset.commitmentFee = utils
+        .BigNum(projectAsset.commitmentFee)
         .add(employerRejectionPinalty)
         .toString();
     }
