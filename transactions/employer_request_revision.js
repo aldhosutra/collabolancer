@@ -273,10 +273,6 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
             .BigNum(projectAsset.freezedFee)
             .sub(employerRejectionPinalty)
             .toString();
-          projectAsset.commitmentFee = utils
-            .BigNum(projectAsset.commitmentFee)
-            .sub(employerRejectionPinalty)
-            .toString();
         } else {
           projectAsset.status = STATUS.PROJECT.REQUEST_REVISION;
           proposalAsset.status = STATUS.PROPOSAL.REQUEST_REVISION;
@@ -345,8 +341,8 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
               reason: teamReason,
             });
           }
-          teamAsset.freezedFund = utils
-            .BigNum(teamAsset.freezedFund)
+          teamAsset.freezedFee = utils
+            .BigNum(teamAsset.freezedFee)
             .add(utils.BigNum(employerRejectionPinalty).div(pinaltyDivider))
             .round()
             .toString();
@@ -355,8 +351,8 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
             asset: teamAsset,
           });
         });
-        proposalAsset.freezedFund = utils
-          .BigNum(proposalAsset.freezedFund)
+        proposalAsset.freezedFee = utils
+          .BigNum(proposalAsset.freezedFee)
           .add(utils.BigNum(employerRejectionPinalty).div(pinaltyDivider))
           .round()
           .toString();
@@ -433,10 +429,6 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
         .BigNum(projectAsset.freezedFee)
         .add(employerRejectionPinalty)
         .toString();
-      projectAsset.commitmentFee = utils
-        .BigNum(projectAsset.commitmentFee)
-        .add(employerRejectionPinalty)
-        .toString();
     }
     projectAsset.activity.shift();
     projectAsset.freezedFund = utils
@@ -501,8 +493,8 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
         teamAsset.forceReject = false;
         teamAsset.statusNote.shift();
       }
-      teamAsset.freezedFund = utils
-        .BigNum(teamAsset.freezedFund)
+      teamAsset.freezedFee = utils
+        .BigNum(teamAsset.freezedFee)
         .sub(utils.BigNum(employerRejectionPinalty).div(pinaltyDivider))
         .round()
         .toString();
@@ -519,8 +511,8 @@ class EmployerRequestRevisionTransaction extends BaseTransaction {
     if (statusNoteIndex > -1) {
       projectAsset.statusNote.splice(statusNoteIndex, 1);
     }
-    proposalAsset.freezedFund = utils
-      .BigNum(proposalAsset.freezedFund)
+    proposalAsset.freezedFee = utils
+      .BigNum(proposalAsset.freezedFee)
       .sub(utils.BigNum(employerRejectionPinalty).div(pinaltyDivider))
       .round()
       .toString();

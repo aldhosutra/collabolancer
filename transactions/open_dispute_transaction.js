@@ -202,6 +202,14 @@ class OpenDisputeTransaction extends BaseTransaction {
           .BigNum(targetFundAccount.asset.prize)
           .mul(MISCELLANEOUS.EMPLOYER_COMMITMENT_PERCENTAGE)
           .round();
+        defendantFreezedFee = utils
+          .BigNum(defendantFreezedFee)
+          .sub(
+            utils
+              .BigNum(defendantFreezedFee)
+              .mul(MISCELLANEOUS.EMPLOYER_REJECTION_PINALTY_PERCENTAGE)
+          )
+          .round();
         if (caseAccount.asset.leader !== sender.address) {
           errors.push(
             new TransactionError(
@@ -712,6 +720,19 @@ class OpenDisputeTransaction extends BaseTransaction {
     ) {
       // if disputeType is Leader vs Employer, then the targetFundAccount is a projectAccount
       // we don't want store.account.set to be executed twice for targetFundAccount and projectAccount
+      let oldEmployerFreezedFee;
+      oldEmployerFreezedFee = utils
+        .BigNum(projectAsset.prize)
+        .mul(MISCELLANEOUS.EMPLOYER_COMMITMENT_PERCENTAGE)
+        .round();
+      oldEmployerFreezedFee = utils
+        .BigNum(oldEmployerFreezedFee)
+        .sub(
+          utils
+            .BigNum(oldEmployerFreezedFee)
+            .mul(MISCELLANEOUS.EMPLOYER_REJECTION_PINALTY_PERCENTAGE)
+        )
+        .round();
       caseAmount = projectAsset.prize;
       projectAsset.freezedFund = utils
         .BigNum(projectAsset.freezedFund)
@@ -732,8 +753,8 @@ class OpenDisputeTransaction extends BaseTransaction {
         )
         .add(
           utils
-            .BigNum(projectAsset.prize)
-            .mul(MISCELLANEOUS.EMPLOYER_COMMITMENT_PERCENTAGE)
+            .BigNum(oldEmployerFreezedFee)
+            .mul(MISCELLANEOUS.DISPUTE_SEIZURE_PERCENTAGE)
             .round()
         )
         .toString();
