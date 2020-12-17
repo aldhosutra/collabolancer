@@ -240,23 +240,34 @@ class CloseDisputeTransaction extends BaseTransaction {
         );
       }
       if (errors.length === 0) {
-        let litigantScore = 0;
-        let defendantScore = 0;
+        let litigantScore = "0";
+        let defendantScore = "0";
         litigantVoters.forEach((item) => {
           const account = store.account.get(item);
-          litigantScore += account.balance;
+          litigantScore = utils
+            .BigNum(litigantScore)
+            .add(account.balance)
+            .toString();
         });
         defendantVoters.forEach((item) => {
           const account = store.account.get(item);
-          defendantScore += account.balance;
+          defendantScore = utils
+            .BigNum(defendantScore)
+            .add(account.balance)
+            .toString();
         });
-        const disputeWinner =
-          litigantScore > defendantScore ? "litigant" : "defendant";
+        const disputeWinner = utils.BigNum(litigantScore).gt(defendantScore)
+          ? "litigant"
+          : "defendant";
         const disputeLoser =
           disputeWinner === "litigant" ? "defendant" : "litigant";
         const winnerAsset = relatedAccount[disputeWinner].asset;
         const loserAsset = relatedAccount[disputeLoser].asset;
         const disputeAsset = disputeAccount.asset;
+        disputeAsset.score = {
+          litigant: litigantScore,
+          defendant: defendantScore,
+        };
         disputeAsset.winner = disputeWinner;
         const teamLegth = proposalAccount.asset.team.filter((el) => el !== 0)
           .length;
@@ -633,6 +644,10 @@ class CloseDisputeTransaction extends BaseTransaction {
     const winnerAsset = relatedAccount[disputeWinner].asset;
     const loserAsset = relatedAccount[disputeLoser].asset;
     const disputeAsset = disputeAccount.asset;
+    disputeAsset.score = {
+      litigant: "0",
+      defendant: "0",
+    };
     const teamLegth = proposalAccount.asset.team.filter((el) => el !== 0)
       .length;
     let teamBonus = 0;

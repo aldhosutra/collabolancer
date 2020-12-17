@@ -444,6 +444,10 @@ class OpenDisputeTransaction extends BaseTransaction {
             litigant: [],
             defendant: [],
           },
+          score: {
+            litigant: "0",
+            defendant: "0",
+          },
           winner: null,
           status: STATUS.DISPUTE.OPEN,
           freezedFund: utils
