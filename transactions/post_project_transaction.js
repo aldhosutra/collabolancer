@@ -269,6 +269,8 @@ class PostProjectTransaction extends BaseTransaction {
           statusNote: [],
           submission: [],
           winner: null,
+          guilty: false,
+          terminated: false,
           postedOn: this.timestamp,
           workStarted: null,
           workFinished: null,
@@ -294,7 +296,7 @@ class PostProjectTransaction extends BaseTransaction {
           open: [],
           ...sender.asset,
         };
-        senderAsset.open.unshift(projectAccount.publicKey);
+        senderAsset.ongoing.unshift(projectAccount.publicKey);
         stateAsset.available.projects.unshift(projectAccount.publicKey);
         senderAsset.log.unshift({
           timestamp: this.timestamp,
@@ -369,9 +371,9 @@ class PostProjectTransaction extends BaseTransaction {
       open: [],
       ...sender.asset,
     };
-    const userOpenIndex = senderAsset.open.indexOf(projectAccount.publicKey);
+    const userOpenIndex = senderAsset.ongoing.indexOf(projectAccount.publicKey);
     if (userOpenIndex > -1) {
-      senderAsset.open.splice(userOpenIndex, 1);
+      senderAsset.ongoing.splice(userOpenIndex, 1);
     }
     senderAsset.log.shift();
     senderAsset.spent = utils

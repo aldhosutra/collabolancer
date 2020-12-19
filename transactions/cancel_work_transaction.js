@@ -210,6 +210,7 @@ class CancelWorkTransaction extends BaseTransaction {
       }
       if (errors.length === 0) {
         const proposalAsset = proposalAccount.asset;
+        proposalAsset.cancelled = true;
         proposalAsset.oldFreezedFee = proposalAsset.freezedFee;
         const projectAsset = {
           ...projectAccount.asset,
@@ -286,6 +287,7 @@ class CancelWorkTransaction extends BaseTransaction {
         teamAccounts.push(store_account_get(item, store));
       });
     const proposalAsset = proposalAccount.asset;
+    proposalAsset.cancelled = false;
     proposalAsset.freezedFee = proposalAsset.oldFreezedFee;
     delete proposalAsset.oldFreezedFee;
     const projectAsset = {

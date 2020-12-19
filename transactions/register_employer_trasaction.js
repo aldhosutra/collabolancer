@@ -118,7 +118,8 @@ class RegisterEmployerTransaction extends BaseTransaction {
           type: ACCOUNT.EMPLOYER,
           done: [],
           terminated: [],
-          open: [],
+          guilty: [],
+          ongoing: [],
           spent: "0",
           log: [],
         };

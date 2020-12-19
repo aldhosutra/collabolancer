@@ -290,12 +290,10 @@ class ClaimPrizeTransaction extends BaseTransaction {
           if (joinedIndex > -1) {
             workerAsset.joined.splice(joinedIndex, 1);
           }
-          if (
-            element.status === STATUS.TEAM.SUBMITTED ||
-            (element.status === STATUS.TEAM.DISPUTE_CLOSED &&
-              element.guilty === false)
-          ) {
+          if (element.guilty === false) {
             workerAsset.contributorOf.unshift(projectAccount.publicKey);
+          } else {
+            workerAsset.guilty.unshift(projectAccount.publicKey);
           }
           store.account.set(workerAccount.address, {
             ...workerAccount,
@@ -343,11 +341,11 @@ class ClaimPrizeTransaction extends BaseTransaction {
         if (leaderIndex > -1) {
           leaderAsset.joined.splice(leaderIndex, 1);
         }
-        if (
-          proposalAccount.asset.status === STATUS.PROPOSAL.SUBMITTED ||
-          (proposalAccount.asset.status === STATUS.PROPOSAL.DISPUTE_CLOSED &&
-            proposalAccount.asset.guilty === false)
-        ) {
+        if (proposalAccount.asset.guilty === true) {
+          leaderAsset.guilty.unshift(projectAccount.publicKey);
+        } else if (proposalAccount.asset.cancelled === true) {
+          leaderAsset.cancelled.unshift(projectAccount.publicKey);
+        } else {
           leaderAsset.leaderOf.unshift(projectAccount.publicKey);
         }
         store.account.set(leaderAccount.address, {
@@ -384,14 +382,18 @@ class ClaimPrizeTransaction extends BaseTransaction {
             )
             .toString(),
         });
-        if (projectAccount.asset.status === STATUS.PROJECT.SUBMITTED) {
+        if (projectAccount.asset.terminated === true) {
+          employerAsset.terminated.unshift(projectAccount.publicKey);
+        } else if (projectAccount.asset.guilty === true) {
+          employerAsset.guilty.unshift(projectAccount.publicKey);
+        } else {
           employerAsset.done.unshift(projectAccount.publicKey);
         }
-        const employerOpenIndex = employerAsset.open.indexOf(
+        const employerOpenIndex = employerAsset.ongoing.indexOf(
           projectAccount.publicKey
         );
         if (employerOpenIndex > -1) {
-          employerAsset.open.splice(employerOpenIndex, 1);
+          employerAsset.ongoing.splice(employerOpenIndex, 1);
         }
         store.account.set(employerAccount.address, {
           ...employerAccount,
@@ -521,17 +523,10 @@ class ClaimPrizeTransaction extends BaseTransaction {
       if (!workerAsset.joined.includes(projectAccount.publicKey)) {
         workerAsset.joined.unshift(projectAccount.publicKey);
       }
-      if (
-        element.status === STATUS.TEAM.SUBMITTED ||
-        (element.status === STATUS.TEAM.DISPUTE_CLOSED &&
-          element.guilty === false)
-      ) {
-        const contributorOfIndex = workerAsset.contributorOf.indexOf(
-          projectAccount.publicKey
-        );
-        if (contributorOfIndex > -1) {
-          workerAsset.contributorOf.splice(contributorOfIndex, 1);
-        }
+      if (element.guilty === false) {
+        workerAsset.contributorOf.shift();
+      } else {
+        workerAsset.guilty.shift();
       }
       store.account.set(workerAccount.address, {
         ...workerAccount,
@@ -559,17 +554,12 @@ class ClaimPrizeTransaction extends BaseTransaction {
     if (!leaderAsset.joined.includes(projectAccount.publicKey)) {
       leaderAsset.joined.unshift(projectAccount.publicKey);
     }
-    if (
-      proposalAccount.asset.oldStatus === STATUS.PROPOSAL.SUBMITTED ||
-      (proposalAccount.asset.oldStatus === STATUS.PROPOSAL.DISPUTE_CLOSED &&
-        proposalAccount.asset.guilty === false)
-    ) {
-      const leaderOfIndex = leaderAsset.leaderOf.indexOf(
-        projectAccount.publicKey
-      );
-      if (leaderOfIndex > -1) {
-        leaderAsset.leaderOf.splice(leaderOfIndex, 1);
-      }
+    if (proposalAccount.asset.guilty === true) {
+      leaderAsset.guilty.shift();
+    } else if (proposalAccount.asset.cancelled === true) {
+      leaderAsset.cancelled.shift();
+    } else {
+      leaderAsset.leaderOf.shift();
     }
     store.account.set(leaderAccount.address, {
       ...leaderAccount,
@@ -592,16 +582,15 @@ class ClaimPrizeTransaction extends BaseTransaction {
       .add(projectAccount.asset.freezedFee)
       .toString();
     employerAsset.log.shift();
-    if (projectAccount.asset.oldStatus === STATUS.PROJECT.SUBMITTED) {
-      if (employerAsset.done.includes(projectAccount.publicKey)) {
-        employerAsset.done.splice(
-          employerAsset.done.indexOf(projectAccount.publicKey),
-          1
-        );
-      }
+    if (projectAccount.asset.terminated === true) {
+      employerAsset.terminated.shift();
+    } else if (projectAccount.asset.guilty === true) {
+      employerAsset.guilty.shift();
+    } else {
+      employerAsset.done.shift();
     }
-    if (!employerAsset.open.includes(projectAccount.publicKey)) {
-      employerAsset.open.unshift(projectAccount.publicKey);
+    if (!employerAsset.ongoing.includes(projectAccount.publicKey)) {
+      employerAsset.ongoing.unshift(projectAccount.publicKey);
     }
     store.account.set(employerAccount.address, {
       ...employerAccount,

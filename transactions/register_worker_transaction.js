@@ -120,6 +120,8 @@ class RegisterWorkerTransaction extends BaseTransaction {
           type: ACCOUNT.WORKER,
           leaderOf: [],
           contributorOf: [],
+          cancelled: [],
+          guilty: [],
           joined: [],
           file: [],
           earning: "0",

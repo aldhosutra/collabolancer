@@ -40,6 +40,46 @@ extendedAPI.get("/api/constant/status", (req, res) => {
   res.status(200).send({ STATUS });
 });
 
+extendedAPI.get("/api/batch", async (req, res) => {
+  try {
+    const publicKeyList = req.query.q.split(",");
+    if (publicKeyList.length > 25) {
+      res.status(500).send({
+        meta: { err: "Max public key to batch query is 25" },
+        data: [],
+      });
+    } else {
+      const parsedData = [];
+      await asyncForEach(publicKeyList, async (publicKey) => {
+        await api.accounts
+          .get({ address: getAddressFromPublicKey(publicKey) })
+          .then((data) => {
+            if (data.data.length > 0) {
+              parsedData.push(data.data[0]);
+            }
+          })
+          .catch((err) => {
+            res.status(500).send({
+              meta: { err: err.toString() },
+              data: [],
+            });
+          });
+      });
+      res.status(200).send({
+        meta: {
+          count: parsedData.length,
+        },
+        data: parsedData,
+      });
+    }
+  } catch (err) {
+    res.status(500).send({
+      meta: { err: err.toString() },
+      data: [],
+    });
+  }
+});
+
 extendedAPI.get("/api/project", (req, res) => {
   try {
     const offset = req.query.offset ? parseInt(req.query.offset) : 0;

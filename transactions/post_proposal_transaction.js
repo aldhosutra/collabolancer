@@ -373,6 +373,7 @@ class PostProposalTransaction extends BaseTransaction {
           },
           status: STATUS.PROPOSAL.APPLIED,
           guilty: false,
+          cancelled: false,
           potentialEarning: "0",
           freezedFund: "0",
           freezedFee: "0",
