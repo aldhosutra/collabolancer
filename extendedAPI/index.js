@@ -40,6 +40,34 @@ extendedAPI.get("/api/constant/status", (req, res) => {
   res.status(200).send({ STATUS });
 });
 
+extendedAPI.get("/api/state", (req, res) => {
+  try {
+    api.accounts
+      .get({ address: getStateCenterAccount().address })
+      .then(async (data) => {
+        res.status(200).send({
+          meta: {
+            offset: 0,
+            limit: 0,
+            count: 1,
+          },
+          data: data.data[0],
+        });
+      })
+      .catch((err) => {
+        res.status(500).send({
+          meta: { err: err.toString() },
+          data: [],
+        });
+      });
+  } catch (err) {
+    res.status(500).send({
+      meta: { err: err.toString() },
+      data: [],
+    });
+  }
+});
+
 extendedAPI.get("/api/batch", async (req, res) => {
   try {
     const publicKeyList = req.query.q.split(",");
