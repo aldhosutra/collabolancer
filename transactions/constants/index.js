@@ -1,7 +1,7 @@
-const category = require("./category.json");
-const STATUS = require("./status.json");
-const ACCOUNT = require("./account_type.json");
-const MISCELLANEOUS = require("./miscellaneous.json");
+const category = require("./category");
+const STATUS = require("./status");
+const ACCOUNT = require("./account_type");
+const MISCELLANEOUS = require("./miscellaneous");
 
 module.exports = {
   category,

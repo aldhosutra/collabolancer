@@ -3,7 +3,7 @@ const {
   TransactionError,
   utils,
 } = require("@liskhq/lisk-transactions");
-const CONSTANTS = require("./constants.json");
+const CONSTANTS = require("./constants");
 
 /**
  * DEVELOPMENT PURPOSE ONLY
