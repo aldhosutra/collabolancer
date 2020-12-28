@@ -12,8 +12,8 @@ if [ ! -f ".env" ]; then
 fi
 
 export $(egrep -v '^#' .env | xargs)
-if [[ -z $TZ || -z $USER_NAME || -z $USER_PASSWORD || -z $DB_NAME || -z $DB_PASSWORD ]]; then
-  echo 'TZ, USER_NAME, USER_PASSWORD, DB_NAME, and DB_PASSWORD,variable are required, please check .env file or manually set environment variables!'
+if [[ -z $TZ || -z $USER_NAME || -z $USER_PASSWORD || -z $DB_NAME ]]; then
+  echo 'TZ, USER_NAME, USER_PASSWORD, and DB_NAME variable are required, please check .env file or manually set environment variables!'
   exit 1
 fi
 
@@ -54,7 +54,7 @@ if sudo -u postgres -i psql -lqt | cut -d \| -f 1 | grep -qw $DB_NAME; then
   echo "Database $DB_NAME already exist, proceeding to next step!"
 else
   sudo -u postgres -i createdb $DB_NAME --owner $USER_NAME
-  sudo -u postgres psql -d $DB_NAME -c "alter user $USER_NAME with password '$DB_PASSWORD';"
+  sudo -u postgres psql -d $DB_NAME -c "alter user $USER_NAME with password '$USER_PASSWORD';"
 fi
 
 if ! grep -Fxq "host all  all    0.0.0.0/0  md5" /etc/postgresql/10/main/pg_hba.conf

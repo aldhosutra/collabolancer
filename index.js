@@ -50,6 +50,15 @@ if (process.env.SEED_NODE_IP) {
     wsPort: 5000,
   });
 }
+if (process.env.USER_NAME) {
+  configDevnet.components.storage.user = process.env.USER_NAME;
+}
+if (process.env.USER_PASSWORD) {
+  configDevnet.components.storage.password = process.env.USER_PASSWORD;
+}
+if (process.env.DB_NAME) {
+  configDevnet.components.storage.database = process.env.DB_NAME;
+}
 
 const app = new Application(genesisBlockDevnet, configDevnet);
 
