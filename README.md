@@ -15,6 +15,9 @@ curl -o- https://raw.githubusercontent.com/aldhosutra/collabolancer/master/insta
 First, copy template.env as .env, and configure it's value depend on your Node Settings:
 
 ```
+USER_NAME=lisk
+USER_PASSWORD=password
+DB_NAME=lisk_dev
 SEED_NODE_IP=0.0.0.0
 API_WHITELIST_IP=0.0.0.0
 IS_API_NODE=false
