@@ -1,5 +1,10 @@
-const { Application, genesisBlockDevnet, configDevnet } = require("lisk-sdk");
-const { CONSTANTS, EXTENDEDAPI_CONFIG } = require("./config");
+const { Application } = require("lisk-sdk");
+const {
+  CONSTANTS,
+  EXTENDEDAPI_CONFIG,
+  genesisBlockDevnet,
+  configDevnet,
+} = require("./config");
 const {
   RegisterEmployerTransaction,
   RegisterWorkerTransaction,
@@ -20,7 +25,9 @@ const {
   VoteDisputeTransaction,
   CloseDisputeTransaction,
 } = require("./transactions");
+const dotenv = require("dotenv");
 
+dotenv.config();
 const { extendedAPI } = require("./extendedAPI");
 extendedAPI.listen(EXTENDEDAPI_CONFIG.PORT, () => {
   console.log(
@@ -29,7 +36,20 @@ extendedAPI.listen(EXTENDEDAPI_CONFIG.PORT, () => {
 });
 
 configDevnet.app.label = "collabolancer-blockchain-app";
-configDevnet.modules.http_api.access.whiteList = ["127.0.0.1", "172.17.0.1"];
+if (process.env.API_WHITELIST_IP) {
+  configDevnet.modules.http_api.access.whiteList.push(
+    process.env.API_WHITELIST_IP
+  );
+}
+if (process.env.IS_API_NODE && process.env.IS_API_NODE === "true") {
+  configDevnet.modules.http_api.access.public = true;
+}
+if (process.env.SEED_NODE_IP) {
+  configDevnet.modules.network.seedPeers.push({
+    ip: process.env.SEED_NODE_IP,
+    wsPort: 5000,
+  });
+}
 
 const app = new Application(genesisBlockDevnet, configDevnet);
 

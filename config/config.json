@@ -1,0 +1,551 @@
+{
+  "app": {
+    "label": "devnet-alpha-sdk",
+    "minVersion": "0.0.0",
+    "version": "0.0.0",
+    "protocolVersion": "1.1",
+    "ipc": {
+      "enabled": true
+    },
+    "genesisConfig": {
+      "EPOCH_TIME": "2016-05-24T17:00:00.000Z",
+      "BLOCK_TIME": 10,
+      "MAX_TRANSACTIONS_PER_BLOCK": 25,
+      "REWARDS": {
+        "MILESTONES": [
+          "500000000",
+          "400000000",
+          "300000000",
+          "200000000",
+          "100000000"
+        ],
+        "OFFSET": 2160,
+        "DISTANCE": 3000000
+      }
+    }
+  },
+  "components": {
+    "logger": {
+      "fileLogLevel": "debug",
+      "logFileName": "logs/devnet/lisk.log",
+      "consoleLogLevel": "info"
+    },
+    "storage": {
+      "logFileName": "logs/devnet/lisk_db.log",
+      "host": "localhost",
+      "port": 5432,
+      "database": "lisk_dev",
+      "user": "lisk",
+      "password": "password",
+      "min": 10,
+      "max": 25,
+      "poolIdleTimeout": 30000,
+      "reapIntervalMillis": 1000,
+      "logEvents": ["error"]
+    },
+    "cache": {
+      "enabled": false,
+      "host": "127.0.0.1",
+      "port": 6380,
+      "db": 0,
+      "password": null
+    }
+  },
+  "modules": {
+    "http_api": {
+      "enabled": true,
+      "httpPort": 4000,
+      "address": "0.0.0.0",
+      "trustProxy": false,
+      "access": {
+        "public": false,
+        "whiteList": ["127.0.0.1"]
+      },
+      "ssl": {
+        "enabled": false,
+        "options": {
+          "port": 443,
+          "address": "0.0.0.0",
+          "key": "./ssl/lisk.key",
+          "cert": "./ssl/lisk.crt"
+        }
+      },
+      "options": {
+        "limits": {
+          "max": 0,
+          "delayMs": 0,
+          "delayAfter": 0,
+          "windowMs": 60000,
+          "headersTimeout": 5000,
+          "serverSetTimeout": 20000
+        },
+        "cors": {
+          "origin": "*",
+          "methods": ["GET", "POST", "PUT"]
+        }
+      },
+      "forging": {
+        "access": {
+          "whiteList": ["127.0.0.1"]
+        }
+      }
+    },
+    "chain": {
+      "forging": {
+        "force": true,
+        "delegates": [
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=71a21e3f20d5f5bca71ef1c0ce54b19499724b127236b7ff9cb715684171bc5123978c6a5cda092628f8e222285a7127dbd317a5e94df5493e0075a93b01fd4921229dc544db9d3b6cc8&iv=9977ca674436c66016ede769&salt=f70f979be99d35a0678514e7726cc9e2&tag=28bc7c8e25062d20db155d2bf75e2ae9&version=1",
+            "publicKey": "63d5649eabc882338bc133f8f69c6952e1ba0e0b007548b1620c72fe78306283"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=aa51f34f416ac796a6c7704633e14b4935c6de4e403a00ae5d3f4f12dfe4ce2b9e6d0bb3e4e9c563a8baf87bfec9cf0c0f29321d3faf6bd608e9837d1a1ea2d7074c2854af4fbcbf2ace&iv=c069f45a08d5b51880c7d2c6&salt=b895e1d5fd7c872d48727317be6cdf7e&tag=b2fe19f86ff40c96502dea24b90b3799&version=1",
+            "publicKey": "d7f85d11f200adf36841508d7c3888d735cc9b3ed0f3f7d3e7e244a054e06860"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=962e374f982078fa36569688717f13d4a5d5c308cdbdfc26a36404519adbc1ba92509b9c73d371bc62ac8ecde0d67e0cbd181d4e0a90d3b68236623dfdf944d256f71e3b8dd763ef25&iv=e85e0906b03a509b23e459b9&salt=bc9d757f5ac124e44b3e9161e0a2fa28&tag=f38ab544157cdd3ddbbd88aa2b29970b&version=1",
+            "publicKey": "d7583d68d9e986adc2a2b021843cdf15916880c9ca01951ff5640b80dfc5fe7f"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=f88f42fd52e1e52813eb1c1332d378dd3ea34855edee0eb3f07e9c3a4c04132960ffe61d3a8fa5ec1d0451286c0efdc7768e26794b9adfadb2407057b8bd923643d50eca5792f92c839119abc2&iv=122c523ec4b4f3fc77cea9e2&salt=b56f4b079acc9394270d022b2386e9c9&tag=1787170f23b66804994487410af949ea&version=1",
+            "publicKey": "c60ac14d95685a12fed4091c518f35a6c95cdc4540b6a0537bf72449228f528e"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=c7f6e2391123f0bca8e5bf03f634ba9d4e83a486870528804ebb66683098fe9be4226aef82cdf0ca3e127a0d20bbb79969cf40fa8b5eef0ba5c56af1fd20d1c60c2648c62d7aba6ee88734fc3d&iv=c1cdd08c142749bbbb40b7b0&salt=025fee76198898234da20c701442e313&tag=87dc4e060dfe531bce0f3245528a5753&version=1",
+            "publicKey": "1a5c192728ba413fc6c34a94a64aaa1da598feb338a1d4a638080809578ce439"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=68e01678483bbff84994b95651bf4cb12f8de0e49f8249cd79fbc4fc6cc1877cbd67da7f6e849470ca52d2a1cd7063e08bfdb0d3842df9cfdb7cce216b1d3f0b7e3cfee9bd6a8bb4af3934d363ed1e1d9c2d1fa835&iv=489a0c05b05576441d5ce0f6&salt=fe51fee43d55344b00c396b715c75e9a&tag=a870c8933beb62f8a1d556e1c4948ef8&version=1",
+            "publicKey": "d109ea595492ef9dd5f3fd785783a75ef221afe8faad641b706d82b5c10a4fdd"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=e116ba0cbfa499bcbb1c257b09c976ce4fcffbabdc1805313aa790e15894a60f0a51b554c4cff459168956d30c5ad01b812ddeb482bcda14861072766929f1281d90de87df484f1f14b4&iv=d9acf670abbfc2fcb6e17941&salt=6099063d76e2f156292964aa8d9f1ef6&tag=dc29714d2adb223af3a1e230be61c453&version=1",
+            "publicKey": "1b7a19bae6cb41a9c6676bd7c5c239adf4d64c01889ae53bff34f342b88a57bc"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=73758f6db08f7b5e55353d7619ff00f4516fda16d58fef74b05bed33772d6a5ee5dc021306339ec54b10cd47b19009095c62fab4c154397469fffa720fecc737620c8e08cdfa98d292e77c6c339d6c5a&iv=63878d088074a69340560b3e&salt=7cbb013fc2f9541a930cac67fd255d1d&tag=9e22cbe70d374ce42cf67fcfda31fae0&version=1",
+            "publicKey": "748ca2d11919a8d120734a32cd719c5c0d3a968e8073c834d68db23d42e7aceb"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=85d8105d09d1697a696123965877f6f845e5b1f739f1a1b1759cd8caef8687e596f07b065ef5728fd4d621d634d66da796638a45f7eb40b14af1a1583f3ad6d4163dbf8e59aaa7cb097c8a29c5ff500c1500&iv=16b98dec7b17c309ac3801d9&salt=5a09c8c63006d4540ce0f4f9524878e6&tag=31976bfdbf3785328d684544affe9ebb&version=1",
+            "publicKey": "ca8106f71fec3a1c04cffa99ad855148f2ed3dd72a3f4de647d5924b75dd3751"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=7446192486f8588210fe389311d7b20aa88499fc86b09ab1ce08560347d7dcb2b56e45fc2702c000447d83ed403eae7bf8e7097f768cd2fda070268fa451ff1a578518c1d17ae18c4a&iv=c9902ebc468770c62fc9b3b0&salt=2b6f9c46a7248bad0a28d2e4caeb04e2&tag=3d3d2f277d00adea1f71ff4aea3aab4b&version=1",
+            "publicKey": "1a1db066ec4a87f4361e7000eecd94d44546275d65e5627970609cfa2991ad52"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=6e612bebc2cf728d6c3fd689c0c1dbb8044a0b1d62260828837072ededf9a6d699d8be89c97bb3b910f3644fe6383cf6e5f21cb1d63fcb478503ad39cc83876d4117c2c705c2b91b3c0b2d8638a4984ede6302df&iv=f8ae967d79db521d2777a80a&salt=e3a4104852f641b205768fbb16ce6ba6&tag=642075728f59a2b1755e2f658b1e3af9&version=1",
+            "publicKey": "fa11ce856109f35a8562903bf8eaa527271012b07eab79a8dc7f2dd1079de0c5"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=e66e172f280e61f65649c02ffd031719868b5ad14e34bfe47cbd981c6a78f1a9f155f243c9c03a9242d316eaa51a8441c68592bbf23add61e97c39effeb776d22b4804ce0d01f449df13&iv=bb1036c605d9176f88830d39&salt=97385f0e5d0bf67fe999a4e3a6f5eade&tag=ae3a8e372612ce21fef91945d96719ef&version=1",
+            "publicKey": "9df398693cab70b2472d73711a485c8619429062b40f9aa61f6cb41d64d89342"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=2f45d48bdcbdc3f6ed4c573c86448f1f8311898486d7ef00ef69cf44560dc7aa6fc3a9a17fcbefad77759447ae21a5c2a6341593e57ad6d685462879fc61eca17b8b9a5dc35e36d4&iv=d2c354794e014f286bd4aa7a&salt=03d348feea7cd5f9522f2b07fcfb1732&tag=f1e4d5354c66e4cf2da38de588a420fd&version=1",
+            "publicKey": "599a865d04438466516bcfcd93f289d506e5d4f7c8ee226b89622af598b77f13"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=033d2ae77c1f877586852ed53304ea6ce4b48456c1cfba20ac1a4e3104c811de0f98d312efe8fda58738108371360935a86dcd2fdc0a651cb94b9bcc0cfa83b11265ededbd8ce7b8e8&iv=0b63a71cb5cfce655ba440e4&salt=8ac88104555d33ed020aa0e59ebab013&tag=81d3bba1671e08b98704e793d0cab861&version=1",
+            "publicKey": "4400975fc1aea2347bab4f9588a1f67fdf922b22356d7373113da2eddf4dc733"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=299bb522883266d2a7e33c70f14d219d88881093d859163400c4d1f5f81224f4df8204c0566c418790a0b93ab59e6f9eaed49621ece325e5b97abb3f912bac239d7a4dbeef33aeb514&iv=2f184f81c319956b4539a42b&salt=7e104654977090670349feb7293e24df&tag=a8c3bf54c232c15eb0f3eecb55193f2c&version=1",
+            "publicKey": "188c4f6839956d87293e115c2065d239802211a4d6e28581dec8db701ae76acf"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=a307a9208cba13b05046b6f0bdc900dc03ab682d3dd67a91063c8b4e00d6b4489bb9300ddd17226ed86b12050f9315b12138c79261e6caaa56fe1a66c6c4253a1887178ec3c4ea&iv=82c6ff287047a3b031cf0755&salt=7fba5733051719e238a638756e3a28d6&tag=6aab2fcf3162cb1b51649a1c4738db86&version=1",
+            "publicKey": "4e2d6c8281ce939dc1eb4b7e8f7e63004ba63e7c182b4ce601a1db9839db0bce"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=24c6edeac6f2366bd99a61f8e52d16d1a751f614065a9fd998b01ccb4b3e388d527701c63ed0057a2865f7f0d42aab559075249b4410a1b4d7e7a742b99afe22fa21ab32eb4f444107d4&iv=079849e551ff3d1c9fb5af7d&salt=d8aca222138bced7743f153b3ea53bae&tag=3b22597ba9a885c09e9ca43dd9253a7a&version=1",
+            "publicKey": "d778613f73549ad21b3ad8783c6af18e4093675077381c6bf3cd63607d449705"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=9418a79e3c95f37fc0f3fd6fa724ee2a70db667a202436a523c8e88f3345b7ff423616185a231230fba83b5ec37a72c6614467374ec8265e5338b4a1063baa1d0a32fc888c40b821d8&iv=1a68c764127424c76221818c&salt=f32cb1185a967f51a35252bc1e0f037f&tag=1895622f3a6f97adf944980125660ca1&version=1",
+            "publicKey": "28c73f68db60771853ed43901cee081ea27883288383f807af289ab9c8b85cd2"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=9536c0e69abb3352173878dd57a48ba083a701635ed9af97f30df04d9b3d50b4c1e90913a8459cebeb2ddf96c8ff48bb0cfd4dae9e12096ab761e99b6d3c44f6affcfeb27f966f86d915ac&iv=3e03a5e0d3c78884a8396c78&salt=55f097bfbc54d455d0c7130d1cce0073&tag=799faa2bb36cbeb4069941a1b926a888&version=1",
+            "publicKey": "b3975b524a2c8459a45ef6707359fa23206e2fd92a28b3f0deb7f667f5d208b2"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=4815a0ba40fb7ad89f44bc5e7f52645a4b8a28d4d26a578ad718cd28970c06766109fb44e8202abe4f04c6008b9b5cdb0d1f35c321c1932a93134c695e1409beaac988620dfa56e8ebcbd34c&iv=221a8780b2f38e4555e3e441&salt=d91adad0230ecb7571531a851ce54de9&tag=c9c8f9f773f588fbc06d8ede5d78d482&version=1",
+            "publicKey": "af240b1f86905ac8dda779b701876fe82f062a51db1efc538b8222be31199e7f"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=1f21a39246d83fe86e93312207e9ed63a851e47dee5a57675c8d6cd5a5de007c4f0b9ac9a102a14d4da1c496552500073f2ce9970c6c4c4164850f244c9b4791cdffbad8d4fce44ccb33549f606489d9ea51869e66cd47&iv=e82c0d72b666328148afd58d&salt=d049a6789549cd935b26944f0bee736b&tag=f482088099eaaad1021d175ba5b4e06e&version=1",
+            "publicKey": "2fe7645455e560b139fc3577504f6e123e504b56f04b0e4821c6b8d01b77a1fa"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=86feebc3cebc8f93f37d8952604b36fbb13a8d86050f59a85496a6ca3c61b95823d3b9ad6eb16de9400d0c17277ff49c0b3d4b4ce4920eb0020bc2b08d7ac8bd591e63fc036e12f68c0a5eddde76d3d6&iv=621850efc9d81d2eda080d85&salt=16b012826719a6e9fb9038d39bd3279d&tag=34f59bc84de6cd2d62f151c1f4fdf360&version=1",
+            "publicKey": "acdd0a2ede40d36e45616ba8deae7e23e886e1864ca2e4cf0f2dbfcde5c2ef3c"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=04aba4e423de049d39ef39e87859aea0d803c7e1ed13828b61959431a955e4033c037712eb44105ad237b3f015a7035fa17c340b27597996ecc6c74219bda8ccee14b23b697ed33455&iv=f8516eec530816154c43eda5&salt=87460b0616c9c1afd2d6ec5889941543&tag=732886a50fac0a7503809b5ff0b40be2&version=1",
+            "publicKey": "72566004cc1b1acd6cb68c85a83809dde0d8db5d268abdee82da50d86600426c"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=29ca9f7929a6bd344588190cd0a438bc4e3cd0fd0d2d18ff9d6b1e0c9b34047dd48d63b21e3cd71d107d8c98fb6804a702d40878ee1260cc2f69160715dffa37d36f60f9def6ee38e50e9627082b45e9&iv=e966abc32d02cf35c7f8ef3e&salt=382908286a664fd48833bebe2e6727a6&tag=8142706eb8787b5186d07ed12b879c97&version=1",
+            "publicKey": "adcfe507913c655c8fd7a730510c4dacf965f1e2b14df30b75b43a9db0825372"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=732e365d7b274e597fefb92bc98baffca7855eb206e8e89d1588c1ac6ba21ea9d4cb903fc8b3b43e90ea1928a93026c56f1a64008f1494209f9c591b9e26034f7d03439151ebbc4464b196b24c&iv=0f44ed53df7163f4c80ae084&salt=0a45ce08b06ea45f31554303d58e665d&tag=85d51d67a54da9e180e8cac6bd15c611&version=1",
+            "publicKey": "bc54aa9c3c030a01b36092782db69b50b5e6f955f6a69e6103d2148b024f1426"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=65133089bf4e6dea3b18ace1813c49f16f7485b21b23fee571ad9604e02b3361e098f99019aa7067b58d15a584dcb72e24db79eda5eb2bdde70f0f81a6b6da9c3ff66c63922815f3add366cdc394fe&iv=5c523c3a2f946be1b367cc28&salt=e85c5de640bed1c111e9dd68ddb38523&tag=9376a88f7fcbedcd7bf2f17a2cf7ca5f&version=1",
+            "publicKey": "b175a58fd3111c736df611742f24756f6f8db956ed411124cfcfa852dc401b38"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=0f2e1bf5273092ac4ad307d65a4498a69ed505596e0143ab41e3f05b440c0f8eb4fb7545b3795d8bed8fefe03603e462093994c03f69952ef761e8c66a78b8b425cdd5e004c868befe61f44b7e498c&iv=8ae0465cbb5b0ea38086d181&salt=b0211d4da6e13798fa246cf1bf5c701b&tag=fa952a289d00eb2aa0db11595910fcd5&version=1",
+            "publicKey": "9bcd102d44625aed80042f88574669207e70baa6bbbfe4f5b9fb2c8565684925"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=605131c37153424190700a94e686aafedd80b25fe608bebe5242502da5f1405b850e566e673134a70d8ca148d31270cec79e3ccd561731c6942c1ad21e96776fef63960e444c17aa&iv=d9d8cac804b75fed8cbd2768&salt=d45c39f5f21680f19d7331ca8f68d205&tag=f3b1dba24796d0dc6fd0dea69ad5814c&version=1",
+            "publicKey": "7d766525e3f4ffef56dd2417552debb291c9a228878e0102fc59b2e0aef5aa52"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=352660702793148d0cd5cf5e12e843f773242e5b37210a3f6dec1b434a3319d4a2654cca9b1fcdf8065ae8292f9d662a53318032153705746858fd98bc208e1930d404b0315d7c2b67ced0b98172885a7e8a&iv=e28f3ae72a3e5f5dc40a2710&salt=db59f8e1fd037f0189aa88f6f36ed00b&tag=3f1cfe5594de151ea7ad92c6fd3959aa&version=1",
+            "publicKey": "2214c5dca4756714175f9f5578567e3d2cf33fef53aa89b4fab542ef45fd471b"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=8853e0c71fed01cbe694d9350d62195147c12c8b79f88fc0ee68ff48fc9862e7311f6e9a9651cfdc2b68ffa7046c3fc3b23324525c550ee6d5253227d09fa84029d5a96f8085&iv=90537984936a2d6997810469&salt=be26e4874f96d1988ffc267080165f34&tag=f5635a7a966c604a75442b0e7c86a307&version=1",
+            "publicKey": "948a87ac4ee7890b9493b306269ed205b1cbe05bec3b0072fc5307da41261cb5"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=4caa192fd647cfd36064ea9fa3241a6e2853ed9b22dc58c4567f955de5229ee2cab33fa2d3394a586ceb313e5c92b127c63a67bae5ca5940a48199b83173036ee06d3cf5c30c21&iv=a978fbdbe5518b12c660ec6f&salt=5adb268bf1c4d078734e5b6e6ae92467&tag=9d6df0b00e61b53c8d2d20309fb037a8&version=1",
+            "publicKey": "b2df3698153d59a9d4d8b90a8ae13f8e0db0f82b13d8a2a7ff7321b2fdda8bb9"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=ccd2fc430dc79056bac468378fad2cb111885985c9079eb33b14209daf27339dde16aebf255318fbe371ba71f3788e4b2a1fd5083d871955781a54697966ffc147d9312360a520d4cf61572eda01c8797789&iv=8da35b77951babcf5c7b67bc&salt=fa54f842fa824cb54baa6ed2c35b7af2&tag=52c5f8c63bc82331c2b2476313e35632&version=1",
+            "publicKey": "e9281329601521994ee4e31e01b2dea18284390fe66cb9443ec383fb761634c5"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=a88323ad6118275d82d665a73f7ac408e843497e76aa012f17e07a33d8404a751b0c2274d9563fb25727e9f40619f194371ec9878a616044ab05ceea39b6a4e1a7b430bb535d67d0dbace0aae42a&iv=3071285fae30f7ee8820b0fd&salt=54ad5bc80a137a948b0c83b639b67245&tag=895c31edf2e6dc20eafd8aac82e80a48&version=1",
+            "publicKey": "376ca641aaea4f7f7c238715234b957592958da53ca5883e0b0858afbd5649be"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=9081ff96107224461848b9fead523318001749c5d23174db18736114f367b9d04c1a1c961d8ce8431ea3058729440e28f518e21e708193fe508e33caf3ed5b8b3406b326f413f36fcb0e&iv=af798eee9f52da9843c8b659&salt=21f3be194a7dbf41b7b8adaeedacdf16&tag=6104a3078c5d98f427ca7f9e3f91363a&version=1",
+            "publicKey": "6f0c3a646afbe1e3e62ae0276b28ab6f87f2741af86810ff870a0f6980a05430"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=6dbd4f9b349bde7c21b8670a0651999a1ecbc6c47b74ac3c11eb34a2c386e5fc30b934c9658e70138a7aa24dbc4b950e385a241f524971ab9bccbf6bc00c091820838ec1d3bc50d7&iv=7592d5e7ba571c52e87c0a21&salt=7c55aba28f9e388a27f50e45b627aa3c&tag=860fbc98faa47aee0ec36f1190afd092&version=1",
+            "publicKey": "fe076377857ff0ab53e169c4146dc6f3cf7f15aadb33077b308b97ffbd822fbf"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=ff2eb583128bc8645fe85af3f52db64a8c9f486e6c6a149df50d80c82ab95875cbb58448257512b251bfa6b02eaf982a57720882b1566a6a5cfb197fdd4bd4c5b8a9e0e92f6baa8378da&iv=5bb1274461e60d6be39f4cf9&salt=a551777b01590f71c855cc9c545b2fdc&tag=377486dc212ad7871b7faeed1954b6f7&version=1",
+            "publicKey": "a48ed71c0684ebc8a8a78cb3c39697214e7a62903a1ae8060491260cf246bf9c"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=d6cdcfff9de9eb66e164342c991fbe3f8eddd5d1f34dfad0162702bf240dd4c0ab91df896f99a59c5e427b7bdd310fdf0261253934a0d76c56145219caf2c7113b38ebb94feb84f5c02bcfe8e043e5&iv=f2000df0e38492fd652778b8&salt=28cee8fbe03e3d46bc9b322fb3abfba6&tag=eb7006c21c55f71d2e4492bee6894983&version=1",
+            "publicKey": "42ab54210796245393b99021431962022ad1047e6ed244fdc5fe5833155741ad"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=75dbecba255c29e954f1346f845f3f6519201c3b052d09423fd35670196750b90e0f003818becbcba72b71ab4efd68c0f547ef6bd00ea2014018a447466f1f5549c388c7b1&iv=69a5605f1ec565836889fcd8&salt=c7d4c75212f5f69502570b4f36e2f497&tag=ad0fb4990f11a2e63cb442bacc2214c6&version=1",
+            "publicKey": "857378d2dbb4391266023d6568163d0bfe614a35fa8189f5e101347c8eefc604"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=e16ca6932eb322e3ca725f67ee56262d2c9e7973868715b74078f65aa9360eb7e0aebf44e10d9010e5beabbf6e65fa76592482fe0defeac429468c44f5329475dfcbcf0d904b92f2&iv=acd1b4bb31ace90d475e4f80&salt=2de2141e84287765f695aa2d688af958&tag=ae43f69f8e77c46a863d3bda30083aaf&version=1",
+            "publicKey": "c2f2972950065a8112f87028eb988341e5d48a82c65bc5abfa4b380578d1208b"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=af2b242cb0c7bd19a7d7a92400ce0efeb0604af6c5599c3f084ad203f8a6a5755f34c29b5bee6a643833c79bf8219f69210d1fc38fbf3d137c9661e2c095455195728004491e7f823b39efebfc7590&iv=10ba9944816124cf2d5a3207&salt=c055642d49c5eead05257188a7f10f4e&tag=ecb9cf9b31bf19ff3b7e91b0cf75abaa&version=1",
+            "publicKey": "50ab5fcc0197ad5a5194f6a9bfd8d94ad83bb48a527f90e17013b12195cc1c8e"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=2b7a77d26091478ffa31e4856b8091be51d3de44c4f2e86bd6f14f63a48dbb43112b502d4dde1ac6166dcc548034dc927ace01e12335f4b9e87594fff9f6711fce0c034b1e519ad9f40548fe7311da3225aa&iv=b50aaf71d8265ce0d77eade9&salt=902e7a283bad79e08fb8581d3958ff68&tag=7c48f2860923293a78be34d795f9fc99&version=1",
+            "publicKey": "a30bf3a69d816f19cc939cb0793eddaa6dfecc90d0bdd7df100583ec8ec85dc0"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=ce23ed8b107c660b50d4c26e1edeacd3f07986f691ae9405f5f2e07cc194848991d75c379d643fe4b3297e09773464e8dfa22634c7c5db26cb2d0e494cfaf2cc4316249efbeadef3c307f7551050&iv=89a06e07c21a0cdf6a56d6c8&salt=871d30c04eb3e8e9561fbe6c0caa5b2e&tag=027927257f7be9da38302e185d59c46e&version=1",
+            "publicKey": "a29ad79336e493a5a363f73ec319d93a60581e2239dd8758bfbec80920b6cc25"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=ab4ac7b1ea6508cc696bd3a966d461a515c837dfdbce86b8db2d7aca82e488dfe806283d888336ff5fabd10f9d5f2cc5949a5382653b4027f5518e9ce06219ce938d35e7ebecc95b5a&iv=fd095305136064da14fd4a5f&salt=09bca4eb031f81a7f46550d8a435f452&tag=7dc68a0e0d0495a75a5f166118584d99&version=1",
+            "publicKey": "c6ab7a38a36d106c23c00b5be5d29cbf073a04c70b63b30958af009bb4ac6bac"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=5bda57097119485cfdb8fa8b231996ba04dce50d5a5f4859aa9f43f4c83dadce8366883544df7b9eb0e6d794f2660d18c46f0d3ea8c548be79c3e450c2ec3c8dcf8e19252be88e7bb8ce339355deab&iv=a45ed123239da436d28a29d6&salt=90909b4c6e7f2ffe40cb8d5888cf76e5&tag=d67941eb7ad234445d2f20b076797ad1&version=1",
+            "publicKey": "59fbd8a9808051c16c15117c36cd219d06d4d84ff35552129766e34af4db136a"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=fd8eb129481aa736d69e663b368363b28a8be82cabd9341fe7dc8e3d677447e3a226ca3575eae9b7034e3b5d23e444856dd68c1f6b247873b64f4ea7a8bf7bd42f7c708311b88095eac396&iv=44c16c7fd175515a9a85e685&salt=aecee78f271220f4eed87f886d5acd49&tag=c997402473c03585847a9559aa4c19c9&version=1",
+            "publicKey": "dd951da51a894b6ab4e66f962b2fa4616f226c0d1a0fa1bdb72ebe1b77013f50"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=95e7e4c8593f5dacda82ab054a1db7c7ddbbbd3ca01bc2b43d426bc3c41f701db6018c61de6db5f3b8e56b3faa8c8777e7392ff9e804fed7338ce7d37645d66807b65d995ca793c527523515&iv=82aac00e84f2b79f75e86908&salt=0e78cbd45ba0489347d0e9dbadd2e424&tag=02ea98b735ec6779c93e31b1e2dc7fbf&version=1",
+            "publicKey": "e1c69e513683f312285e19ce735b652cb52ef068239baf4bec820e20ff04fa2c"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=4118ea4f565578184661e309977e12986ccde1ae57806fd1bf6e3fcbdfb990c1c04d86799c541ae23b74af9707883799545af7fc534e8eed0ac59c2f7e7db601c714b63090a6e023&iv=1dae42b4c6f7a06525e2b43f&salt=cab6d133fbe80c5693689facc133f5c4&tag=99c3ac4c70359d6c4f323bdd3fa5a43f&version=1",
+            "publicKey": "b8a3406b535418d2cb9dd1321ea3f5e6328954b19d2f4b93ff136f27319069b7"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=875a5b8d963633658f864c1f3cf36f8cd766c3b6068903983d37eca6d54d2753d8fcdafaca09cd4f1f27127d5393ae81358c90f2c3db754aafe76a44fa00ecbb41b96042&iv=288f3d4f57c55df2489c5a10&salt=88738018549f49925952494708fe2cbe&tag=141358b643e2782ef49810cc9de82122&version=1",
+            "publicKey": "7e7cd2a153514b53cd3f0ac9cb7c72a4e092a90a619157524b874dac463ae589"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=da44080b3c2ab3448c57f1fb5317262635e8500657951486384df25beb0e9c09578d2221a76702ae59e42fcb7fa642dd3bbccd9b2d13cc895cb12691bad5f63c238c4ffe&iv=81392de219ff3e3e77800a68&salt=2c2c4ccf8f0d2189e789d74dbaeddee1&tag=a4578c1407793304cdbb25cff7ccd451&version=1",
+            "publicKey": "2694220a66dfab319e23ec04df9a88d704768557224916768a263efafc477b22"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=baf52d0f0386c7c50843a0ca62c9474463673f4889111b2d5c23707a76937999f0b4772e074da39d005c74da9aa6323edbe9a997809340ead0966c1b53438344d5478388ccc401f95753be1935&iv=d8631d22317ea5f8f19218ad&salt=c214263695f6d4663988afb5a1463d19&tag=96bd59393fe3d696417aa77c2d12f521&version=1",
+            "publicKey": "0b9a6b2ce14a2e108e1b5c44c2e9dd0be52a2ee5dd716c6814442ed159ef3365"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=89e9998a67f8be8967db0997f88d7541d03c6cf103a136602623bbb415e151fc4692479d186945b4aba823032ea057487262d6fcc7d3a359c557267d30e207f03f4631f2ea89b5c136d675&iv=2a2a527c991bfc7079a1eb8a&salt=906e2651493332fa1ce0e563aab5d95c&tag=b9aa42b59c02780dba205f453de39def&version=1",
+            "publicKey": "304ddb71683f3606b210a407a858bbef6c8c4c7dcabeeb4812066af19c04afd5"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=b20adafbad13f95c2cf9ffddef5627e19f721d1e19e34f67cefa2e19bd15e09346709887165fe446b248b62a48d33fd4ada2dd98f13b2e3d6b42332a5f849abc110085d696c9b747e6bed7&iv=ddf6b15355f3b76cd7d41360&salt=40b9581d95cdd0d19f259817237ecd8f&tag=4d1f56d8967fca2b7c197249866f61d1&version=1",
+            "publicKey": "291ade55a5f1c3411421de3ae8db87b0d8215c6de1b5e2172effc67d19d7a073"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=da7ac60aaf7573dc4379339e221448d4b36fe672e1cfe0f1500c21824289241d3d57f120652ccda84e05cd93f671602591a73b8ed7e0ad8d1e2ee2c1309a6d7ae64368e5e95476427ed55aa052&iv=f0e5323a1578bf6683c6c796&salt=464a72984cef45fd379774dfda9e24f9&tag=b45428738090fbd5fd83612662af2917&version=1",
+            "publicKey": "939425477bcfed16e11edf6ee6dc5a7ed3248dd17c797eb22d82bd52ff364bb3"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=a14a05edbb5ff72deb6212ba2779ff779edca3bc3224ff8f6cd2dca4188bed802606f142f694998152e0ee7c9360cfbbaa410da521a6a499d6234ef3b7e04f734dc3e42149bf3eef972123896aa6&iv=ea0c9b07f1f1586ea1a16aa3&salt=f8a5eabd561887ea44f5eb1b918861d6&tag=14c63a895aa8d2486307337cb326c0da&version=1",
+            "publicKey": "6e6ce28e4b93715566b51757b13068674a6340e3f554a085915246ce561efa62"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=23f4592215382cc05bfaa194baaf11ab35373de8f66236ad1e14a05d1650b29e7c4139b028b48a7df1301ef6b5aee385eb89db74ff17ac4ab75ca0d740f5ab613282bd2c33f27d201c9eec54dd&iv=9701fb9af07638aa848e1a7f&salt=c52bc8b5dfc824c48d9c1b713ef0b08f&tag=c2bd5fa75bd35173d9863fe8988bddba&version=1",
+            "publicKey": "e9d0eefce1928f31bb14998cdfbdc543dff68476e3672ef371337a62fa307eb5"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=67600d42b1797ace348d49365b8fe25517a746833e0160d8c811b8c609ecd0f1efc26b8413383213c07f2c40c0d31ed6688e14633ea47dcc4b8d174e5f4a1ffacd1a11639718f33f26&iv=9c0cb7ae9e479876a6304c59&salt=7a6c9de26a721b5c1ecd61196838c946&tag=78ea96b0473494aa8913f74da555dbbd&version=1",
+            "publicKey": "34969cfd938107906bd85d3c4330ff770855cde6d55a584e58289dd2d719f27f"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=9a9d5d7e05a7228bebd48633e1a04c664099252d1aed13b2c6809f840ff11c2ae3090d57b2391537dc1ce10ddbf1bfcff18ed7238206ce513a100d6d9d973283a613b0a0315ef5b46b13a6b25f&iv=f51a1c90a93095d2cb1c3638&salt=22a2d0315cf90ec1ae4b5a8bfcf3e388&tag=b886efc15414278fae794b8595f9ee6d&version=1",
+            "publicKey": "cce6728a332203a3daeb94b3913d30dc5aad31faf31cf2dee9a6e21bf3780739"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=3a2be64ffe1ab4f619b50f1a1dff7350b29c5a928c8374a9840a887c5c358d99b9971ef6da92d56a3159a3ab26aa89cb4fc9eda32d006e223966ecb2fce996ab8222e3ea3e67ec55a756aa69cb&iv=f685f2e197359ddc5e705ba2&salt=e754768179ce7c837b66adbdcc4ce871&tag=a91e11a230a313b9fa39c860317ba889&version=1",
+            "publicKey": "4e49070a2f05d78fe272a50029334819039dd72a80df3ddcb6fe089b40093885"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=171073fb78916c05d1a7abf98cddfeb12ef78c4d3e2a2d8df819f2e4a4365096aeac3aaf85c1096de493e0f977b060b8e38f1ecb9d5c4dbfc9115d7113e779d2c578c4ed176ac28c77272f8157f41b7e7fb6&iv=37ab3a54530b1689eed920d0&salt=eaae4a068d06bd10c64a30e6de6e23a1&tag=4fdab80b3cbde7ef3c1e809911c52217&version=1",
+            "publicKey": "b3d3c5b190364dd3d890e30d5e3fec7f5603a30322139b3b712ec3980ca9d548"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=f3701927b166be1e2d907567604649f9bbc8414d63655637f4c478e45cfb474dbbc05a66002a93d94bee16c85c0862f7e701a7cb5527190cba6ed53b30432128142c21ce886d2f0575659221217e&iv=2a7f15f0ed587fb4ae7847c1&salt=f261a5e43debe78c49561c20793a4800&tag=2fad82572153da4abf6199992ae50ce9&version=1",
+            "publicKey": "b33172d7dffdc0c587ed47a9bad8a0a1bf66be6b40488766689fe6c927423e23"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=fe58547243e2bf9e0ec457c7a4cdce48c4d715bf26f58bfbea821c4b663e1c80e2a665ec8233ba6f99c1fb533c612e58eb5dbfa695e4a4ce9316d927a23a6fba97630d2ec76e7dda8c&iv=2c173070169f9c56d450de89&salt=5004663b653f6a30d2683b4ac64a09cc&tag=2b27e889e8a22701e2ff37687a4ff0b0&version=1",
+            "publicKey": "f8a8eb672272901b2f68e3a4a5aa077474ad10961bf196f6ba007a644ae765eb"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=f6db954b2ae63cdf3fe2bb9a297797ec37c6b59e34cfdbb179ce7040e18cf5f572d9e913f14b0b8231c47ee2fa044019de21fa73ff17ccc36fe458b9eda4ff7f7d5cfc284552ce70e1&iv=bf00b3fa6379efa2b3a782cf&salt=bba277f5d585f9ae722425214d2fca2e&tag=944ce7f82fdcfe613f54fac974c5588f&version=1",
+            "publicKey": "a26e4504b0a1d26a0b84da33f8410b501ca634bf6e0e19d77e69d6b796105f79"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=0286e313414f498466d532f4dba7a03d5061e22734bdae42df5e6ecfd89b94d95d91b05628111fe5ffd1cb9d6c7271d0d19b2c738804f660e8b56c518f6f95949fc090c607f24be8c6ac3f&iv=3e28a9b1e2a46814331d48bb&salt=37bd429367e2e85a314bcc7fb8e9f9cc&tag=eec5b9c9f41459bcc081ce2e790570fe&version=1",
+            "publicKey": "c0a7b8672e4c8b60594e844214952fbea3cc40f088c68da3275dc7e93646b10f"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=47ddfffe435e157da2629af39d3b3d02d54c3a3821c6b7434eeeafebb97b74d207f15891b0577e41fefc9aef2b6c14edd1e45408a5bb1e18fef5b20cf9352136b1c4ce74ae78c3788c&iv=5eeca86a5ce2a7439e76c553&salt=9b9f2532d14e75b5580aa48207d3e089&tag=c172b910023aaa18eb19f7cacc06af14&version=1",
+            "publicKey": "d02a6e660b7da2636afd2e25fafc0bba3892b35d4f72ed86f7eabfccfc5e9365"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=47176aec4e7507cce16ed3d75476a11f96b821acf51339040bec373ffef57207e50650e3fe350cfe703b271d36971ca4c53713cd00665d687e587dae636c0b471970f30340a4d40c96782333&iv=eb471c7038063b3f81cdc917&salt=d4335ddb91829dbbc7e6d0ca74c7108a&tag=310f17755e20db38af87864733f1122e&version=1",
+            "publicKey": "7f325c2681a344d844acd7b435d03e2a721ab0b2d62eb17d1994a5acb2b32f5a"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=3f32e928340145cceda38f2c7f3855b76c272fd2382505af2b4178feedc2aa9bc971503aa2c0ba7b46d8495947ac7f764b63ba4816d27d9aa2b511594f7563098fce5a6b3a6b477671c29c6987&iv=15476f509aab6252205235ce&salt=95a3101ffb9b56dbd4c2aa9802224a01&tag=614c7ead604ae8e410bc04c7627dacd9&version=1",
+            "publicKey": "763db8d3e02c79bac1f1fd5f8f4834d4d5762d61debf4e4e7cdd1cfaf4da1bd7"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=6909ecb628bc7d1f9550298babe4d1040d4d1ee5bf4237450b888cbb8bea14791b40236e350b4a49b22e6d2cfd5e92ef5ed1d135d6cba9e24d0030e2bf5ee58f5962d050e0cd56565d9eaf60418d1f2994fccafa93ec450129fa&iv=ca4b90dc1e01b8d6b5a71969&salt=b3624ee9fef969e4026efc8ca070ec86&tag=7370a875dd46541dc955eac0f9a4a3a5&version=1",
+            "publicKey": "196aeec9ac9263396ee0bebf31f0af40e7c25afd954109e3b5e5d00ce8e9a8d9"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=04aebcfb7c3aabba59e3ec0caf36d89cdf2d0a4bf299d9f1f88d351dfd9bd3fa2a9d1d8880e09586fe3ef5ebd1c91c82a0b834fb21ef8607762a519a71cb4f371c99d3aa7f0a5d&iv=9253007d016df531ed22150a&salt=3c245cf6a616a67794ddc02a5faa462a&tag=839312da9805e19d0bbe720101cf0aa5&version=1",
+            "publicKey": "14d790fb07598eeafe9b9f01189a7180fb4f33dd3eb544dd662bf8a1c75ed2bc"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=fb7b3bb7bdfb1841566437ef6c3c402fd08ecb2273fbf66bbed4a093ae3633272a527afe7a74ec1129016017ec5d0bea6c6d721d4cbd24e303c93a31237fdf3870c65b52bdcd421126b9092165bb&iv=e01f7b431976ac817af3d5ed&salt=2c7f14f37bcb197e27d0250daa4a05ae&tag=6240493a85a5d7c6c0fe0652574566b5&version=1",
+            "publicKey": "aed7cc6dc2eaa328b8329a6dec30a0c454ccb1dc2e396e8490cead3e6afd560e"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=e804f51ada69be3dc232b2d06a0d86fd6a33acb029583c87be33bb247b327ace6f41d6bad0c9a532d3c4753586531cdb88233caa592c83a2982230ee3a8df8b31ab68333796545c03e61e34002c458bc92&iv=44f9114afc56e4f2abf79d2f&salt=92d054548c1cb7e36c90aec55aa5b4c4&tag=29ca8bb733140f9b952119619734599e&version=1",
+            "publicKey": "243189d97def9aeaf319cd7a450c674de4c0b912c7f5af13cc70197b8fb2deb6"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=ca0e9e703fa6d21e99bbb38c5a8a49d8d9a8bf12474539a6b8684c9f80afbbee6bff6b1dc7e1adf168244f8ce0fe54745e137e809ddace447757b51453aaf6ad52a27bb9f1a2617f821742dd4c305cbf55e7193fd7b762&iv=4cae960d8ae1b68402cc579f&salt=b9d1261fc527ab7e12d581bdb0b1d8ca&tag=0089b3e578869126eace3a2c77816fc1&version=1",
+            "publicKey": "31193f866b090ba9d0942d617b0a45955d6f48cd6e5830be742abbdc84a4cf76"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=1d424481f92c3b04de042e416728af071d997642fa2df0ffc2dbc6abab1d7e33e6eb7740dee4d8f2c1c4cf4157563318368aff5347e5380681ee18171e5d37b9ceb2691021ed40dacd42b5c650f41d4f&iv=f71e1de586443abc058b9d6b&salt=8c87580d7aef0e54b00ef4e203225dba&tag=ea464b9b07caf5610978ae1086f5a447&version=1",
+            "publicKey": "3a75ab8cde1c5a7eecef047906d8c9aad6dd055fc0414ebd2b2acbba93239f4c"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=6ae7fb85384d6010de3fbd86c9f094821281fc06cfc1842dd6e6040abd55210bda1d5f4a186947395132b238fd6a018f0a5d21fe5b65c41b9dafec8ddb34824e29ba123473cdab2696fc78e94797c2a34d658f&iv=66cf7d6ae4fcc3380e87baf5&salt=a7e33df2679fe6f5bd06b0b65e1dae89&tag=8c0bd6a9f6d244a133f2efaec67a8b04&version=1",
+            "publicKey": "e60b2694ed8bee38ecc92ab1a2562e8d51c8690f06b2f6e66ed0485dbc602595"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=72b0622d59bdb666600666f7209859d8ed355203580f7eeaa4ea39be8e1bb1fed0f23fbb35582a0a7e7e8af71db4dadbe5ab084541de4f6b4ec2ed640528a70269642cecdde377e5edb337&iv=051069be7e7e2ddf9813b567&salt=3e889bdbf1218c3b8cf6bf29585ad69d&tag=77713c5daae8aa825358bba910681ff5&version=1",
+            "publicKey": "8a49f77b16fec7e9d587016073d436d679ab6338b1b834db311f0ac49a2a11fb"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=cc01ee3c4d885d07fb6958864224305c23b8ced46cc3f90043f5c528412f7e8fb5049bcc7a0b27491dce984900aad17a8a35aa50de78a49bbab7be9b4304217fa926f1b913e76a452ea7d2e248c7192b44&iv=e0250af557366f294893f3f4&salt=f313fc86bf1365771357cf54ec235a9b&tag=ae176434d8e78c51bbf1f0880043e218&version=1",
+            "publicKey": "695d15e846b2c2a1e5fd42a6d8762e196a538f29511eab4f0695dde691dbe4ee"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=75b56dc7b5daea634d764f0b58b0b232a6f427ea6e6833c36204134b94cb35db2e1f9a556766f21e77e8c84694d9d4f700dcc2d0b79034886d6ede4eb95dd9a8d75240c71c1cce6642ad9047ff1b8ec1b0f37011ed7ff6a220&iv=9f1df6b7f60fad83e4784f63&salt=b4434d4b86effbf4362193789a374719&tag=f9da4093cd7653f43738e906cae51bfb&version=1",
+            "publicKey": "62698ec2959b4473885f758d3a58817fce04d6aa10c5707eb053ae66222b2d6d"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=07b7e6a17d4645e9bf4191744219071e0fe349b67f65d000cc6f156d2a6734ebe9456504447df0ac8a83a42cb5104abbe163fc45f3a0e1dc52604e6165bd0ac6117ad7021a549b434c6981&iv=e912dfe42481146efd53f827&salt=88f3e6bc78091b55ff2d8d73dde98830&tag=547e957dab911e233badca3bf91d8904&version=1",
+            "publicKey": "f7af7184924aefe8aa1051fe7b23bcafb69709a36e4de2bbce6e55b19088f28c"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=027e25f8b140748bc0f38ba8ed1b7ba2b4c18f478a64d76ad93c1723690661d6d78d7d524e4c57ea7eca066061a3ef0a478995ccbf35f5cbd5d782d244ec2bcf88dcc30c26bf71478c21d698d70371&iv=c9580230468cb2b754438f1c&salt=38f9bbfb9dd7564ba48c4fc0edb3769e&tag=a18b1df6c12a5084594253b67c015ae1&version=1",
+            "publicKey": "cce2a8ab76b4c525be251842a1ea5038b9082b1b85bad167fb47ac6b2cabf62e"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=d45e578aba1cfc96749d11f6275b3bfdb1eddf0ac5e8a2db7a507fe70f136cf12feccf525577b8604ae366b295b0f52f766f606821598429cac4b7171005011e305d2e05cc16176c43&iv=28575badd7966e841628dcd6&salt=2c9495a96c7f7e5700ac38dc1ce4b6b2&tag=b0c2cb9dfaf7177c37d9160b4321ac20&version=1",
+            "publicKey": "1eaaebb35c4e62aaf70bf23daf8c2378c2ba74f6c3272d2ef9fd43e943f30259"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=a684e6b6306516d6ec417737d2d5e97658bbc58f1e81228456635a5c54b85c1b81461c58313443b7faffcb9811a497c8fc225388a63b5a24315f2ad505308bc0ce3d16c6530a5ae35fa53b25d8a401ab&iv=e11a4a67c087169b6e838dd9&salt=8909ff0ebf7c6062d46cb7c6bd2cead9&tag=f50e81226556a015f603ae7c2865e53c&version=1",
+            "publicKey": "1d9df93c41ddcce78c8287de784168cd12f9aa8569be776ba089cc228ecb2310"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=a0bd47a9a433864c6a98a9a5291e87a54a0dfa4bf2253f117199cd9afc9e8e8f5f616e3beb8c918250b95803edd46feb8dd7460b91cee74fdb159a7bdf2067a0c5886ec5ed946fbff4&iv=128646512eaa6ab51a38e4ef&salt=bd6376e47e178ef52dc8827292a55587&tag=7326e6dadd6cd3586ea6c932bb5f81e2&version=1",
+            "publicKey": "e60438800818ed7bbe650526220605ce73a0023c1b827b9e5d74200266c879ec"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=6a8461be5086ccdd7cfc7cef1c0289f97d7ceeed5ad04acf08d8af5ab7c32fe54e50ab7275cff2f53670629e310e95d0688a9223155492306d4ec6b525af7fa2f65d97d9973fcf064009805cf66d&iv=a813617e9d08e49752755a7b&salt=01c98b5e6406f47aefd758a5f18970dd&tag=b4638061ac9c6684bdbbb8bfb4829ce8&version=1",
+            "publicKey": "e69f928494d91135265f799ca6695f895a09f57e9d302cb5d59af3e8bad93b33"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=f9f7beaf78b5c4660e446beb6e56200ac699de3d577219d78ba3658dc72c34ecadcc55db9fa15ec95000710d35e495cdfe5deb0b1c59302f5a9bcb2d86f91f36a6b6d5a2be160d9aefb5e86b284f4344&iv=1c06043636e81bc3a4d86fea&salt=e71c0c77379189d5ec1f6de888356f70&tag=942e14394845c7fa5638a05bbb67873a&version=1",
+            "publicKey": "c7c7e8c6cb7bf0b268428eb6cee03283688b0a1bdf5e822301b16c37b6361101"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=0d2a4e98ddd343645e65b1ce29d097256b69f57d24f603c9ac5fb0c0e3ced01610aee94c2bdc2d63c597cddc6360e5d9799e5c7cbf88b17773760bef9e4aecdeabd640b897888719ab3b67&iv=ea696380ba49ee320d1b3551&salt=1cb3fa94ae66f1485f48f191003544a2&tag=9c0ff25e18b3d9e510f183d35da112dd&version=1",
+            "publicKey": "6e3f03f0d5b7ccf5eca5b38b8412fb0c8e241590551961ccc8f39bae19df7643"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=c41744e3b14e90662889d497081d504ba9663e42228aec75c147851124ad1c99c3f7f580c2ad49da08f2167251b44d9cb9e9650167788a646a3795097790445eca287e8dc3fea23fe1e684fcdb8467&iv=4eedfb0fefdd5e1dd546589a&salt=bebff7cc25e714f80333ed21556df995&tag=ceb0e5c79722f904efe1a1086aeb0178&version=1",
+            "publicKey": "f3d6eb0322bde834067be7ff06989460d679acdd818c726f2d2df846602f8f04"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=4e0b975b2d9d6124cedb21b433bef37eb1ca9849dc0fa40dde1c50b2d3c32a6284d90fd8b83820217e0e8ab8b6de36aa9dca5757f89f48d1b205ddea591662c03d5ab50c8b7cadd256a9a27648520f&iv=cb3f54ee58393d4c975b8fe9&salt=9f35f4dc8743fa1e10b438d5ee9dff26&tag=2a16f342cb7f75b77ef613595ab97f8d&version=1",
+            "publicKey": "7d9a0cdf9eb0b441198446b5d5cc8355f9d8524eaa387142b3a832b580f629b9"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=76f3bf7006fdad36673c256362a93b8d2ba8d02343dfa7c0f4855ce433fe2c322eb14d8628a8db373694d3bd20a4399004aa58975d536afc347b963dd9fb2bc70375d1cc4b80b1adcd130c16cf&iv=2c2ed39c496a04283c5efc91&salt=fbb6a7df0104bea3916e2986d0d687f5&tag=830e0d6fb931aaa4d1b131e342a4bdad&version=1",
+            "publicKey": "803b4363c45e0efadd192076ad5bbba935b3372674af375f20908f3effad1bd3"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=dfbf1f9483b5b987ff831cd993f07708df8ecf8bf2fe4337dd9c051883aa075dce9dd809df6d49701e5ce135cc20e4a6dd7b2b7b7a59eee78b0169d9eb4c2ea9be2f7dfe3e34bc44ea2fdf24b1b34a76&iv=01808adfa95b16694cba7346&salt=9c1a101d39f2abdbd649979ccc89da8c&tag=585f8f6ec189076de648d1e5d7fec26c&version=1",
+            "publicKey": "3faf45d3051b70db2ead569c329496713ea45d4cb182887f83a23978929f40c8"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=dd7d3c8e53b43a6cd45a2a54d8b922cd41290c7833b470dc19087ac0ea5f024640224bce110ac5c214a70685718dcb532e896e906f874dca1d23b5ec62a1fcb067867ca84ddc74ae49c7fa014a6390e9&iv=18bd9d0ab9c089b0c8b1a116&salt=1e76060157a84d58128eed61cdcddda6&tag=511042e46f46a6291d761da3b2fb3854&version=1",
+            "publicKey": "b796f5ea0a32002ac5ed4ce6df648c67f8418b2819f3d5e09ecad2df7bba7bea"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=2ee10a39124ced849fc4d100bb3f59a5497bfa91f73815d39061c8f61863c8e8bcec4e1d5b7d9e7342f1912137ded0054d65a05ff3a5031aea017c49446c239895b4f864a7&iv=c7d0a98d1d85b84cea1b0af0&salt=69cac32666b9c40dd3cf45059f57db5b&tag=fd35e33608ef5a128b118c1580557de4&version=1",
+            "publicKey": "3f7cc4be494f492c980ca37016263fbea8ef8a419a31593b7ec8d2a8fed5f587"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=85d208e138514d5d9e039ced7069341196f043407c934f744764192e7e882f64081e9b23031e542e5201b6984dd513dcffa5e21935082fd5be2c1399de32270f51e7532b6e79&iv=f858d9811ea4349d17797339&salt=532d652cf23a7ea8cee27a2e4e948c35&tag=6a665113bcdf8280204cfeb22c4c146a&version=1",
+            "publicKey": "f21d281b19ef2288b4d29c02cf1e0a3ae8c049719716fb41b7bd3bc557dd6458"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=81ca3f11673927a019dbe6cb0247c26f1e5cafc6546991023986f3b6712d98c0426342697777f2be15d3b9a580eee15f439fabaef6971d7d01174c66d9c6bad5d65b968741216a1645b7a3&iv=6cc1e471dd40d7a291d883ed&salt=1793728952b728c3186ce682e77898b8&tag=7e651e77632c961e8cc20bffb9129927&version=1",
+            "publicKey": "3c5bbd9f639a4622429eb1d712b617eb1107bfd20375d71c75ce90b71c3aa605"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=a3eb7e85f4afdaa11e457d369d404cdc82f8ee2b7ef0afe363f1ba3461b5c461d76c0693f1425cdbd1b7470af7f62b643b446ba1e730af0bc4c486d9c92f89d95459ba85d80c3d1b2a41&iv=d692e250dcc2ebfae1e3e892&salt=716c82ad4accc58df6c106594b86faef&tag=6658b106a7c6311d77505bc129d49d67&version=1",
+            "publicKey": "551345b2659e5acaefbadb04845d8df9374148bec97fe3be4191a50043e0ea19"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=1944e30c21f7d52f08c7afbae3e6bbf80892a512332a9e2bff53e9590a8a334caab0395f6e5b63f407ec4024d3127930dd34c5dc1ae4c801dd06003a30a1da03348a19a31907f3c613b48bb489&iv=36126bd63b0fe68dfe92a06d&salt=03fe784e843d870f3bab94493b6b28d6&tag=abd122ad0d0a713d671827423eb5ccee&version=1",
+            "publicKey": "11904cd286f3840082df49f2fda5d57faf658f74487fd2428cb6403acd6dc393"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=7dacc29d7a14d2fcc5ec9185c85f66ca5fec8300c853a136595680ff104021210a7aeb3f71bd5b84a2664d3effd15c5ca1d7d83abb596405011718fdbce4802fc43ac3f3fb0edae8f15b&iv=cebd492ae40b8e81b2278e50&salt=09de083eb0e53d4c151c2f2aaa47a2d8&tag=a668f2f7bcabd316ac9b733a445b2d8f&version=1",
+            "publicKey": "49a73626d3fd2ff5a681037d7c90182a3bffbd8e70a60529689ed6f994985066"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=6e62e6e049ff5db3493b8bd577a96e29a7958fd2e713e60dd7a3e9da1364abe3d133ae8dff042355b278841be50b3f9e841222810692683d8fb275d9b8621545075ab2fdef9090c8f490b3&iv=adc533afb53d42f93fc9cd78&salt=0ed95fbb2ff1d5fa28651bb097b971ee&tag=c5b5badb1fbf16c3f780e7c35cedac56&version=1",
+            "publicKey": "588ae651a390ab52ea3551cc9e511eb8fc0a895c9a3c23c090376e26bc31f700"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=f7c0bbc745cbb0af5a7a8add05e11e136e601e1ef1dfc52e28a0592edba45ba1e0c1f564209e7400bd3f6c84a5d96182a69f2f65268efca8ddcf7c59e7f0f1d079708a42c717b62a59&iv=7aeff1f08b923c685d3f98e9&salt=bbd419ab39360228e683448488fe363b&tag=85802f1dae09eecd4e479572cfbdf577&version=1",
+            "publicKey": "2697e63593c406aa062726125fe0b2b44b0eef518e343a4bd778bc160e91e408"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=3f6c05e2e3820a0830b9311228ac07e9c61948ccd1eaa21eea006a2b1ec8d956ca3d2aa820150aa7add05b96b903a136bc5e7caf664ca5028dee766b08c7dfc67117b0d107903ce2f80751&iv=fe2efa176bd76fad34595aa5&salt=7655ac96f84786f32333f117171e1359&tag=e2e2235a41b679889d8cf8d65d8efb8d&version=1",
+            "publicKey": "abb3291054f8ae04ce50d4c900999839f0a4567211d76f024c56ba58b2c91f6f"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=51b669ae8953642a9da53446fcb3bca6e04717c62fdabf26495f1b7d7a02fc5d07d3848ebdeef05b2163e3b1e5aece227be7362a4fd022455eba7aa77dee46426061777699ea198bd4cd2059f11b5ffde277&iv=104d3c9fff9f6288cd74d8bf&salt=7f0c91ad6795f58cda0dba3c3f765b31&tag=3e969ca83ad9a695d74f0a8f9cfced11&version=1",
+            "publicKey": "708f98d864178a5797d0278b8039e77e95eadda66d0aa5308575c12263d576e0"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=3cced10a7286f2c7d37a38017caf8201467aee5791e86d753d3c2aef641521df84681a7d23085bb99d14783f499ece71236932a1253439072d1bcb2604b6783bbd8e61e5abcd77fb538899834ac00c&iv=f60e1d45b1b6b5bcdafcf1f3&salt=32fc37e74fbf042357e6b8f8d5a97b07&tag=ae54bb74101f5735e8093bf462defa23&version=1",
+            "publicKey": "f094829a568094592969a0e1713fcdb97ec9de13fe4a451bca996120ab446ddf"
+          },
+          {
+            "encryptedPassphrase": "iterations=1000000&cipherText=277a37b41a6c691a89f7027aca1030c3097af833c6e3f3fa4e0307c155cc2f596704267f9796c32c6e09d8059007e208c2c00dc7a2b7d4b008834acfe1e8d126b9667657ceb33062ba1a053efa&iv=3c0571b45eaf20f3ae3279a5&salt=d6e7f3e68decf51e8efdfb1d9e38dd50&tag=9492e79467a4417825848daf8a5d51cd&version=1",
+            "publicKey": "a98bf7cb61fabb4e2eacd4abe880961cd7df9d06aede33d348f6c305283f1685"
+          }
+        ],
+        "defaultPassword": "fog strategy lend delay permit"
+      },
+      "broadcasts": {
+        "active": true,
+        "broadcastInterval": 5000,
+        "releaseLimit": 25
+      },
+      "transactions": {
+        "maxTransactionsPerQueue": 1000
+      },
+      "syncing": {
+        "active": true
+      },
+      "loading": {
+        "loadPerIteration": 5000,
+        "rebuildUpToRound": null
+      },
+      "exceptions": {
+        "blockRewards": [],
+        "senderPublicKey": [],
+        "signatures": [],
+        "signSignature": [],
+        "multisignatures": [],
+        "votes": [],
+        "inertTransactions": [],
+        "rounds": {},
+        "precedent": {
+          "disableDappTransfer": 0,
+          "disableDappTransaction": 0
+        },
+        "ignoreDelegateListCacheForRounds": [],
+        "blockVersions": {},
+        "roundVotes": [],
+        "recipientLeadingZero": {},
+        "recipientExceedingUint64": {},
+        "duplicatedSignatures": {},
+        "transactionWithNullByte": []
+      }
+    },
+    "network": {
+      "wsPort": 5000,
+      "seedPeers": [
+        {
+          "ip": "127.0.0.1",
+          "wsPort": 5000
+        }
+      ]
+    }
+  }
+}
