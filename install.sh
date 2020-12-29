@@ -19,7 +19,7 @@ echo ""
 echo "#################### Setup User ####################"
 echo ""
 
-sudo ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && sudo bash -c 'echo $TZ > /etc/timezone'
+sudo ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && sudo bash -c `echo $TZ > /etc/timezone`
 sudo apt-get update
 sudo apt-get install -y nano lsb-release libtool automake autoconf python build-essential redis-server wget ca-certificates git language-pack-en
 
@@ -37,7 +37,7 @@ which psql
 if [ "$?" -gt "0" ]; then
   sudo apt-get purge -y postgres* 
   sudo apt-get update
-  sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+  sudo sh -c `echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list`
   wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
   sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7FCC7D46ACCC4CF8
   sudo apt-get update && sudo apt-get upgrade -y
@@ -57,17 +57,17 @@ fi
 
 if ! sudo grep -Fxq "host all  all    0.0.0.0/0  md5" /etc/postgresql/10/main/pg_hba.conf
 then
-  sudo bash -c 'echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/10/main/pg_hba.conf'
+  sudo bash -c `echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/10/main/pg_hba.conf`
 fi
 
 if ! sudo grep -Fxq "host all  all    ::/0  md5" /etc/postgresql/10/main/pg_hba.conf
 then
-  sudo bash -c 'echo "host all  all    ::/0  md5" >> /etc/postgresql/10/main/pg_hba.conf'
+  sudo bash -c `echo "host all  all    ::/0  md5" >> /etc/postgresql/10/main/pg_hba.conf`
 fi
 
 if ! sudo grep -Fxq "listen_addresses='*'" /etc/postgresql/10/main/postgresql.conf
 then
-  sudo bash -c 'echo "listen_addresses='*'" >> /etc/postgresql/10/main/postgresql.conf'
+  sudo bash -c `echo "listen_addresses='*'" >> /etc/postgresql/10/main/postgresql.conf`
 fi
 
 sudo /etc/init.d/postgresql restart
