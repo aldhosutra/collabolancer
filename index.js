@@ -35,6 +35,19 @@ extendedAPI.listen(EXTENDEDAPI_CONFIG.PORT, () => {
   );
 });
 
+if (process.env.SSL_CERT_PATH && process.env.SSL_KEY_PATH) {
+  const https = require("https");
+  const fs = require("fs");
+  const options = {
+    key: fs.readFileSync(process.env.SSL_KEY_PATH),
+    cert: fs.readFileSync(process.env.SSL_CERT_PATH),
+  };
+  https.createServer(options, extendedAPI).listen(EXTENDEDAPI_CONFIG.SSL_PORT);
+  console.log(
+    `extendedAPI SSL listening at http://localhost:${EXTENDEDAPI_CONFIG.SSL_PORT}`
+  );
+}
+
 configDevnet.app.label = "collabolancer-blockchain-app";
 if (process.env.API_WHITELIST_IP) {
   configDevnet.modules.http_api.access.whiteList.push(
@@ -58,6 +71,11 @@ if (process.env.USER_PASSWORD) {
 }
 if (process.env.DB_NAME) {
   configDevnet.components.storage.database = process.env.DB_NAME;
+}
+if (process.env.SSL_CERT_PATH && process.env.SSL_KEY_PATH) {
+  configDevnet.modules.http_api.ssl.enabled = true;
+  configDevnet.modules.http_api.ssl.options.key = process.env.SSL_KEY_PATH;
+  configDevnet.modules.http_api.ssl.options.cert = process.env.SSL_CERT_PATH;
 }
 
 const app = new Application(genesisBlockDevnet, configDevnet);

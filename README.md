@@ -30,7 +30,11 @@ DB_NAME=lisk_dev
 SEED_NODE_IP=0.0.0.0
 API_WHITELIST_IP=0.0.0.0
 IS_API_NODE=false
+SSL_CERT_PATH=
+SSL_KEY_PATH=
 ```
+
+Please Note that, if SSL_CERT_PATH and SSL_KEY_PATH are provided, then node will be run with SSL enabled, and vice versa.
 
 Then, run node using this command:
 
