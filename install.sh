@@ -1,14 +1,12 @@
 #!/bin/bash
 
 if [ ! -f ".env" ]; then
-  while true; do
-    read -p ".env file are not present, do you want to copy from template.env and use already defined values to proceed? [y/n] " yn
+  read -p ".env file are not present, do you want to copy from template.env and use already defined values to proceed? [y/n] " yn
     case $yn in
         [Yy]* ) curl -o template.env https://raw.githubusercontent.com/aldhosutra/collabolancer/master/template.env; cp template.env .env; break;;
-        [Nn]* ) break;;
-        * ) echo "Please answer yes or no.";;
+        [Nn]* ) echo "Selected Option: No";;
+        * ) echo "Unkown answer!";;
     esac
-  done
 fi
 
 export $(egrep -v '^#' .env | xargs)
@@ -21,14 +19,14 @@ echo ""
 echo "#################### Setup User ####################"
 echo ""
 
-ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+sudo ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && sudo bash -c 'echo $TZ > /etc/timezone'
 sudo apt-get update
 sudo apt-get -y install nano
 
 if id "$USER_NAME" &>/dev/null; then
   echo "User $USER_NAME already exist, proceeding to next step!"
 else
-  adduser --disabled-password --gecos '' $USER_NAME && usermod -a -G sudo $USER_NAME && echo "$USER_NAME:$USER_PASSWORD" | chpasswd
+  sudo adduser --disabled-password --gecos '' $USER_NAME && sudo usermod -a -G sudo $USER_NAME && echo "$USER_NAME:$USER_PASSWORD" | sudo chpasswd
 fi
 
 echo ""
@@ -39,10 +37,11 @@ which psql
 if [ "$?" -gt "0" ]; then
   sudo apt-get purge -y postgres* 
   sudo apt-get update
-  sudo apt-get install -y lsb-release libtool automake autoconf python2-minimal build-essential redis-server wget ca-certificates git language-pack-en
+  sudo apt-get install -y lsb-release libtool automake autoconf python build-essential redis-server wget ca-certificates git language-pack-en
   sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
-  wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-  sudo apt-get update && apt-get upgrade -y
+  wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7FCC7D46ACCC4CF8
+  sudo apt-get update && sudo apt-get upgrade -y
   sudo apt-get install -y postgresql-10
   sudo pg_dropcluster --stop 10 main
   sudo pg_createcluster --locale en_US.UTF-8 --start 10 main
@@ -57,14 +56,14 @@ else
   sudo -u postgres psql -d $DB_NAME -c "alter user $USER_NAME with password '$USER_PASSWORD';"
 fi
 
-if ! grep -Fxq "host all  all    0.0.0.0/0  md5" /etc/postgresql/10/main/pg_hba.conf
+if ! sudo grep -Fxq "host all  all    0.0.0.0/0  md5" /etc/postgresql/10/main/pg_hba.conf
 then
-  echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/10/main/pg_hba.conf
+  sudo bash -c 'echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/10/main/pg_hba.conf'
 fi
 
-if ! grep -Fxq "listen_addresses='*'" /etc/postgresql/10/main/postgresql.conf
+if ! sudo grep -Fxq "listen_addresses='*'" /etc/postgresql/10/main/postgresql.conf
 then
-  echo "listen_addresses='*'" >> /etc/postgresql/10/main/postgresql.conf
+  sudo bash -c 'echo "listen_addresses='*'" >> /etc/postgresql/10/main/postgresql.conf'
 fi
 
 sudo /etc/init.d/postgresql restart
@@ -73,7 +72,7 @@ echo ""
 echo "#################### Setup Nodejs via NVM ####################"
 echo ""
 
-su $USER_NAME <<'EOF'
+sudo -u $USER_NAME -i <<'EOF'
 echo "Installing Node as $(whoami), Home: $HOME"
 
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
@@ -85,31 +84,7 @@ nvm install 12.15.0
 
 npm install pm2 -g
 npm install --global --production lisk-commander
-
-echo $USER_PASSWORD | sudo -S ln -sfn "$NVM_DIR/versions/node/$(nvm version)/bin/node" "/usr/local/bin/node"
-echo $USER_PASSWORD | sudo -S ln -sfn "$NVM_DIR/versions/node/$(nvm version)/bin/npm" "/usr/local/bin/npm"
-echo $USER_PASSWORD | sudo -S ln -sfn "$NVM_DIR/versions/node/$(nvm version)/bin/lisk" "/usr/local/bin/lisk"
 EOF
 
-while true; do
-  read -p "Setup Dependencies Done, do you want to automatically clone Collabolancer Node on ~/? [y/n] " yn
-  case $yn in
-      [Yy]* ) 
-        sudo -u $USER_NAME -i <<'EOF'
-          cd ~
-          git clone https://github.com/aldhosutra/collabolancer
-          cd collabolancer
-          npm install
-          echo "Collabolancer Node is Installed on $(pwd)"
-          echo "Please Provide .env and run:" 
-          echo ""
-          echo "node index.js | npx bunyan -o short"
-          echo ""
-          echo "Using user '$(whoami)', to start the node!"
-EOF
-        break
-        ;;
-      [Nn]* ) exit 1;;
-      * ) echo "Please answer yes or no.";;
-  esac
-done
+echo "Setup Dependencies Done! Please continue to Cloning Collabolancer Git Repository Manually!"
+echo "Happy Collaborating! :)"

@@ -12,9 +12,18 @@ curl -o- https://raw.githubusercontent.com/aldhosutra/collabolancer/master/insta
 
 ## Configure & Run
 
-First, copy template.env as .env, and configure it's value depend on your Node Settings:
+First, clone this repository, and install npm packages:
 
 ```
+git clone https://github.com/aldhosutra/collabolancer
+cd collabolancer
+npm install
+```
+
+After that, copy template.env as .env, and configure it's value depend on your Node Settings:
+
+```
+TZ=Asia/Jakarta
 USER_NAME=lisk
 USER_PASSWORD=password
 DB_NAME=lisk_dev
