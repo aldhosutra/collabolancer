@@ -61,6 +61,11 @@ then
   sudo bash -c 'echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/10/main/pg_hba.conf'
 fi
 
+if ! sudo grep -Fxq "host all  all    ::/0  md5" /etc/postgresql/10/main/pg_hba.conf
+then
+  sudo bash -c 'echo "host all  all    ::/0  md5" >> /etc/postgresql/10/main/pg_hba.conf'
+fi
+
 if ! sudo grep -Fxq "listen_addresses='*'" /etc/postgresql/10/main/postgresql.conf
 then
   sudo bash -c 'echo "listen_addresses='*'" >> /etc/postgresql/10/main/postgresql.conf'
