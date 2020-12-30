@@ -27,11 +27,16 @@ TZ=Asia/Jakarta
 USER_NAME=lisk
 USER_PASSWORD=password
 DB_NAME=lisk_dev
+EXTENDED_API_PORT=4001
+EXTENDED_API_PORT_SSL=4431
 SEED_NODE_IP=0.0.0.0
-API_WHITELIST_IP=0.0.0.0
+API_WHITELIST_IP=localhost
+FORGING_WHITELIST_IP=localhost
 IS_API_NODE=false
 SSL_CERT_PATH=
 SSL_KEY_PATH=
+EMPTY_FORGER=false
+NODE_FORGER_PASSPHRASE=
 ```
 
 Please Note that, if SSL_CERT_PATH and SSL_KEY_PATH are provided, then node will be run with SSL enabled, and vice versa.

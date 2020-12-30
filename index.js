@@ -34,10 +34,13 @@ const {
 
 dotenv.config();
 const { extendedAPI } = require("./extendedAPI");
-extendedAPI.listen(EXTENDEDAPI_CONFIG.PORT, () => {
-  console.log(
-    `extendedAPI listening at http://localhost:${EXTENDEDAPI_CONFIG.PORT}`
-  );
+
+const extendedAPIPort =
+  process.env.EXTENDED_API_PORT || EXTENDEDAPI_CONFIG.PORT;
+const extendedAPIPortSSL =
+  process.env.EXTENDED_API_PORT_SSL || EXTENDEDAPI_CONFIG.SSL_PORT;
+extendedAPI.listen(extendedAPIPort, () => {
+  console.log(`extendedAPI listening at http://localhost:${extendedAPIPort}`);
 });
 
 if (process.env.SSL_CERT_PATH && process.env.SSL_KEY_PATH) {
@@ -47,13 +50,11 @@ if (process.env.SSL_CERT_PATH && process.env.SSL_KEY_PATH) {
     key: fs.readFileSync(process.env.SSL_KEY_PATH),
     cert: fs.readFileSync(process.env.SSL_CERT_PATH),
   };
-  https
-    .createServer(options, extendedAPI)
-    .listen(EXTENDEDAPI_CONFIG.SSL_PORT, () => {
-      console.log(
-        `extendedAPI SSL listening at http://localhost:${EXTENDEDAPI_CONFIG.SSL_PORT}`
-      );
-    });
+  https.createServer(options, extendedAPI).listen(extendedAPIPortSSL, () => {
+    console.log(
+      `extendedAPI SSL listening at http://localhost:${extendedAPIPortSSL}`
+    );
+  });
 }
 
 configDevnet.app.label = "collabolancer-blockchain-app";
