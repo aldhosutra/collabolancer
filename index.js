@@ -42,10 +42,13 @@ if (process.env.SSL_CERT_PATH && process.env.SSL_KEY_PATH) {
     key: fs.readFileSync(process.env.SSL_KEY_PATH),
     cert: fs.readFileSync(process.env.SSL_CERT_PATH),
   };
-  https.createServer(options, extendedAPI).listen(EXTENDEDAPI_CONFIG.SSL_PORT);
-  console.log(
-    `extendedAPI SSL listening at http://localhost:${EXTENDEDAPI_CONFIG.SSL_PORT}`
-  );
+  https
+    .createServer(options, extendedAPI)
+    .listen(EXTENDEDAPI_CONFIG.SSL_PORT, () => {
+      console.log(
+        `extendedAPI SSL listening at http://localhost:${EXTENDEDAPI_CONFIG.SSL_PORT}`
+      );
+    });
 }
 
 configDevnet.app.label = "collabolancer-blockchain-app";
