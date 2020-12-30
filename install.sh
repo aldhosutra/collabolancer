@@ -22,12 +22,7 @@ echo ""
 sudo ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && sudo bash -c 'echo $TZ > /etc/timezone'
 sudo apt-get update
 sudo apt-get install -y nano lsb-release libtool automake autoconf python build-essential redis-server wget ca-certificates git language-pack-en
-
-if id "$USER_NAME" &>/dev/null; then
-  echo "User $USER_NAME already exist, proceeding to next step!"
-else
-  sudo adduser --disabled-password --gecos '' $USER_NAME && sudo usermod -a -G sudo $USER_NAME && echo "$USER_NAME:$USER_PASSWORD" | sudo chpasswd
-fi
+sudo adduser --disabled-password --gecos '' $USER_NAME && sudo usermod -a -G sudo $USER_NAME && echo "$USER_NAME:$USER_PASSWORD" | sudo chpasswd
 
 echo ""
 echo "#################### Setup Postgres ####################"
@@ -67,7 +62,7 @@ fi
 
 if ! sudo grep -Fxq "listen_addresses='*'" /etc/postgresql/10/main/postgresql.conf
 then
-  sudo bash -c 'echo "listen_addresses='*'" >> /etc/postgresql/10/main/postgresql.conf'
+  sudo bash -c "echo \"listen_addresses='*'\" >> /etc/postgresql/10/main/postgresql.conf"
 fi
 
 sudo /etc/init.d/postgresql restart
@@ -87,7 +82,7 @@ export NVM_DIR="$HOME/.nvm"
 nvm install 12.15.0
 
 npm install pm2 -g
-npm install --global --production lisk-commander
+npm install --global --production lisk-commander@3.0.2
 EOF
 
 echo "Setup Dependencies Done! Please continue to Cloning Collabolancer Git Repository Manually!"

@@ -26,6 +26,11 @@ const {
   CloseDisputeTransaction,
 } = require("./transactions");
 const dotenv = require("dotenv");
+const {
+  encryptPassphraseWithPassword,
+  stringifyEncryptedPassphrase,
+  getAddressAndPublicKeyFromPassphrase,
+} = require("@liskhq/lisk-cryptography");
 
 dotenv.config();
 const { extendedAPI } = require("./extendedAPI");
@@ -57,6 +62,11 @@ if (process.env.API_WHITELIST_IP) {
     process.env.API_WHITELIST_IP
   );
 }
+if (process.env.FORGING_WHITELIST_IP) {
+  configDevnet.modules.http_api.forging.access.whiteList.push(
+    process.env.FORGING_WHITELIST_IP
+  );
+}
 if (process.env.IS_API_NODE && process.env.IS_API_NODE === "true") {
   configDevnet.modules.http_api.access.public = true;
 }
@@ -79,6 +89,23 @@ if (process.env.SSL_CERT_PATH && process.env.SSL_KEY_PATH) {
   configDevnet.modules.http_api.ssl.enabled = true;
   configDevnet.modules.http_api.ssl.options.key = process.env.SSL_KEY_PATH;
   configDevnet.modules.http_api.ssl.options.cert = process.env.SSL_CERT_PATH;
+}
+if (process.env.EMPTY_FORGER && process.env.EMPTY_FORGER === "true") {
+  configDevnet.modules.chain.forging.delegates = [];
+} else if (process.env.NODE_FORGER_PASSPHRASE) {
+  const encryptedPassphrase = encryptPassphraseWithPassword(
+    process.env.NODE_FORGER_PASSPHRASE,
+    configDevnet.modules.chain.forging.defaultPassword,
+    1000000
+  );
+  configDevnet.modules.chain.forging.delegates = [
+    {
+      encryptedPassphrase: stringifyEncryptedPassphrase(encryptedPassphrase),
+      publicKey: getAddressAndPublicKeyFromPassphrase(
+        process.env.NODE_FORGER_PASSPHRASE
+      ).publicKey,
+    },
+  ];
 }
 
 const app = new Application(genesisBlockDevnet, configDevnet);

@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/aldhosutra/collabolancer#readme",
   "dependencies": {
+    "@liskhq/lisk-cryptography": "^2.4.2",
     "@liskhq/lisk-passphrase": "^3.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
