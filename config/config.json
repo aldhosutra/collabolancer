@@ -499,7 +499,7 @@
             "publicKey": "a98bf7cb61fabb4e2eacd4abe880961cd7df9d06aede33d348f6c305283f1685"
           }
         ],
-        "defaultPassword": "fog strategy lend delay permit"
+        "defaultPassword": ""
       },
       "broadcasts": {
         "active": true,

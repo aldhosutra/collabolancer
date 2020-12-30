@@ -58,6 +58,10 @@ if (process.env.SSL_CERT_PATH && process.env.SSL_KEY_PATH) {
 }
 
 configDevnet.app.label = "collabolancer-blockchain-app";
+if (process.env.DELEGATE_DECRYPT_PASSWORD) {
+  configDevnet.modules.chain.forging.defaultPassword =
+    process.env.DELEGATE_DECRYPT_PASSWORD;
+}
 if (process.env.API_WHITELIST_IP) {
   configDevnet.modules.http_api.access.whiteList.push(
     process.env.API_WHITELIST_IP
@@ -107,6 +111,9 @@ if (process.env.EMPTY_FORGER && process.env.EMPTY_FORGER === "true") {
       ).publicKey,
     },
   ];
+}
+if (process.env.FORCE_FORGE && process.env.FORCE_FORGE === "true") {
+  configDevnet.modules.chain.forging.force = true;
 }
 
 const app = new Application(genesisBlockDevnet, configDevnet);
