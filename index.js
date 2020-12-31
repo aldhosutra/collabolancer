@@ -98,19 +98,21 @@ if (process.env.SSL_CERT_PATH && process.env.SSL_KEY_PATH) {
 if (process.env.EMPTY_FORGER && process.env.EMPTY_FORGER === "true") {
   configDevnet.modules.chain.forging.delegates = [];
 } else if (process.env.NODE_FORGER_PASSPHRASE) {
-  const encryptedPassphrase = encryptPassphraseWithPassword(
-    process.env.NODE_FORGER_PASSPHRASE,
-    configDevnet.modules.chain.forging.defaultPassword,
-    1000000
+  const forgerList = process.env.NODE_FORGER_PASSPHRASE.split(",").map(
+    (item) => {
+      const encryptedPassphrase = encryptPassphraseWithPassword(
+        item,
+        configDevnet.modules.chain.forging.defaultPassword,
+        1000000
+      );
+      const ret = {
+        encryptedPassphrase: stringifyEncryptedPassphrase(encryptedPassphrase),
+        publicKey: getAddressAndPublicKeyFromPassphrase(item).publicKey,
+      };
+      return ret;
+    }
   );
-  configDevnet.modules.chain.forging.delegates = [
-    {
-      encryptedPassphrase: stringifyEncryptedPassphrase(encryptedPassphrase),
-      publicKey: getAddressAndPublicKeyFromPassphrase(
-        process.env.NODE_FORGER_PASSPHRASE
-      ).publicKey,
-    },
-  ];
+  configDevnet.modules.chain.forging.delegates = forgerList;
 }
 if (process.env.FORCE_FORGE && process.env.FORCE_FORGE === "true") {
   configDevnet.modules.chain.forging.force = true;
