@@ -9,7 +9,7 @@ if [ ! -f ".env" ]; then
     esac
 fi
 
-export $(egrep -v '^#' .env | xargs)
+set -a && source .env && set +a
 if [[ -z $TZ || -z $USER_NAME || -z $USER_PASSWORD || -z $DB_NAME ]]; then
   echo 'TZ, USER_NAME, USER_PASSWORD, and DB_NAME variable are required, please check .env file or manually set environment variables!'
   exit 1
@@ -49,23 +49,6 @@ else
   sudo -u postgres -i createdb $DB_NAME --owner $USER_NAME
   sudo -u postgres psql -d $DB_NAME -c "alter user $USER_NAME with password '$USER_PASSWORD';"
 fi
-
-if ! sudo grep -Fxq "host all  all    0.0.0.0/0  md5" /etc/postgresql/10/main/pg_hba.conf
-then
-  sudo bash -c 'echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/10/main/pg_hba.conf'
-fi
-
-if ! sudo grep -Fxq "host all  all    ::/0  md5" /etc/postgresql/10/main/pg_hba.conf
-then
-  sudo bash -c 'echo "host all  all    ::/0  md5" >> /etc/postgresql/10/main/pg_hba.conf'
-fi
-
-if ! sudo grep -Fxq "listen_addresses='*'" /etc/postgresql/10/main/postgresql.conf
-then
-  sudo bash -c "echo \"listen_addresses='*'\" >> /etc/postgresql/10/main/postgresql.conf"
-fi
-
-sudo /etc/init.d/postgresql restart
 
 echo ""
 echo "#################### Setup Nodejs via NVM ####################"
