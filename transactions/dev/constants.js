@@ -1,5 +1,0 @@
-const CONSTANT = {
-  WHITELIST: ["3650270205389025460L"],
-};
-
-module.exports = CONSTANT;

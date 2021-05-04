@@ -1,21 +1,21 @@
 {
   "name": "collabolancer",
-  "version": "0.1.0",
-  "description": "Collabolancer is a proof-of-concept smart freelancing platform that enables seamless collaboration. Let's make a better world together, not alone",
+  "version": "0.2.0",
+  "description": "Collabolancer is a blockchain-based freelancer marketplace that more profitable, trustworthy and collaborative",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aldhosutra/collabolancer.git"
+    "url": "git+https://aldhosutra:75670306768e3474f661eabd7523cd8968346d2c@github.com/aldhosutra/collabolancer.git"
   },
   "keywords": [
     "freelancer",
     "lisk",
     "blockchain",
-    "DApps",
-    "collaboration"
+    "collaboration",
+    "DApps"
   ],
   "author": "Aldo Suhartono Putra",
   "license": "GPL-3.0-or-later",
@@ -24,15 +24,9 @@
   },
   "homepage": "https://github.com/aldhosutra/collabolancer#readme",
   "dependencies": {
-    "@liskhq/lisk-cryptography": "^2.4.2",
-    "@liskhq/lisk-passphrase": "^3.0.0",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "lisk-elements": "^3.0.2",
-    "lisk-sdk": "^3.0.2",
-    "node-base91": "^0.3.4"
+    "lisk-sdk": "^5.0.4"
   },
   "devDependencies": {
-    "eslint": "^7.6.0"
+    "eslint": "^7.25.0"
   }
 }
